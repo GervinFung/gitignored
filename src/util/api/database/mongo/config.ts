@@ -18,6 +18,10 @@ const mongodbConfig = (() => {
     const isProductionOrStaging =
         nodeEnv === 'production' || nodeEnv === 'staging';
 
+    console.log(process.env.MONGO_DB);
+    console.log(process.env);
+    console.log(env);
+
     return {
         dbName: parseAsEnv({
             env: env.MONGO_DB,
