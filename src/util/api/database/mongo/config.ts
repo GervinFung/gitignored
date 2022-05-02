@@ -2,16 +2,18 @@ import dotenv from 'dotenv';
 import { parseAsEnv } from 'esbuild-env-parsing';
 
 const mongodbConfig = (() => {
-    const nodeEnv = parseAsEnv({
-        env: process.env.NODE_ENV,
-        name: 'node env',
-    });
-
     dotenv.config({
-        path: `${process.cwd()}/.env${nodeEnv === 'test' ? '.test' : ''}`,
+        path: `${process.cwd()}/.env${
+            process.env.NODE_ENV === 'test' ? '.test' : ''
+        }`,
     });
 
     const { env } = process;
+
+    const nodeEnv = parseAsEnv({
+        env: process.env.NODE_ENV,
+        name: 'NODE_ENV',
+    });
 
     const isProductionOrStaging =
         nodeEnv === 'production' || nodeEnv === 'staging';
@@ -25,10 +27,7 @@ const mongodbConfig = (() => {
             env: env.MONGO_ADDRESS,
             name: 'MONGO_ADDRESS',
         }),
-        port: parseAsEnv({
-            env: env.MONGO_PORT,
-            name: 'MONGO_PORT',
-        }),
+        port: env.MONGO_PORT,
         collections: {
             tech: parseAsEnv({
                 env: env.MONGO_COLLECTION_TECH,
@@ -39,7 +38,7 @@ const mongodbConfig = (() => {
                 name: 'MONGO_COLLECTION',
             }),
         },
-        srv: !isProductionOrStaging ? '' : '+srv',
+        srv: env.MONGO_SRV,
         auth: {
             user: parseAsEnv({
                 env: env.MONGO_USER,

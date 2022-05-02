@@ -20,8 +20,9 @@ gatsby-config.ts
 
 # misc
 .env
-.DS_Store
 .env.test
+.env.production
+.DS_Store
 
 temp.js
 temp.txt

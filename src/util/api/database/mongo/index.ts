@@ -24,6 +24,21 @@ type ReadonlyNameAndId = Readonly<
 
 const mongodb = (async () => {
     const client = (() => {
+        const createURL = ({
+            srv,
+            port,
+        }: Readonly<{
+            srv: string | undefined;
+            port: string | undefined;
+        }>) => {
+            if (srv) {
+                return `mongodb${srv}://${user}:${password}@${address}/${dbName}?authSource=admin&retryWrites=true&w=majority`;
+            }
+            if (port) {
+                return `mongodb://${user}:${password}@${address}:${port}/${dbName}?authSource=admin&retryWrites=true&w=majority`;
+            }
+            throw new Error('Port or SRV are not defined');
+        };
         const {
             auth: { user, password },
             dbName,
@@ -32,7 +47,7 @@ const mongodb = (async () => {
             srv,
         } = mongodbConfig;
         //ref: https://stackoverflow.com/questions/63754742/authentication-failure-while-trying-to-save-to-mongodb/63755470#63755470
-        const url = `mongodb${srv}://${user}:${password}@${address}:${port}/${dbName}?authSource=admin&retryWrites=true&w=majority`;
+        const url = createURL({ srv, port });
         return new MongoClient(url);
     })();
 
