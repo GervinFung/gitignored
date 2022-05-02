@@ -11,15 +11,14 @@ import { parseAsEnv } from 'esbuild-env-parsing';
     });
     // ref: https://www.gatsbyjs.com/plugins/gatsby-source-mongodb/
     fs.writeFile(
-        'gatsby-config.ts',
-        `import type { GatsbyConfig } from 'gatsby';
-import dotenv from 'dotenv';
+        'gatsby-config.js',
+        `import dotenv from 'dotenv';
 
-console.log('generated gatsby-config.ts')
+console.log('generated gatsby-config.js')
 
 dotenv.config({ path: '.env${nodeEnv === 'test' ? '.test' : ''}'});
 
-const config: GatsbyConfig = {
+const config = {
     siteMetadata: {
         title: 'gitignore',
         url: '${
@@ -39,7 +38,6 @@ const config: GatsbyConfig = {
                 name: 'images',
                 path: './static/images/',
             },
-            //@ts-ignore
             __key: 'images',
         },
         {
@@ -54,7 +52,6 @@ const config: GatsbyConfig = {
                 name: 'pages',
                 path: './src/pages/',
             },
-            //@ts-ignore
             __key: 'pages',
         },
     ],
