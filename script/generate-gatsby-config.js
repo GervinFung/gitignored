@@ -4,9 +4,8 @@ import { parseAsEnv } from 'esbuild-env-parsing';
 
 (() => {
     dotenv.config({});
-    const { env } = process;
     const nodeEnv = parseAsEnv({
-        env: env.NODE_ENV,
+        env: process.env.NODE_ENV,
         name: 'NODE_ENV',
     });
     // ref: https://www.gatsbyjs.com/plugins/gatsby-source-mongodb/
