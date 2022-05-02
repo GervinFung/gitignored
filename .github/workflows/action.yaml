@@ -23,7 +23,7 @@ jobs:
                   MONGO_SRV: srv
                   MONGO_USER: user
                   MONGO_PASSWORD: password
-                  NODE_ENV: production
+                  NODE_ENV: development
               run: yarn
 
             - name: Run Linter
