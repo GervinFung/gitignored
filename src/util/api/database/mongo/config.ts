@@ -8,14 +8,6 @@ const mongodbConfig = (() => {
         }`,
     });
 
-    const nodeEnv = parseAsEnv({
-        env: process.env.NODE_ENV,
-        name: 'NODE_ENV',
-    });
-
-    const isProductionOrStaging =
-        nodeEnv === 'production' || nodeEnv === 'staging';
-
     return {
         dbName: parseAsEnv({
             env: process.env.MONGO_DB,
