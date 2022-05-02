@@ -47,18 +47,6 @@ const mongodbConfig = (() => {
                 name: 'MONGO_PASSWORD',
             }),
         },
-        server: !isProductionOrStaging
-            ? undefined
-            : {
-                  address: parseAsEnv({
-                      env: process.env.MONGO_ADDRESS,
-                      name: 'MONGO_ADDRESS',
-                  }),
-                  port: parseAsEnv({
-                      env: process.env.MONGO_PORT,
-                      name: 'MONGO_PORT',
-                  }),
-              },
     } as const;
 })();
 
