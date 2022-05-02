@@ -8,59 +8,37 @@ const mongodbConfig = (() => {
         }`,
     });
 
-    const { env } = process;
-
-    const nodeEnv = parseAsEnv({
-        env: process.env.NODE_ENV,
-        name: 'NODE_ENV',
-    });
-
-    const isProductionOrStaging =
-        nodeEnv === 'production' || nodeEnv === 'staging';
-
     return {
         dbName: parseAsEnv({
-            env: env.MONGO_DB,
+            env: process.env.MONGO_DB,
             name: 'MONGO_DB',
         }),
         address: parseAsEnv({
-            env: env.MONGO_ADDRESS,
+            env: process.env.MONGO_ADDRESS,
             name: 'MONGO_ADDRESS',
         }),
-        port: env.MONGO_PORT,
+        port: process.env.MONGO_PORT,
         collections: {
             tech: parseAsEnv({
-                env: env.MONGO_COLLECTION_TECH,
+                env: process.env.MONGO_COLLECTION_TECH,
                 name: 'MONGO_COLLECTION_TECH',
             }),
             timeStamp: parseAsEnv({
-                env: env.MONGO_COLLECTION_TIMESTAMP,
+                env: process.env.MONGO_COLLECTION_TIMESTAMP,
                 name: 'MONGO_COLLECTION',
             }),
         },
-        srv: env.MONGO_SRV,
+        srv: process.env.MONGO_SRV,
         auth: {
             user: parseAsEnv({
-                env: env.MONGO_USER,
+                env: process.env.MONGO_USER,
                 name: 'MONGO_USER',
             }),
             password: parseAsEnv({
-                env: env.MONGO_PASSWORD,
+                env: process.env.MONGO_PASSWORD,
                 name: 'MONGO_PASSWORD',
             }),
         },
-        server: !isProductionOrStaging
-            ? undefined
-            : {
-                  address: parseAsEnv({
-                      env: env.MONGO_ADDRESS,
-                      name: 'MONGO_ADDRESS',
-                  }),
-                  port: parseAsEnv({
-                      env: env.MONGO_PORT,
-                      name: 'MONGO_PORT',
-                  }),
-              },
     } as const;
 })();
 

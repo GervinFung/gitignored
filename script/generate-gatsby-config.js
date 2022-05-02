@@ -4,22 +4,20 @@ import { parseAsEnv } from 'esbuild-env-parsing';
 
 (() => {
     dotenv.config({});
-    const { env } = process;
     const nodeEnv = parseAsEnv({
-        env: env.NODE_ENV,
+        env: process.env.NODE_ENV,
         name: 'NODE_ENV',
     });
     // ref: https://www.gatsbyjs.com/plugins/gatsby-source-mongodb/
     fs.writeFile(
-        'gatsby-config.ts',
-        `import type { GatsbyConfig } from 'gatsby';
-import dotenv from 'dotenv';
+        'gatsby-config.js',
+        `const dotenv = require('dotenv');
 
-console.log('generated gatsby-config.ts')
+console.log('generated gatsby-config.js')
 
 dotenv.config({ path: '.env${nodeEnv === 'test' ? '.test' : ''}'});
 
-const config: GatsbyConfig = {
+module.exports = {
     siteMetadata: {
         title: 'gitignore',
         url: '${
@@ -34,12 +32,26 @@ const config: GatsbyConfig = {
         'gatsby-plugin-sharp',
         'gatsby-transformer-sharp',
         {
+            resolve: 'gatsby-plugin-env-variables',
+            options: {
+                allowList: [
+                    'MONGO_DB',
+                    'MONGO_COLLECTION_TECH',
+                    'MONGO_COLLECTION_TIMESTAMP',
+                    'MONGO_ADDRESS',
+                    'MONGO_SRV',
+                    'MONGO_USER',
+                    'MONGO_PASSWORD',
+                    'NODE_ENV',
+                ],
+            },
+        },
+        {
             resolve: 'gatsby-source-filesystem',
             options: {
                 name: 'images',
                 path: './static/images/',
             },
-            //@ts-ignore
             __key: 'images',
         },
         {
@@ -54,12 +66,10 @@ const config: GatsbyConfig = {
                 name: 'pages',
                 path: './src/pages/',
             },
-            //@ts-ignore
             __key: 'pages',
         },
     ],
-};
-export default config;`,
+};`,
         (err) => {
             if (err) {
                 console.error(err);

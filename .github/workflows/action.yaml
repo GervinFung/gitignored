@@ -15,6 +15,15 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Install Depedencies
+              env:
+                  MONGO_DB: db
+                  MONGO_COLkECTION_TECH: tech
+                  MONGO_COLLECTION_TIMESTAMP: timestamp
+                  MONGO_ADDRESS: address
+                  MONGO_SRV: srv
+                  MONGO_USER: user
+                  MONGO_PASSWORD: password
+                  NODE_ENV: development
               run: yarn
 
             - name: Run Linter

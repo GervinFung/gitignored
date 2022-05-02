@@ -17,6 +17,7 @@ build
 
 # custom gatsby config
 gatsby-config.ts
+gatsby-config.js
 
 # misc
 .env
