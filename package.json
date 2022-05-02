@@ -4,6 +4,9 @@
     "private": true,
     "description": "gitignore",
     "author": "PoolOfDeath20",
+    "scripts": {
+        "build": "make build"
+    },
     "keywords": [
         "gitignored",
         "github gitignore",

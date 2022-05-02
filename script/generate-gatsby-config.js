@@ -15,6 +15,8 @@ import { parseAsEnv } from 'esbuild-env-parsing';
         `import type { GatsbyConfig } from 'gatsby';
 import dotenv from 'dotenv';
 
+console.log('generated gatsby-config.ts')
+
 dotenv.config({ path: '.env${nodeEnv === 'test' ? '.test' : ''}'});
 
 const config: GatsbyConfig = {
@@ -23,7 +25,7 @@ const config: GatsbyConfig = {
         url: '${
             nodeEnv === 'development'
                 ? 'http://localhost:8000/'
-                : 'https://www.gitignored.com'
+                : 'https://gitignored.gtsb.io/'
         }'
     },
     plugins: [
