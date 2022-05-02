@@ -48,7 +48,6 @@ const mongodb = (async () => {
         } = mongodbConfig;
         //ref: https://stackoverflow.com/questions/63754742/authentication-failure-while-trying-to-save-to-mongodb/63755470#63755470
         const url = createURL({ srv, port });
-        console.log(url);
         return new MongoClient(url);
     })();
 
