@@ -1,0 +1,31 @@
+node_modules
+.pnp
+.pnp.js
+
+# gatsby
+.cache
+public
+
+# gitignore scrapped, not this file
+gitignore
+
+# testing
+__tests__
+
+# production
+build
+
+# custom gatsby config
+gatsby-config.ts
+
+# misc
+.env
+.DS_Store
+.env.test
+
+temp.js
+temp.txt
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

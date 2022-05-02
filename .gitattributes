@@ -1,0 +1,6 @@
+# Enforce LF line endings regardless of OS or git configurations.
+* text=auto eol=lf
+
+# Isolate binary files in case the auto-detection algorithm fails and
+# marks them as text files (which could brick them).
+*.{exe,png,jpg,jpeg,ico,icns,eot,otf,ttf,gif,webp,woff,woff2,pdf} binary

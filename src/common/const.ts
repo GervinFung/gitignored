@@ -1,0 +1,3 @@
+const arrayDelimiter = '-';
+
+export { arrayDelimiter };
