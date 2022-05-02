@@ -18,7 +18,7 @@ console.log('generated gatsby-config.js')
 
 dotenv.config({ path: '.env${nodeEnv === 'test' ? '.test' : ''}'});
 
-const config = {
+module.exports = {
     siteMetadata: {
         title: 'gitignore',
         url: '${
@@ -55,8 +55,7 @@ const config = {
             __key: 'pages',
         },
     ],
-};
-export default config;`,
+};`,
         (err) => {
             if (err) {
                 console.error(err);
