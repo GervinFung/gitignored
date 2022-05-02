@@ -4,6 +4,9 @@
     "private": true,
     "description": "gitignore",
     "author": "PoolOfDeath20",
+    "scripts": {
+        "postinstall": "make generate-gatsby-config"
+    },
     "keywords": [
         "gitignored",
         "github gitignore",
