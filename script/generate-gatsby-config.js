@@ -12,7 +12,7 @@ import { parseAsEnv } from 'esbuild-env-parsing';
     // ref: https://www.gatsbyjs.com/plugins/gatsby-source-mongodb/
     fs.writeFile(
         'gatsby-config.js',
-        `import dotenv from 'dotenv';
+        `const dotenv = require('dotenv');
 
 console.log('generated gatsby-config.js')
 
