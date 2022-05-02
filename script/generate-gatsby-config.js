@@ -27,6 +27,9 @@ module.exports = {
                 : 'https://gitignored.gtsb.io/'
         }'
     },
+    flags: {
+        FUNCTIONS: true
+    },
     plugins: [
         'gatsby-plugin-styled-components',
         'gatsby-plugin-image',
