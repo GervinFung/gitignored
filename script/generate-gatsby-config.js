@@ -36,6 +36,21 @@ module.exports = {
         'gatsby-plugin-sharp',
         'gatsby-transformer-sharp',
         {
+            resolve: 'gatsby-plugin-env-variables',
+            options: {
+                allowList: [
+                    'MONGO_DB',
+                    'MONGO_COLLECTION_TECH',
+                    'MONGO_COLLECTION_TIMESTAMP',
+                    'MONGO_ADDRESS',
+                    'MONGO_SRV',
+                    'MONGO_USER',
+                    'MONGO_PASSWORD',
+                    'NODE_ENV',
+                ],
+            },
+        },
+        {
             resolve: 'gatsby-source-filesystem',
             options: {
                 name: 'images',
