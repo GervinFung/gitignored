@@ -5,7 +5,7 @@ import { generateContrastingColor } from '../../../util/component-logic/generato
 
 type NameProps = Readonly<{
     backgroundColor: string;
-    color: '#fff' | '#000';
+    color: '#FFF' | '#000';
 }>;
 
 const Content = ({

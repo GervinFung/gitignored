@@ -2,22 +2,11 @@ import * as React from 'react';
 import styled from 'styled-components';
 import GitHubIcon from './GitHub';
 import Logo from './Logo';
-import ToggleTheme from './Toggle';
 
-const Header = ({
-    isDarkMode,
-    setIsDarkMode,
-}: Readonly<{
-    isDarkMode: boolean;
-    setIsDarkMode: () => void;
-}>) => (
+const Header = () => (
     <Container>
         <Logo />
         <RightContainer>
-            <ToggleTheme
-                isDarkMode={isDarkMode}
-                setIsDarkMode={setIsDarkMode}
-            />
             <GitHubIcon />
         </RightContainer>
     </Container>
