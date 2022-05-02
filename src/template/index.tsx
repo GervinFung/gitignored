@@ -1,8 +1,4 @@
 import * as React from 'react';
-import {
-    enable as enableDarkMode,
-    disable as disableDarkMode,
-} from 'darkreader';
 import styled, { ThemeProvider } from 'styled-components';
 import Font from '../components/common/Font';
 import Footer from '../components/footer';
@@ -13,10 +9,6 @@ import { ToastContainer } from 'react-toastify';
 
 import { injectStyle } from 'react-toastify/dist/inject-style';
 
-if (window !== undefined) {
-    injectStyle();
-}
-
 const Template = ({
     title,
     children,
@@ -24,21 +16,11 @@ const Template = ({
     title: string;
     children: React.ReactNode;
 }>) => {
-    const [state, setState] = React.useState({
-        isDarkMode: false,
-    });
-
-    const { isDarkMode } = state;
-
     React.useEffect(() => {
-        !isDarkMode
-            ? disableDarkMode()
-            : enableDarkMode({
-                  brightness: 100,
-                  contrast: 90,
-                  sepia: 10,
-              });
-    }, [isDarkMode]);
+        if (window !== undefined) {
+            injectStyle();
+        }
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
@@ -47,15 +29,7 @@ const Template = ({
                 <GlobalStyle />
                 <Font fontFamily={theme.fontFamily} />
                 <title>{title}</title>
-                <Header
-                    isDarkMode={isDarkMode}
-                    setIsDarkMode={() =>
-                        setState((prev) => ({
-                            ...prev,
-                            isDarkMode: !prev.isDarkMode,
-                        }))
-                    }
-                />
+                <Header />
                 {children}
                 <Footer />
             </Container>

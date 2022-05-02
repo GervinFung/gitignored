@@ -14,7 +14,6 @@
     "dependencies": {
         "@szhsin/react-menu": "^3.0.1",
         "babel-plugin-styled-components": "^2.0.7",
-        "darkreader": "^4.9.46",
         "file-saver": "^2.0.5",
         "gatsby": "^4.13.0",
         "gatsby-plugin-image": "^2.13.0",
