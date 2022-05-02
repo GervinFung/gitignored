@@ -22,7 +22,7 @@ generate-gatsby-config:
 
 ## build
 build:
-	$(GATSBY) build
+	make generate-gatsby-config && $(GATSBY) build
 
 ## serve
 serve:
