@@ -33,13 +33,16 @@ Here's what the developers can do with it
 
 Refer to `.env.example` which is an example file for you to know what key-value pairs are needed to develop this project
 
-Then, create an `.env` file and copy the key-value pairs to it and then change the values
+Then, create an `.env` file for development and an `.env.test` file for testing. Then copy the key-value pairs to it and then add the values
 
 #### Production and Staging
 
-Refer to `.env.production.example` to know what key-value pairs are needed for deployment
+Refer to `.env.deployment.example` to know what key-value pairs are needed for deployment
 
-Then, create an `.env.production` file and copy the key-value pairs to it and then change the values
+Then, you can either
+
+1. Create an `.env.production` and/or `env.staging` file and copy the key-value pairs to it and then add the values
+2. Add the key-value pairs to your hosting platform
 
 ## Contribution
 
