@@ -40,6 +40,12 @@ const Container = styled.div`
 const GitIgnoreSelect = styled(Select)`
     width: 700px;
     margin: 16px 0;
+    @media (max-width: 808px) {
+        width: 600px;
+    }
+    @media (max-width: 672px) {
+        width: 500px;
+    }
 `;
 
 export default SearchBar;

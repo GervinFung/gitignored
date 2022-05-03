@@ -33,10 +33,6 @@ test:
 	$(NODE_BIN)esbuild test/index.ts --bundle --minify --target=node16.3.1 --platform=node --outfile=__tests__/index.test.js &&\
 		$(NODE_BIN)jest __tests__
 
-## clean-up:
-clean-up:
-	rm -rf src test node_modules script .github .git yarn.lock __tests__ .cache public
-
 ## type-check
 typecheck:
 	$(NODE_BIN)tsc -p tsconfig.json --noEmit
