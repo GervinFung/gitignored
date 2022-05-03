@@ -27,6 +27,7 @@ build:
 ## serve
 serve:
 	$(GATSBY) serve
+
 ## test
 test:
 	export NODE_ENV=test
