@@ -48,6 +48,12 @@ const UpperContainer = styled.div`
     padding: 16px;
     box-sizing: border-box;
     margin: 0 auto;
+    @media (max-width: 1136px) {
+        width: 80%;
+    }
+    @media (max-width: 896px) {
+        width: 90%;
+    }
 `;
 
 const HorizontalLine = styled.hr`
