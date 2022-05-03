@@ -13,25 +13,33 @@ Here's what the developers can do with it
 
 #### Main Page
 
-![Home](./docs/light-main.png 'Home')
+![Home](./docs/main.png 'Home')
 
 #### Templates
 
-![Templates](./docs/light-templates.png 'Templates')
+![Templates](./docs/templates.png 'Templates')
 
 #### More Templates
 
-![More Templates](./docs/light-more-templates.png 'More Templates')
+![More Templates](./docs/more-templates.png 'More Templates')
 
 #### Of course, footer
 
-![Footer](./docs/light-footer.png 'Footer')
+![Footer](./docs/footer.png 'Footer')
 
 ## Environment Variables
 
-Refer to `.env.example` which is an example file for you to know what key-value pairs are needed for this project
+#### Development and Testing
+
+Refer to `.env.example` which is an example file for you to know what key-value pairs are needed to develop this project
 
 Then, create an `.env` file and copy the key-value pairs to it and then change the values
+
+#### Production and Staging
+
+Refer to `.env.production.example` to know what key-value pairs are needed for deployment
+
+Then, create an `.env.production` file and copy the key-value pairs to it and then change the values
 
 ## Contribution
 
