@@ -35,7 +35,7 @@ test:
 
 ## clean-up:
 clean-up:
-	rm -rf src test node_modules script .github .git yarn.lock __tests__ .cache public
+	rm -rf src test script .github .git yarn.lock .cache public
 
 ## type-check
 typecheck:
