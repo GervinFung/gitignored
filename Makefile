@@ -76,4 +76,4 @@ install:
 
 setup:
 	sudo systemctl restart mongod
-	mongosh < script/ci-cd/mongo.js
+	mongosh < script/ci-cd/mongo-setup.js
