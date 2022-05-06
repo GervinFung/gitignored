@@ -14,16 +14,12 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v2
 
+            - name: Install and Setup MongoDB
+              run: |
+                  make install
+                  make setup
+
             - name: Install Depedencies
-              env:
-                  MONGO_DB: db
-                  MONGO_COLkECTION_TECH: tech
-                  MONGO_COLLECTION_TIMESTAMP: timestamp
-                  MONGO_ADDRESS: address
-                  MONGO_SRV: srv
-                  MONGO_USER: user
-                  MONGO_PASSWORD: password
-                  NODE_ENV: development
               run: yarn
 
             - name: Run Linter
@@ -35,14 +31,19 @@ jobs:
             - name: Run Format Check
               run: make format-check
 
-            - name: Run Build
+            - name: Run Tests
               env:
-                  MONGO_DB: db
-                  MONGO_COLkECTION_TECH: tech
+                  MONGO_DB: testGitignored
+                  MONGO_COLLECTION_TECH: tech
                   MONGO_COLLECTION_TIMESTAMP: timestamp
-                  MONGO_ADDRESS: address
-                  MONGO_SRV: srv
-                  MONGO_USER: user
-                  MONGO_PASSWORD: password
-                  NODE_ENV: production
+                  MONGO_USER: runner
+                  MONGO_ADDRESS: localhost
+                  MONGO_PASSWORD: mongodb
+                  MONGO_PORT: 27017
+                  NODE_ENV: test
+              run: |
+                  make test
+                  rm -rf __tests__
+
+            - name: Run Build
               run: make build

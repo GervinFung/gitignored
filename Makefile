@@ -63,6 +63,17 @@ lint-test:
 lint:
 	(trap 'kill 0' INT; make lint-src & make lint-test)
 
-#ref: https://www.digitalocean.com/community/tutorials/how-to-use-the-mongodb-shell
-#ref: https://stackoverflow.com/questions/23943651/mongodb-admin-user-not-authorized
-#https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
+
+
+## mongo setup and installation
+# ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
+install:
+	sudo apt-get install gnupg
+	wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+	echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+	sudo apt-get update
+	sudo apt-get install -y mongodb-org
+
+setup:
+	sudo systemctl restart mongod
+	mongosh < script/ci-cd/mongo.js
