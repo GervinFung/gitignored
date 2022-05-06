@@ -75,5 +75,6 @@ install:
 	sudo apt-get install -y mongodb-org
 
 setup:
+	sudo systemctl start mongod
 	sudo systemctl restart mongod
-	mongosh < script/ci-cd/mongo-setup.js
+	mongosh --host 0.0.0.0:27017 < script/ci-cd/mongo-setup.js

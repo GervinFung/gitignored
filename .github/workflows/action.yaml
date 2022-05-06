@@ -21,14 +21,7 @@ jobs:
 
             - name: Install Depedencies
               env:
-                  MONGO_DB: db
-                  MONGO_COLLECTION_TECH: tech
-                  MONGO_COLLECTION_TIMESTAMP: timestamp
-                  MONGO_USER: runner
-                  MONGO_PASSWORD: mongodb
-                  MONGO_ADDRESS: address
-                  MONGO_SRV: srv
-                  NODE_ENV: production
+                  NODE_ENV: development
               run: yarn
 
             - name: Run Linter
@@ -55,4 +48,6 @@ jobs:
                   rm -rf __tests__
 
             - name: Run Build
+              env:
+                  NODE_ENV: production
               run: make build
