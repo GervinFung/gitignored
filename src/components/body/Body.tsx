@@ -94,6 +94,7 @@ const Body = () => {
             <StaticImage
                 src="../../../static/images/git-ignored-logo.webp"
                 alt={`Logo of ${title}`}
+                quality={95}
                 width={150}
             />
             <Name />

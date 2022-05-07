@@ -21,7 +21,7 @@ const ErrorPage = () => {
     );
 
     return (
-        <Template title="GitIgnored 404 Page">
+        <Template title="404 Page">
             <Container>
                 <Title>404</Title>
                 <p>

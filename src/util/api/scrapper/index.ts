@@ -1,7 +1,6 @@
 import { GitIgnoreFiles, GitIgnoreSelectedTechs } from '../../../common/type';
 import fs from 'fs';
 import child from 'child_process';
-import { parseAsString } from 'parse-dont-validate';
 
 const gitignore = (() => {
     const repo = 'gitignore';
@@ -40,10 +39,12 @@ const getAllGitIgnoreNamesAndContents = (): ReadonlyArray<
 > =>
     getAllGitIgnoreFiles(gitignore.repo).map(async (file) => {
         const content = await readAllGitIgnoreFileContent(file);
+        const name = file.split('/').pop();
+        if (!name) {
+            throw new Error(`name is undefined for file ${file}`);
+        }
         return {
-            name: parseAsString(file.split('/').pop())
-                .orElseThrowDefault(file)
-                .replace('.gitignore', ''),
+            name: name.replace('.gitignore', ''),
             content,
         };
     });

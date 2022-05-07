@@ -24,7 +24,13 @@ module.exports = {
             nodeEnv === 'development'
                 ? 'http://localhost:8000/'
                 : 'https://gitignored.gtsb.io/'
-        }'
+        }',
+        description:
+            'Generate .gitignore templates that was obtained from GitHub',
+        author: 'PoolOfDeath20',
+        keywords: 'gitignore, GitHub gitignore, gatsby, git',
+        image: './static/images/git-ignored-logo.png',
+
     },
     plugins: [
         'gatsby-plugin-styled-components',

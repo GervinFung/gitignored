@@ -3,6 +3,7 @@ import { GitIgnoreSelectedTechs, GitIgnoreNamesAndIds } from '../common/type';
 import { arrayDelimiter } from '../common/const';
 import { ObjectId } from 'mongodb';
 import mongodb from '../util/api/database/mongo';
+import { parseAsEnv } from 'esbuild-env-parsing';
 
 //ref: https://www.gatsbyjs.com/docs/reference/functions/getting-started/
 const tech = async (
@@ -21,7 +22,14 @@ const tech = async (
         res.send('Non GET request is ignored');
     } else {
         const mongo = await mongodb;
-        await mongo.updateGitIgnoreTemplate();
+        if (
+            parseAsEnv({
+                env: process.env.NODE_ENV,
+                name: 'NODE_ENV',
+            }) === 'development'
+        ) {
+            await mongo.updateGitIgnoreTemplate();
+        }
         const { query } = req;
         const { selectedIds } = query;
         if (!selectedIds) {
