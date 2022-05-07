@@ -14,10 +14,13 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v2
 
-            - name: Install and Setup MongoDB
-              run: |
-                  make install
-                  make setup
+            - name: Install MongoDB
+              uses: supercharge/mongodb-github-action@1.7.0
+              with:
+                  mongodb-version: 5.0
+
+            - name: Setup MongoDB
+              run: make setup
 
             - name: Install Depedencies
               env:
