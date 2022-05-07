@@ -9,7 +9,8 @@ Here's what the developers can do with it
 1. Combine various templates into one to preview and/or download it
 2. Leave the generated templates as it is to preview and/or download it
 
-## Preview
+<details>
+<summary>Click to preview!</summary>
 
 #### Main Page
 
@@ -26,6 +27,39 @@ Here's what the developers can do with it
 #### Of course, footer
 
 ![Footer](./docs/footer.png 'Footer')
+
+</details>
+
+## Tech Used
+
+| Aspect                                                                 | Name              |
+| ---------------------------------------------------------------------- | ----------------- |
+| Development Language                                                   | TypeScipt         |
+| Scripting Language                                                     | JavaScript        |
+| Testing                                                                | Jest & Esbuild    |
+| Styling                                                                | Styled-components |
+| Framework                                                              | Gatsby            |
+| Build Automation Tool                                                  | Make              |
+| Text Editor                                                            | NeoVim            |
+| Dependency Management                                                  | Yarn              |
+| Continuous Integration, Continuous Delivery, and Continuous Deployment | GitHub Actions    |
+
+#### Make Commands
+
+_*Below are the listed commands that you can use to build/develop/test this app*_
+
+| Command            | Usage                                             |
+| ------------------ | ------------------------------------------------- |
+| make start         | Start development                                 |
+| make install       | Install all dependencies                          |
+| make test          | Run all test code                                 |
+| make build         | Bundle and build the app                          |
+| make typecheck     | Run typechecking for source code                  |
+| make lint          | Run linter for source and test code               |
+| make format-check  | Run prettier to check source and test code format |
+| make format        | Run prettier to format source and test code       |
+| make install-mongo | Install MongoDB                                   |
+| make setup-mongo   | Setup MongoDB databases and collections           |
 
 ## Environment Variables
 

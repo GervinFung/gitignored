@@ -18,12 +18,12 @@ jobs:
               uses: supercharge/mongodb-github-action@1.7.0
               with:
                   mongodb-version: 5.0
-              run: make setup
+              run: make setup-mongo
 
             - name: Install Depedencies
               env:
                   NODE_ENV: development
-              run: yarn
+              run: make install
 
             - name: Run Linter
               run: make lint
