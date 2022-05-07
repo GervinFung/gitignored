@@ -6,6 +6,7 @@ import Header from '../components/header';
 import GlobalStyle from '../theme/Global';
 import theme from '../theme/theme';
 import { ToastContainer } from 'react-toastify';
+import Seo from '../components/seo';
 
 import { injectStyle } from 'react-toastify/dist/inject-style';
 
@@ -25,10 +26,10 @@ const Template = ({
     return (
         <ThemeProvider theme={theme}>
             <Container>
+                <Seo title={title} />
                 <ToastContainer />
                 <GlobalStyle />
                 <Font fontFamily={theme.fontFamily} />
-                <title>{title}</title>
                 <Header />
                 {children}
                 <Footer />
