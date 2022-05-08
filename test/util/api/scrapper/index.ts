@@ -1,3 +1,4 @@
+import { GitIgnoreNameAndContents } from '../../../../src/common/type';
 import getGitIgnoreNameAndContents from '../../../../src/util/api/scrapper';
 
 const testScrapper = () =>
@@ -12,6 +13,26 @@ const testScrapper = () =>
                             typeof name === 'string' &&
                             typeof content === 'string'
                     )
+            );
+            const isNameSortedAlphabetically = (
+                array: GitIgnoreNameAndContents,
+                n: number
+            ): boolean => {
+                if (n == 1 || n == 0) {
+                    return true;
+                }
+                return (
+                    array[n - 1]?.name
+                        ?.toLowerCase()
+                        ?.localeCompare(array[n - 2]?.name?.toLowerCase()) &&
+                    isNameSortedAlphabetically(array, n - 1)
+                );
+            };
+            expect(
+                isNameSortedAlphabetically(
+                    gitIgnoreNamesAndContents,
+                    gitIgnoreNamesAndContents.length
+                )
             );
         });
     });
