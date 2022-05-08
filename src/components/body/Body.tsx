@@ -19,6 +19,7 @@ import theme from '../../theme/theme';
 import Contents from './content';
 import { parseAsGitIgnoreTechs } from '../../util/component-logic/parser';
 import { gitIgnoredApi } from '../../util/component-logic/const';
+import axios from 'axios';
 
 if (typeof window !== 'undefined') {
     injectStyle();
@@ -42,15 +43,16 @@ const Body = () => {
 
     React.useEffect(() => {
         const promise = new Promise<string>((res) =>
-            fetch(gitIgnoredApi)
-                .then((res) => res.json())
-                .then(({ gitIgnoreNamesAndIds }) => {
+            axios
+                .get(gitIgnoredApi)
+                .then(({ data }) => {
                     setState((prev) => ({
                         ...prev,
                         gitIgnore: {
                             ...prev.gitIgnore,
-                            namesAndIds:
-                                parseAsGitIgnoreTechs(gitIgnoreNamesAndIds),
+                            namesAndIds: parseAsGitIgnoreTechs(
+                                data.gitIgnoreNamesAndIds
+                            ),
                         },
                     }));
                     res('Loaded all .gitignore templates');

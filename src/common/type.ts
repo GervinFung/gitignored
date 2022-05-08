@@ -1,4 +1,3 @@
-type GitIgnoreFiles = ReadonlyArray<string>;
 type GitIgnoreTechs = ReadonlyArray<string>;
 type GitIgnoreSelectedIds = ReadonlyArray<string>;
 
@@ -25,7 +24,6 @@ type TimeStamps = ReadonlyArray<
 >;
 
 export type {
-    GitIgnoreFiles,
     GitIgnoreTechs,
     GitIgnoreSelectedTechs,
     TimeStamps,
