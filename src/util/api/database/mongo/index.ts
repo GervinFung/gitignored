@@ -10,7 +10,7 @@ import {
     GitIgnoreSelectedTechs,
     TimeStamps,
 } from '../../../../common/type';
-import promisifiedGitIgnoreNamesAndContents from '../../scrapper';
+import getGitIgnoreNameAndContents from '../../scrapper';
 import mongodbConfig from './config';
 
 type ReadonlyObjectIds = ReadonlyArray<ObjectId>;
@@ -143,8 +143,7 @@ const mongodb = (async () => {
             if (!(await shouldBulkUpsert())) {
                 return;
             }
-            const namesAndContents =
-                await promisifiedGitIgnoreNamesAndContents();
+            const namesAndContents = await getGitIgnoreNameAndContents();
             const createdAt = new Date();
             const result = await bulkUpsertGitIgnoreTemplate(namesAndContents);
             if (!result) {
