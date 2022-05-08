@@ -8,6 +8,8 @@ type GitIgnoreSelectedTechs = ReadonlyArray<
     }>
 >;
 
+type GitIgnoreNameAndContents = GitIgnoreSelectedTechs;
+
 type GitIgnoreNamesAndIds = ReadonlyArray<
     Readonly<{
         name: GitIgnoreSelectedTechs[0]['name'];
@@ -29,4 +31,5 @@ export type {
     TimeStamps,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedIds,
+    GitIgnoreNameAndContents,
 };
