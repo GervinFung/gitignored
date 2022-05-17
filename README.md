@@ -1,6 +1,6 @@
 # **Git-Ignored**
 
-A web application that let developer generate various `.gitignore` templates
+A web application that let the developer generate various `.gitignore` templates
 
 The templates are taken from the repo [gitignore](https://github.com/github/gitignore) of GitHub. Hence the templates generated are reliable
 
@@ -27,6 +27,10 @@ Here's what the developers can do with it
 #### Of course, footer
 
 ![Footer](./docs/footer.png 'Footer')
+
+#### 404 Page
+
+![404](./docs/404.png '404')
 
 </details>
 
@@ -65,9 +69,9 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 
 #### Development and Testing
 
-Refer to `.env.example` which is an example file for you to know what key-value pairs are needed to develop this project
+Refer to `.env.example`, which is an example file for you to know what key-value pairs are needed to develop this project
 
-Then, create an `.env` file for development and an `.env.test` file for testing. Then copy the key-value pairs to it and then add the values
+Then, create an `.env`, file for development and an `.env.test` file for testing. Then copy the key-value pairs to it and then add the values
 
 #### Production and Staging
 
@@ -80,7 +84,7 @@ Then, you can either
 
 ## Contribution
 
-**Make sure you can run `make`, otherwise, you need to run commands listed in `Makefile` separately**
+**Make sure you can run `make`, otherwise you need to run commands listed in `Makefile` separately**
 
 1. Open an issue
 1. Fork this repo

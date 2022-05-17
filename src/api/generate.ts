@@ -1,15 +1,12 @@
 import { GatsbyFunctionRequest, GatsbyFunctionResponse } from 'gatsby';
-import { GitIgnoreSelectedTechs, GitIgnoreNamesAndIds } from '../common/type';
+import { GitIgnoreSelectedTechs } from '../common/type';
 import mongodb from '../util/api/database/mongo';
+import { formObjectIdsFromString } from '../util/api/database/mongo/util';
 
-//ref: https://www.gatsbyjs.com/docs/reference/functions/getting-started/
-const tech = async (
+const generate = async (
     req: GatsbyFunctionRequest,
     res: GatsbyFunctionResponse<
         | string
-        | Readonly<{
-              gitIgnoreNamesAndIds: GitIgnoreNamesAndIds;
-          }>
         | Readonly<{
               gitIgnoreSelectedTechs: GitIgnoreSelectedTechs;
           }>
@@ -20,10 +17,18 @@ const tech = async (
     } else {
         const mongo = await mongodb;
         await mongo.updateGitIgnoreTemplate();
+        const { query } = req;
+        const { selectedIds } = query;
         res.send({
-            gitIgnoreNamesAndIds: await mongo.getAllTechNamesAndIds(),
+            gitIgnoreSelectedTechs: !selectedIds
+                ? []
+                : await (
+                      await mongodb
+                  ).getContentAndNameFromSelectedIds(
+                      formObjectIdsFromString(selectedIds)
+                  ),
         });
     }
 };
 
-export default tech;
+export default generate;
