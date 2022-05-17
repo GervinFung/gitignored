@@ -13,7 +13,7 @@ import Download from './Download';
 import Preview from './Preview';
 import JSZip from 'jszip';
 import saveAs from 'file-saver';
-import { gitIgnoredApi } from '../../../util/component-logic/const';
+import { generateApi } from '../../../util/component-logic/const';
 import axios from 'axios';
 
 const Menus = ({
@@ -32,9 +32,7 @@ const Menus = ({
     const getLatestSelectedTechs = () =>
         axios
             .get(
-                `${gitIgnoredApi}?selectedIds=${selectedIds.join(
-                    arrayDelimiter
-                )}`
+                `${generateApi}?selectedIds=${selectedIds.join(arrayDelimiter)}`
             )
             .then(({ data }) =>
                 parseAsGitIgnoreSelectedTechs(data.gitIgnoreSelectedTechs)
