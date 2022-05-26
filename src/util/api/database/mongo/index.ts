@@ -115,8 +115,15 @@ const mongodb = (async () => {
 
     const insertLatestTimestamp = async (
         timeStamp: TimeStamps[0]
-    ): Promise<Readonly<InsertOneResult<Document>>> =>
-        await getTimeStamp().insertOne(timeStamp);
+    ): Promise<ObjectId> => {
+        const { acknowledged, insertedId } = await getTimeStamp().insertOne(
+            timeStamp
+        );
+        if (!acknowledged) {
+            throw new Error(`Failed to insert time stamp of ${timeStamp}`);
+        }
+        return insertedId;
+    };
 
     return {
         shouldBulkUpsert,

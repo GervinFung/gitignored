@@ -7,13 +7,11 @@ const testTimeStamp = () =>
         });
         it('should insert time', async () => {
             const mongo = await mongodb;
-            const { acknowledged, insertedId } =
-                await mongo.insertLatestTimestamp({
-                    createdAt: new Date(),
-                    bulkUpsertStatus: 'completed',
-                    updatedAt: new Date(),
-                });
-            expect(acknowledged).toBe(true);
+            const insertedId = await mongo.insertLatestTimestamp({
+                createdAt: new Date(),
+                bulkUpsertStatus: 'completed',
+                updatedAt: new Date(),
+            });
             expect(insertedId).toBeTruthy();
         });
         it('should return false for bulk upsert if differences between latest time scrapepd and current time is < 24 hrs', async () => {
