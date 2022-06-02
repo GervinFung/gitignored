@@ -1,12 +1,12 @@
 import dotenv from 'dotenv';
 import { parseAsEnv } from 'esbuild-env-parsing';
 
-const mongodbConfig = (() => {
-    dotenv.config({
-        path: `${process.cwd()}/.env${
-            process.env.NODE_ENV === 'test' ? '.test' : ''
-        }`,
-    });
+const mongodbConfig = () => {
+    if (process.env.NODE_ENV === 'test') {
+        dotenv.config({
+            path: `${process.cwd()}/.env.test`,
+        });
+    }
 
     return {
         dbName: parseAsEnv({
@@ -40,6 +40,6 @@ const mongodbConfig = (() => {
             }),
         },
     } as const;
-})();
+};
 
 export default mongodbConfig;

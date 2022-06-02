@@ -21,7 +21,7 @@ const ErrorPage = () => {
     );
 
     return (
-        <Template title="404 Page">
+        <Template title="404 Error">
             <Container>
                 <Title>404</Title>
                 <p>

@@ -23,6 +23,7 @@ type ReadonlyNameAndId = Readonly<
 >;
 
 const mongodb = (async () => {
+    const config = mongodbConfig();
     const client = (() => {
         const createURL = ({
             srv,
@@ -45,7 +46,7 @@ const mongodb = (async () => {
             port,
             address,
             srv,
-        } = mongodbConfig;
+        } = config;
         //ref: https://stackoverflow.com/questions/63754742/authentication-failure-while-trying-to-save-to-mongodb/63755470#63755470
         const url = createURL({ srv, port });
         return new MongoClient(url);
@@ -56,7 +57,7 @@ const mongodb = (async () => {
     const {
         dbName,
         collections: { timeStamp, tech },
-    } = mongodbConfig;
+    } = config;
     const database = client.db(dbName);
 
     const getTechs = () => database.collection(tech);
