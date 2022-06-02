@@ -5,7 +5,7 @@ import Template from '../template';
 const title = 'GIT-IGNORED';
 
 const IndexPage = () => (
-    <Template title="Home Page">
+    <Template title="Home">
         <Body />
     </Template>
 );
