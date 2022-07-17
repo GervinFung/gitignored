@@ -1,4 +1,5 @@
-import mongodb from '../../../../../../src/util/api/database/mongo';
+import mongodb from '../../../../src/database/mongo';
+import { parse } from '../../../util';
 
 const testBulkUpsert = () =>
     describe('Bulk Upsert', () => {
@@ -33,9 +34,9 @@ const testBulkUpsert = () =>
             const [ts, java, js] = techs;
 
             expect(techs.length === 3).toBe(true);
-            expect(ts.name === 'TypeScript').toBe(true);
-            expect(java.name === 'Java').toBe(true);
-            expect(js.name === 'JavaScript').toBe(true);
+            expect(ts?.name === 'TypeScript').toBe(true);
+            expect(java?.name === 'Java').toBe(true);
+            expect(js?.name === 'JavaScript').toBe(true);
 
             expect(
                 await mongo.getContentAndNameFromSelectedIds(
@@ -44,7 +45,7 @@ const testBulkUpsert = () =>
                             length:
                                 Object.entries(gitIgnoreTemplates).length - 1,
                         },
-                        (_, index) => gitIgnoreTemplates[`${index}`]
+                        (_, index) => parse(gitIgnoreTemplates[index])
                     )
                 )
             ).toStrictEqual(
@@ -70,7 +71,7 @@ const testBulkUpsert = () =>
             const [avenger] = techs;
 
             expect(techs.length === 1).toBe(true);
-            expect(avenger.name === 'Avengers').toBe(true);
+            expect(avenger?.name === 'Avengers').toBe(true);
 
             expect(
                 await mongo.getContentAndNameFromSelectedIds(
@@ -78,7 +79,7 @@ const testBulkUpsert = () =>
                         {
                             length: Object.entries(gitIgnoreTemplates).length,
                         },
-                        (_, index) => gitIgnoreTemplates[`${index}`]
+                        (_, index) => parse(gitIgnoreTemplates[index])
                     )
                 )
             ).toStrictEqual(

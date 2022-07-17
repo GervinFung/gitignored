@@ -1,11 +1,12 @@
-import { GitIgnoreNameAndContents } from '../../../../src/common/type';
-import getGitIgnoreNameAndContents from '../../../../src/util/api/scrapper';
+import { GitIgnoreNameAndContents } from '../../src/common/type';
+import scrapper from '../../src/scrapper';
+import { parse } from '../util';
 
 const testScrapper = () =>
     describe('Git Ignore Scrapper', () => {
         it('should scrap the name and the content of techs listed', async () => {
             const gitIgnoreNamesAndContents =
-                await getGitIgnoreNameAndContents();
+                await scrapper.getGitIgnoreNameAndContents();
             expect(
                 gitIgnoreNamesAndContents.length > 200 &&
                     gitIgnoreNamesAndContents.every(
@@ -17,17 +18,15 @@ const testScrapper = () =>
             const isNameSortedAlphabetically = (
                 array: GitIgnoreNameAndContents,
                 n: number
-            ): boolean => {
-                if (n == 1 || n == 0) {
-                    return true;
-                }
-                return (
+            ): boolean =>
+                (n == 1 || n == 0) ??
+                Boolean(
                     array[n - 1]?.name
                         ?.toLowerCase()
-                        ?.localeCompare(array[n - 2]?.name?.toLowerCase()) &&
-                    isNameSortedAlphabetically(array, n - 1)
+                        ?.localeCompare(
+                            parse(array[n - 2]?.name?.toLowerCase())
+                        ) && isNameSortedAlphabetically(array, n - 1)
                 );
-            };
             expect(
                 isNameSortedAlphabetically(
                     gitIgnoreNamesAndContents,

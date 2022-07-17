@@ -21,7 +21,7 @@ const SearchBar = ({
                 value: id,
                 label: name,
             }))}
-            onChange={(selectedGitIgnoreTechs: any) =>
+            onChange={(selectedGitIgnoreTechs) =>
                 setSelectedIds(
                     parseAsReadonlyArray(selectedGitIgnoreTechs, (tech) =>
                         parseAsString(tech.value).orElseThrowDefault(tech)

@@ -1,7 +1,7 @@
 import { GatsbyFunctionRequest, GatsbyFunctionResponse } from 'gatsby';
 import { GitIgnoreSelectedTechs } from '../common/type';
-import mongodb from '../util/api/database/mongo';
-import { formObjectIdsFromString } from '../util/api/database/mongo/util';
+import mongodb from '../database/mongo';
+import { formObjectIdsFromString } from '../database/mongo/util';
 
 const generate = async (
     req: GatsbyFunctionRequest,
