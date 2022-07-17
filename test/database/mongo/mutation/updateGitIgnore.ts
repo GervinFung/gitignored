@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import mongodb from '../../../../../../src/util/api/database/mongo';
+import mongodb from '../../../../src/database/mongo';
 
 const testUpdateGitIgnore = () =>
     describe('Update Git Ignore', () => {
@@ -25,7 +25,7 @@ const testUpdateGitIgnore = () =>
                     await mongo.getContentAndNameFromSelectedIds(
                         namesAndIds.map(({ id }) => new ObjectId(id))
                     )
-                ).every(({ name }, index) => name === namesAndIds[index].name)
+                ).every(({ name }, index) => name === namesAndIds[index]?.name)
             );
         });
     });

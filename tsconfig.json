@@ -23,10 +23,6 @@
         "outDir": "build",
         "preserveWatchOutput": true
     },
-    "include": [
-        "./src/**/*",
-        "./gatsby-node.ts",
-        "./gatsby-config.ts",
-        "./plugins/**/*"
-    ]
+    "include": ["src", "test"],
+    "exclude": ["node_modules"]
 }

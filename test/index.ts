@@ -1,5 +1,5 @@
-import testMongo from './util/api/database/mongo';
-import testScrapper from './util/api/scrapper';
+import testMongo from './database/mongo';
+import testScrapper from './scrapper';
 import testComponentLogic from './util/component-logic';
 
 testScrapper();

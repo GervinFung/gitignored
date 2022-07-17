@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb';
-import mongodb from '../../../../../../src/util/api/database/mongo';
+import mongodb from '../../../../src/database/mongo';
 
 const testGetContentAndName = () =>
     describe('Get Content and Name', () => {

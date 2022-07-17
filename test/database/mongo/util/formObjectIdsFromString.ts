@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
-import { arrayDelimiter } from '../../../../../../src/common/const';
-import { formObjectIdsFromString } from '../../../../../../src/util/api/database/mongo/util';
+import { arrayDelimiter } from '../../../../src/common/const';
+import { formObjectIdsFromString } from '../../../../src/database/mongo/util';
 
 const testFormObjectIdsFromString = () =>
     describe('Form ObjectIds from String', () => {

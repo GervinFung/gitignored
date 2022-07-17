@@ -1,6 +1,6 @@
 import { GatsbyFunctionRequest, GatsbyFunctionResponse } from 'gatsby';
 import { GitIgnoreSelectedTechs, GitIgnoreNamesAndIds } from '../common/type';
-import mongodb from '../util/api/database/mongo';
+import mongodb from '../database/mongo';
 
 //ref: https://www.gatsbyjs.com/docs/reference/functions/getting-started/
 const tech = async (

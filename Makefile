@@ -35,37 +35,30 @@ serve:
 ## test
 test:
 	export NODE_ENV=test
-	$(NODE_BIN)esbuild test/index.ts --bundle --minify --target=node16.3.1 --platform=node --outfile=__tests__/index.test.js &&\
+	$(NODE_BIN)esbuild test/index.ts --sourcemap --bundle --minify --target=node16.3.1 --platform=node --outfile=__tests__/index.test.js &&\
 		$(NODE_BIN)jest __tests__
 
 ## type-check
 typecheck:
-	$(NODE_BIN)tsc -p tsconfig.json --noEmit
+	$(NODE_BIN)tsc -p tsconfig.json --noEmit $(arguments)
+
+typecheck-watch:
+	make typecheck arguments=--watch
 
 ## format
 prettier=$(NODE_BIN)prettier
-prettify-src:
-	$(prettier) --$(type) src/
-
-prettify-test:
-	$(prettier) --$(type) test/
+prettify:
+	$(prettier) --$(type) src/ test/
 
 format-check:
-	(trap 'kill 0' INT; make prettify-src type=check & make prettify-test type=check)
+	make prettify type=check
 
 format:
-	(trap 'kill 0' INT; make prettify-src type=write & make prettify-test type=write)
+	make prettify type=write
 
 ## lint
-eslint=$(NODE_BIN)eslint
-lint-src:
-	$(eslint) src/** -f='stylish' --color
-
-lint-test:
-	$(eslint) test/** -f='stylish' --color
-
 lint:
-	(trap 'kill 0' INT; make lint-src & make lint-test)
+	$(NODE_BIN)eslint src/ test/ -f='stylish' --color
 
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04

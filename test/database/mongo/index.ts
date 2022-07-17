@@ -1,4 +1,4 @@
-import mongodb from '../../../../../src/util/api/database/mongo';
+import mongodb from '../../../src/database/mongo';
 import testMutation from './mutation';
 import testQuery from './query';
 import testUtil from './util';

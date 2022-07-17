@@ -1,16 +1,10 @@
-import {
-    MongoClient,
-    WithId,
-    Document,
-    ObjectId,
-    InsertOneResult,
-} from 'mongodb';
+import { MongoClient, WithId, Document, ObjectId } from 'mongodb';
 import {
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedTechs,
     TimeStamps,
-} from '../../../../common/type';
-import getGitIgnoreNameAndContents from '../../scrapper';
+} from '../../common/type';
+import scrapper from '../../scrapper';
 import mongodbConfig from './config';
 
 type ReadonlyObjectIds = ReadonlyArray<ObjectId>;
@@ -63,7 +57,9 @@ const mongodb = (async () => {
     const getTechs = () => database.collection(tech);
     const getTimeStamp = () => database.collection(timeStamp);
 
-    const shouldBulkUpsert = async (): Promise<boolean> => {
+    const shouldBulkUpsert = async (
+        latestTimeCommitted: () => Promise<Date>
+    ): Promise<boolean> => {
         if (!(await getTimeStamp().estimatedDocumentCount())) {
             return true;
         }
@@ -76,11 +72,8 @@ const mongodb = (async () => {
             throw new Error('TimeStamp cannot be undefined');
         }
         return (
-            Math.abs(
-                new Date(timeStamp.updatedAt).getTime() - new Date().getTime()
-            ) /
-                36e5 >=
-            24
+            (await latestTimeCommitted()).getTime() >
+            new Date(timeStamp.updatedAt).getTime()
         );
     };
 
@@ -130,28 +123,29 @@ const mongodb = (async () => {
         shouldBulkUpsert,
         bulkUpsertGitIgnoreTemplate,
         insertLatestTimestamp,
-        close: async () => await client.close(),
+        close: () => client.close(),
         // testing purpose only
         clearCollections: async () =>
             (await getTechs().deleteMany({})) &&
             (await getTimeStamp().deleteMany({})),
-        getAllTechNamesAndIds: async (): Promise<GitIgnoreNamesAndIds> => {
-            const techNames = await getTechs()
-                .find<ReadonlyNameAndId>(
-                    {},
-                    { projection: { _id: 1, name: 1 } }
-                )
-                .toArray();
-            return techNames.map(({ _id, name }) => ({
+        getAllTechNamesAndIds: async (): Promise<GitIgnoreNamesAndIds> =>
+            (
+                await getTechs()
+                    .find<ReadonlyNameAndId>(
+                        {},
+                        { projection: { _id: 1, name: 1 } }
+                    )
+                    .toArray()
+            ).map(({ _id, name }) => ({
                 name,
                 id: _id.toHexString(),
-            }));
-        },
+            })),
         updateGitIgnoreTemplate: async () => {
-            if (!(await shouldBulkUpsert())) {
+            if (!(await shouldBulkUpsert(scrapper.getLatestTimeCommitted))) {
                 return;
             }
-            const namesAndContents = await getGitIgnoreNameAndContents();
+            const namesAndContents =
+                await scrapper.getGitIgnoreNameAndContents();
             const createdAt = new Date();
             const result = await bulkUpsertGitIgnoreTemplate(namesAndContents);
             if (!result) {
