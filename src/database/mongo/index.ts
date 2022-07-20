@@ -2,7 +2,7 @@ import { MongoClient, WithId, Document, ObjectId } from 'mongodb';
 import {
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedTechs,
-    TimeStamps,
+    TimeStamp,
 } from '../../common/type';
 import scrapper from '../../scrapper';
 import mongodbConfig from './config';
@@ -57,23 +57,27 @@ const mongodb = (async () => {
     const getTechs = () => database.collection(tech);
     const getTimeStamp = () => database.collection(timeStamp);
 
+    const getLatestTimeUpdated = async () => {
+        const latestTimeStamp = await getTimeStamp().findOne<
+            Readonly<{
+                updatedAt: string;
+            }>
+        >({}, { sort: { _id: -1 }, projection: { _id: 0, updatedAt: 1 } });
+        if (!latestTimeStamp) {
+            throw new Error('TimeStamp cannot be undefined');
+        }
+        return new Date(latestTimeStamp.updatedAt);
+    };
+
     const shouldBulkUpsert = async (
         latestTimeCommitted: () => Promise<Date>
     ): Promise<boolean> => {
         if (!(await getTimeStamp().estimatedDocumentCount())) {
             return true;
         }
-        const timeStamp = await getTimeStamp().findOne<
-            Readonly<{
-                updatedAt: string;
-            }>
-        >({}, { sort: { _id: -1 }, projection: { _id: 0, updatedAt: 1 } });
-        if (!timeStamp) {
-            throw new Error('TimeStamp cannot be undefined');
-        }
         return (
             (await latestTimeCommitted()).getTime() >
-            new Date(timeStamp.updatedAt).getTime()
+            (await getLatestTimeUpdated()).getTime()
         );
     };
 
@@ -108,7 +112,7 @@ const mongodb = (async () => {
     };
 
     const insertLatestTimestamp = async (
-        timeStamp: TimeStamps[0]
+        timeStamp: TimeStamp
     ): Promise<ObjectId> => {
         const { acknowledged, insertedId } = await getTimeStamp().insertOne(
             timeStamp
@@ -123,6 +127,7 @@ const mongodb = (async () => {
         shouldBulkUpsert,
         bulkUpsertGitIgnoreTemplate,
         insertLatestTimestamp,
+        getLatestTimeUpdated,
         close: () => client.close(),
         // testing purpose only
         clearCollections: async () =>
