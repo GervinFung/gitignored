@@ -25,7 +25,7 @@ const mongodbConfig = () => {
             }),
             timeStamp: parseAsEnv({
                 env: process.env.MONGO_COLLECTION_TIMESTAMP,
-                name: 'MONGO_COLLECTION',
+                name: 'MONGO_COLLECTION_TIMESTAMP',
             }),
         },
         srv: process.env.MONGO_SRV,
