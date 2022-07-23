@@ -4,7 +4,7 @@ import testComponentLogic from './util/component-logic';
 
 const tests: ReadonlyArray<readonly [() => void, 'only'?]> = [
     [testScrapper],
-    [testMongo,
+    [testMongo],
     [testComponentLogic],
 ];
 

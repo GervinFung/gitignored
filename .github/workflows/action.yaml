@@ -43,7 +43,7 @@ jobs:
               env:
                   MONGO_DB: testGitignored
                   MONGO_COLLECTION_TECH: tech
-                  MONGO_COLLECTION_TIMESTAMP: timestamp
+                  MONGO_COLLECTION_UPDATE_TIME: updatetime
                   MONGO_USER: runner
                   MONGO_PASSWORD: mongodb
                   MONGO_ADDRESS: localhost
