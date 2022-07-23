@@ -1,11 +1,13 @@
 import testBulkUpsert from './bulkUpsert';
-import testTimeStamp from './timeStamp';
 import testUpdateGitIgnore from './updateGitIgnore';
+import testUpdateTime from './updateTime';
 
 const testMutation = () => {
-    testTimeStamp();
-    testBulkUpsert();
-    testUpdateGitIgnore();
+    describe('Mutation', () => {
+        testBulkUpsert();
+        testUpdateGitIgnore();
+        testUpdateTime();
+    });
 };
 
 export default testMutation;

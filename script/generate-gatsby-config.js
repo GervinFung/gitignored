@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import dotenv from 'dotenv';
-import { parseAsEnv } from 'esbuild-env-parsing';
+import { parseAsStringEnv } from 'esbuild-env-parsing';
 
 (() => {
     dotenv.config({});
-    const nodeEnv = parseAsEnv({
+    const nodeEnv = parseAsStringEnv({
         env: process.env.NODE_ENV,
         name: 'NODE_ENV',
     });
@@ -30,7 +30,6 @@ module.exports = {
         author: 'PoolOfDeath20',
         keywords: 'gitignore, GitHub gitignore, gatsby, git',
         image: './static/images/git-ignored-logo.png',
-
     },
     plugins: [
         'gatsby-plugin-styled-components',
@@ -43,7 +42,7 @@ module.exports = {
                 allowList: [
                     'MONGO_DB',
                     'MONGO_COLLECTION_TECH',
-                    'MONGO_COLLECTION_TIMESTAMP',
+                    'MONGO_COLLECTION_UPDATE_TIME',
                     'MONGO_ADDRESS',
                     'MONGO_SRV',
                     'MONGO_USER',

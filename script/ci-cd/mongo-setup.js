@@ -18,12 +18,13 @@ db.auth('runner', 'mongodb');
 db = db.getSiblingDB('gitignored');
 
 // ref: https://www.mongodb.com/docs/manual/reference/method/db.createCollection/
+
 // program db
 db.createCollection('tech');
-db.createCollection('timestamp', { capped: true, size: 5242880, max: 5000 });
+db.createCollection('updatetime', { capped: true, size: 5242880, max: 5000 });
 
 db = db.getSiblingDB('testGitignored');
 
 // test db
 db.createCollection('tech');
-db.createCollection('timestamp', { capped: true, size: 5242880, max: 5000 });
+db.createCollection('updatetime', { capped: true, size: 5242880, max: 5000 });

@@ -17,16 +17,17 @@ type GitIgnoreNamesAndIds = ReadonlyArray<
     }>
 >;
 
-type TimeStamp = Readonly<{
+type UpdateTime = Readonly<{
     bulkUpsertStatus: 'completed' | 'failed';
-    createdAt: Date;
-    updatedAt: Date;
+    commitedAt: Date;
+    startedAt: Date;
+    endedAt: Date;
 }>;
 
 export type {
+    UpdateTime,
     GitIgnoreTechs,
     GitIgnoreSelectedTechs,
-    TimeStamp,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedIds,
     GitIgnoreNameAndContents,

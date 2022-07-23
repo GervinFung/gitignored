@@ -13,7 +13,7 @@ import Download from './Download';
 import Preview from './Preview';
 import JSZip from 'jszip';
 import saveAs from 'file-saver';
-import { generateApi } from '../../../util/component-logic/const';
+import { api } from '../../../util/component-logic/const';
 import axios from 'axios';
 
 const Menus = ({
@@ -32,7 +32,9 @@ const Menus = ({
     const getLatestSelectedTechs = () =>
         axios
             .get(
-                `${generateApi}?selectedIds=${selectedIds.join(arrayDelimiter)}`
+                `${api.generate}?selectedIds=${selectedIds.join(
+                    arrayDelimiter
+                )}`
             )
             .then(({ data }) =>
                 parseAsGitIgnoreSelectedTechs(data.gitIgnoreSelectedTechs)

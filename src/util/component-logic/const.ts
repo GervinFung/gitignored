@@ -1,5 +1,9 @@
-const gitIgnoredApi = '/api/gitignored';
-const generateApi = '/api/generate';
+const api = {
+    gitIgnored: '/api/gitignored',
+    generate: '/api/generate',
+    commitTime: '/api/committime',
+} as const;
+
 const repo = 'https://github.com/gervinfung/gitignored';
 
-export { gitIgnoredApi, generateApi, repo };
+export { api, repo };

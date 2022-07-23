@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import theme from '../../theme/theme';
 import Contents from './content';
 import { parseAsGitIgnoreTechs } from '../../util/component-logic/parser';
-import { gitIgnoredApi } from '../../util/component-logic/const';
+import { api } from '../../util/component-logic/const';
 import axios from 'axios';
 
 if (typeof window !== 'undefined') {
@@ -44,7 +44,7 @@ const Body = () => {
     React.useEffect(() => {
         const promise = new Promise<string>((res) =>
             axios
-                .get(gitIgnoredApi)
+                .get(api.gitIgnored)
                 .then(({ data }) => {
                     setState((prev) => ({
                         ...prev,
