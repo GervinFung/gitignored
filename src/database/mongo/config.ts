@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { parseAsEnv } from 'esbuild-env-parsing';
+import { parseAsStringEnv } from 'esbuild-env-parsing';
 
 const mongodbConfig = () => {
     if (process.env.NODE_ENV === 'test') {
@@ -9,32 +9,32 @@ const mongodbConfig = () => {
     }
 
     return {
-        dbName: parseAsEnv({
+        dbName: parseAsStringEnv({
             env: process.env.MONGO_DB,
             name: 'MONGO_DB',
         }),
-        address: parseAsEnv({
+        address: parseAsStringEnv({
             env: process.env.MONGO_ADDRESS,
             name: 'MONGO_ADDRESS',
         }),
         port: process.env.MONGO_PORT,
         collections: {
-            tech: parseAsEnv({
+            tech: parseAsStringEnv({
                 env: process.env.MONGO_COLLECTION_TECH,
                 name: 'MONGO_COLLECTION_TECH',
             }),
-            timeStamp: parseAsEnv({
-                env: process.env.MONGO_COLLECTION_TIMESTAMP,
-                name: 'MONGO_COLLECTION_TIMESTAMP',
+            updateTime: parseAsStringEnv({
+                env: process.env.MONGO_COLLECTION_UPDATE_TIME,
+                name: 'MONGO_COLLECTION_UPDATE_TIME',
             }),
         },
         srv: process.env.MONGO_SRV,
         auth: {
-            user: parseAsEnv({
+            user: parseAsStringEnv({
                 env: process.env.MONGO_USER,
                 name: 'MONGO_USER',
             }),
-            password: parseAsEnv({
+            password: parseAsStringEnv({
                 env: process.env.MONGO_PASSWORD,
                 name: 'MONGO_PASSWORD',
             }),

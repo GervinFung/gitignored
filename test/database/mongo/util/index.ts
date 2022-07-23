@@ -1,7 +1,9 @@
 import testFormObjectIdsFromString from './formObjectIdsFromString';
 
 const testUtil = () => {
-    testFormObjectIdsFromString();
+    describe('Util', () => {
+        testFormObjectIdsFromString();
+    });
 };
 
 export default testUtil;

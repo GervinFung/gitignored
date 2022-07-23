@@ -2,6 +2,9 @@ name: gitignored-ci-cd
 
 on: [push, pull_request]
 
+env:
+    IS_CI: true
+
 jobs:
     all:
         runs-on: ubuntu-latest

@@ -1,7 +1,11 @@
 import testGetContentAndName from './getContentAndName';
+import testGetLatestCommitTime from './getLatestCommitTime';
 
 const testQuery = () => {
-    testGetContentAndName();
+    describe('Query', () => {
+        testGetContentAndName();
+        testGetLatestCommitTime();
+    });
 };
 
 export default testQuery;

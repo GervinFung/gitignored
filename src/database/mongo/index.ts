@@ -1,8 +1,8 @@
 import { MongoClient, WithId, Document, ObjectId } from 'mongodb';
 import {
+    UpdateTime,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedTechs,
-    TimeStamp,
 } from '../../common/type';
 import scrapper from '../../scrapper';
 import mongodbConfig from './config';
@@ -19,13 +19,14 @@ type ReadonlyNameAndId = Readonly<
 const mongodb = (async () => {
     const config = mongodbConfig();
     const client = (() => {
-        const createURL = ({
-            srv,
-            port,
-        }: Readonly<{
-            srv: string | undefined;
-            port: string | undefined;
-        }>) => {
+        const createURL = () => {
+            const {
+                auth: { user, password },
+                dbName,
+                port,
+                address,
+                srv,
+            } = config;
             if (srv) {
                 return `mongodb${srv}://${user}:${password}@${address}/${dbName}?authSource=admin&retryWrites=true&w=majority`;
             }
@@ -34,52 +35,40 @@ const mongodb = (async () => {
             }
             throw new Error('Port or SRV are not defined');
         };
-        const {
-            auth: { user, password },
-            dbName,
-            port,
-            address,
-            srv,
-        } = config;
         //ref: https://stackoverflow.com/questions/63754742/authentication-failure-while-trying-to-save-to-mongodb/63755470#63755470
-        const url = createURL({ srv, port });
-        return new MongoClient(url);
+        return new MongoClient(createURL());
     })();
 
     await client.connect();
 
     const {
         dbName,
-        collections: { timeStamp, tech },
+        collections: { tech, updateTime },
     } = config;
     const database = client.db(dbName);
 
     const getTechs = () => database.collection(tech);
-    const getTimeStamp = () => database.collection(timeStamp);
+    const getUpdateTime = () => database.collection(updateTime);
 
-    const getLatestTimeUpdated = async () => {
-        const latestTimeStamp = await getTimeStamp().findOne<
+    const getLatestTimeCommitted = async () => {
+        const latestTimeUpdated = await getUpdateTime().findOne<
             Readonly<{
-                updatedAt: string;
+                commitedAt: string;
             }>
-        >({}, { sort: { _id: -1 }, projection: { _id: 0, updatedAt: 1 } });
-        if (!latestTimeStamp) {
-            throw new Error('TimeStamp cannot be undefined');
+        >({}, { sort: { _id: -1 }, projection: { _id: 0, commitedAt: 1 } });
+        if (!latestTimeUpdated) {
+            throw new Error('latest time updated cannot be undefined');
         }
-        return new Date(latestTimeStamp.updatedAt);
+        return new Date(latestTimeUpdated.commitedAt);
     };
 
     const shouldBulkUpsert = async (
         latestTimeCommitted: () => Promise<Date>
-    ): Promise<boolean> => {
-        if (!(await getTimeStamp().estimatedDocumentCount())) {
-            return true;
-        }
-        return (
-            (await latestTimeCommitted()).getTime() >
-            (await getLatestTimeUpdated()).getTime()
-        );
-    };
+    ): Promise<boolean> =>
+        !(await getUpdateTime().estimatedDocumentCount())
+            ? true
+            : (await latestTimeCommitted()).getTime() >
+              (await getLatestTimeCommitted()).getTime();
 
     const bulkUpsertGitIgnoreTemplate = async (
         gitIgnoreNamesAndContents: GitIgnoreSelectedTechs
@@ -111,28 +100,62 @@ const mongodb = (async () => {
         return insertedIds;
     };
 
-    const insertLatestTimestamp = async (
-        timeStamp: TimeStamp
-    ): Promise<ObjectId> => {
-        const { acknowledged, insertedId } = await getTimeStamp().insertOne(
-            timeStamp
-        );
+    const insertLatestTimeUpdated = async ({
+        startedAt,
+        commitedAt,
+        bulkUpsertStatus,
+        endedAt,
+    }: Omit<UpdateTime, 'endedAt'> &
+        Readonly<{
+            endedAt: () => Date;
+        }>): Promise<ObjectId> => {
+        const { acknowledged, insertedId } = await getUpdateTime().insertOne({
+            startedAt,
+            commitedAt,
+            bulkUpsertStatus,
+            endedAt: endedAt(),
+        } as UpdateTime);
         if (!acknowledged) {
-            throw new Error(`Failed to insert time stamp of ${timeStamp}`);
+            throw new Error(`Failed to insert time update of ${updateTime}`);
         }
         return insertedId;
     };
 
+    const getLatestCommitTime = async () => {
+        const latestCommitTime = await getUpdateTime().findOne<
+            Readonly<{
+                commitedAt: string;
+                startedAt: string;
+            }>
+        >(
+            {},
+            {
+                sort: { _id: -1 },
+                projection: { _id: 0, commitedAt: 1, createdAt: 1 },
+            }
+        );
+        return !latestCommitTime
+            ? await scrapper.getLatestTimeCommitted()
+            : Math.abs(
+                  new Date(latestCommitTime.startedAt).getTime() -
+                      new Date().getTime()
+              ) /
+                  36e5 >=
+              24
+            ? await scrapper.getLatestTimeCommitted()
+            : new Date(latestCommitTime.commitedAt);
+    };
+
     return {
         shouldBulkUpsert,
+        getLatestCommitTime,
+        insertLatestTimeUpdated,
         bulkUpsertGitIgnoreTemplate,
-        insertLatestTimestamp,
-        getLatestTimeUpdated,
         close: () => client.close(),
         // testing purpose only
         clearCollections: async () =>
             (await getTechs().deleteMany({})) &&
-            (await getTimeStamp().deleteMany({})),
+            (await getUpdateTime().deleteMany({})),
         getAllTechNamesAndIds: async (): Promise<GitIgnoreNamesAndIds> =>
             (
                 await getTechs()
@@ -146,27 +169,30 @@ const mongodb = (async () => {
                 id: _id.toHexString(),
             })),
         updateGitIgnoreTemplate: async () => {
-            if (!(await shouldBulkUpsert(scrapper.getLatestTimeCommitted))) {
+            if (!(await shouldBulkUpsert(getLatestCommitTime))) {
                 return;
             }
             const namesAndContents =
                 await scrapper.getGitIgnoreNameAndContents();
-            const createdAt = new Date();
+            const startedAt = new Date();
             const result = await bulkUpsertGitIgnoreTemplate(namesAndContents);
+            const endedAt = () => new Date();
             if (!result) {
-                await insertLatestTimestamp({
-                    createdAt,
+                await insertLatestTimeUpdated({
+                    startedAt,
+                    endedAt,
                     bulkUpsertStatus: 'failed',
-                    updatedAt: new Date(),
+                    commitedAt: await getLatestCommitTime(),
                 });
                 throw new Error(
                     `Insertion failed at time created of ${result}`
                 );
             }
-            await insertLatestTimestamp({
-                createdAt,
+            await insertLatestTimeUpdated({
+                startedAt,
+                endedAt,
                 bulkUpsertStatus: 'completed',
-                updatedAt: new Date(),
+                commitedAt: await getLatestCommitTime(),
             });
         },
         //ref: https://www.mongodb.com/docs/manual/reference/operator/#AdvancedQueries-%24in

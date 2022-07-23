@@ -2,14 +2,14 @@ import { GatsbyFunctionRequest, GatsbyFunctionResponse } from 'gatsby';
 import { GitIgnoreSelectedTechs } from '../common/type';
 import mongodb from '../database/mongo';
 import { formObjectIdsFromString } from '../database/mongo/util';
+import { Response } from '../util/api/response';
 
 const generate = async (
     req: GatsbyFunctionRequest,
     res: GatsbyFunctionResponse<
-        | string
-        | Readonly<{
-              gitIgnoreSelectedTechs: GitIgnoreSelectedTechs;
-          }>
+        Response<{
+            gitIgnoreSelectedTechs: GitIgnoreSelectedTechs;
+        }>
     >
 ) => {
     if (req.method !== 'GET') {
