@@ -18,7 +18,7 @@ const testUpdateGitIgnore = () =>
                     ({ name, id }) =>
                         typeof name === 'string' && typeof id === 'string'
                 )
-            );
+            ).toBe(true);
 
             expect(
                 (
@@ -26,7 +26,7 @@ const testUpdateGitIgnore = () =>
                         namesAndIds.map(({ id }) => new ObjectId(id))
                     )
                 ).every(({ name }, index) => name === namesAndIds[index]?.name)
-            );
+            ).toBe(true);
         });
     });
 

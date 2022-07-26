@@ -19,7 +19,7 @@ const scrapper = {
             const { data } = await axios.get(
                 'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1'
             );
-            const gitIgnoreNamesAndContents = await Promise.all(
+            const nameAndContentList = await Promise.all(
                 parseAsReadonlyArray(data.tree, (branch) => {
                     const path = parseAsString(branch.path).orElseThrowDefault(
                         `path of ${branch.path}`
@@ -41,11 +41,52 @@ const scrapper = {
                         ).orElseThrowDefault(`data for ${path}`),
                     }))
             );
-            console.log(
-                `scrapped ${gitIgnoreNamesAndContents.length} templates`
+            console.log(`scrapped ${nameAndContentList.length} templates`);
+            const duplicatedNameList = Array.from(
+                new Set(
+                    nameAndContentList
+                        .map(({ name }) => name)
+                        .filter(
+                            (name, index, names) =>
+                                names.indexOf(name) !== index
+                        )
+                )
             );
-            return gitIgnoreNamesAndContents.sort((a, b) =>
-                a.name.localeCompare(b.name)
+            const finalNameAndContentList = nameAndContentList
+                .filter(({ name }) => !duplicatedNameList.includes(name))
+                .concat(
+                    nameAndContentList
+                        .filter(({ name }) => duplicatedNameList.includes(name))
+                        .flatMap(({ name }, index, array) => {
+                            if (array[index - 1]?.name === name) {
+                                return [];
+                            }
+                            return [
+                                {
+                                    name,
+                                    content: Array.from(
+                                        new Set(
+                                            array
+                                                .filter(
+                                                    (element) =>
+                                                        element.name === name
+                                                )
+                                                .map(({ content }) => content)
+                                                .join('\n')
+                                                .split('\n')
+                                        )
+                                    ).join('\n'),
+                                },
+                            ];
+                        })
+                );
+            console.log(
+                `after combining duplicates, there are total of ${finalNameAndContentList.length} templates`
+            );
+            return finalNameAndContentList.sort((a, b) =>
+                a.name.localeCompare(b.name, undefined, {
+                    ignorePunctuation: true,
+                })
             );
         },
 };
