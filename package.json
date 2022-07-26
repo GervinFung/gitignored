@@ -33,7 +33,7 @@
         "iwanthue": "^2.0.0",
         "jszip": "^3.10.0",
         "mongodb": "^4.5.0",
-        "parse-dont-validate": "^2.0.3",
+        "parse-dont-validate": "^1.0.3",
         "react": "^17.0.1",
         "react-dom": "^17.0.1",
         "react-helmet": "^6.1.0",
