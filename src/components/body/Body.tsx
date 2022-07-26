@@ -21,10 +21,6 @@ import { parseAsGitIgnoreTechs } from '../../util/component-logic/parser';
 import { api } from '../../util/component-logic/const';
 import axios from 'axios';
 
-if (typeof window !== 'undefined') {
-    injectStyle();
-}
-
 type CombinedTechs = undefined | GitIgnoreSelectedTechs[0]['content'];
 
 const Body = () => {
@@ -42,6 +38,9 @@ const Body = () => {
     } = state;
 
     React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            injectStyle();
+        }
         const promise = new Promise<string>((res) =>
             axios
                 .get(api.gitIgnored)
