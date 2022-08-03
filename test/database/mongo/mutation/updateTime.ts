@@ -1,12 +1,12 @@
-import mongodb from '../../../../src/database/mongo';
+import Database from '../../../../src/database/mongo';
 
 const testUpdateTime = () =>
     describe('UpdateTime Time', () => {
         beforeEach(async () => {
-            await (await mongodb).clearCollections();
+            await (await Database.mongodb).clearCollections();
         });
         it('should return false for bulk upsert if the latest commit time < previous commit time', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             const commitedAt = new Date();
 
             expect(
@@ -29,7 +29,7 @@ const testUpdateTime = () =>
             ).toBe(false);
         });
         it('should return false for bulk upsert if the latest commit time = previous commit time', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             const commitedAt = new Date();
 
             expect(
@@ -47,7 +47,7 @@ const testUpdateTime = () =>
             );
         });
         it('should return true for bulk upsert if the latest commit time > previous commit time', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             const commitedAt = new Date();
 
             expect(

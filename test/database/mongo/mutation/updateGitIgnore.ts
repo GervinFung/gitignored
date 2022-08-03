@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb';
-import mongodb from '../../../../src/database/mongo';
+import Database from '../../../../src/database/mongo';
 
 const testUpdateGitIgnore = () =>
     describe('Update Git Ignore', () => {
         beforeEach(async () => {
-            await (await mongodb).clearCollections();
+            await (await Database.mongodb).clearCollections();
         });
         it('should scrap and update', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             await mongo.updateGitIgnoreTemplate();
 
             const namesAndIds = await mongo.getAllTechNamesAndIds();
@@ -26,6 +26,20 @@ const testUpdateGitIgnore = () =>
                         namesAndIds.map(({ id }) => new ObjectId(id))
                     )
                 ).every(({ name }, index) => name === namesAndIds[index]?.name)
+            ).toBe(true);
+
+            expect(
+                (await mongo.getAllTechNames()).every(
+                    ({ name }, index) => name === namesAndIds[index]?.name
+                )
+            ).toBe(true);
+
+            expect(
+                (await mongo.getAllTechNamesAndContents()).every(
+                    ({ name, content }, index) =>
+                        name === namesAndIds[index]?.name &&
+                        typeof content === 'string'
+                )
             ).toBe(true);
         });
     });

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { parseAsReadonlyArray, parseAsString } from 'parse-dont-validate';
-import { GitIgnoreNameAndContents } from '../common/type';
+import { GitIgnoreNamesAndContents } from '../common/type';
 
 const scrapper = {
     getLatestTimeCommitted: async (): Promise<Date> => {
@@ -15,7 +15,7 @@ const scrapper = {
     },
     //ref: https://docs.github.com/en/rest/git/trees#get-a-tree
     getGitIgnoreNameAndContents:
-        async (): Promise<GitIgnoreNameAndContents> => {
+        async (): Promise<GitIgnoreNamesAndContents> => {
             const { data } = await axios.get(
                 'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1'
             );

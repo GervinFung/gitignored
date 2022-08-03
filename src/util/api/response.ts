@@ -1,3 +1,5 @@
+import { GatsbyFunctionRequest, GatsbyFunctionResponse } from 'gatsby';
+
 type DeepReadonly<T> = T extends (infer R)[]
     ? ReadonlyArray<DeepReadonly<R>>
     : T extends object
@@ -10,4 +12,9 @@ type DeepReadonlyObject<T> = {
 
 type Response<T> = string | DeepReadonly<T>;
 
-export type { Response };
+type EndPointFunc<T> = (
+    req: GatsbyFunctionRequest,
+    res: GatsbyFunctionResponse<Response<T>>
+) => Promise<void>;
+
+export type { EndPointFunc };

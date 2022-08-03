@@ -1,10 +1,9 @@
-import { GitIgnoreNamesAndIds } from '../common/type';
+import { GitIgnoreNames } from '../common/type';
 import Database from '../database/mongo';
 import { EndPointFunc } from '../util/api/response';
 
-//ref: https://www.gatsbyjs.com/docs/reference/functions/getting-started/
-const gitIgnored: EndPointFunc<{
-    gitIgnoreNamesAndIds: GitIgnoreNamesAndIds;
+const names: EndPointFunc<{
+    gitIgnoreNames: GitIgnoreNames;
 }> = async (req, res) => {
     if (req.method !== 'GET') {
         res.send('Non GET request is ignored');
@@ -12,9 +11,9 @@ const gitIgnored: EndPointFunc<{
         const mongo = await Database.mongodb;
         await mongo.updateGitIgnoreTemplate();
         res.send({
-            gitIgnoreNamesAndIds: await mongo.getAllTechNamesAndIds(),
+            gitIgnoreNames: await mongo.getAllTechNames(),
         });
     }
 };
 
-export default gitIgnored;
+export default names;
