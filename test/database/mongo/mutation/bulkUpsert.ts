@@ -1,16 +1,16 @@
-import mongodb from '../../../../src/database/mongo';
+import Database from '../../../../src/database/mongo';
 import { parse } from '../../../util';
 
 const testBulkUpsert = () =>
     describe('Bulk Upsert', () => {
         it('should throw error when argument is empty array', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             expect(
                 mongo.bulkUpsertGitIgnoreTemplate([])
             ).rejects.toThrowError();
         });
         it('should upsert when argument is not an empty array', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             const namesAndContents = [
                 {
                     content: 'Ts API',
@@ -55,7 +55,7 @@ const testBulkUpsert = () =>
             );
         });
         it('should oveerride previous data for upserting', async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             const namesAndContents = [
                 {
                     content: 'Vengeance, Revenge',

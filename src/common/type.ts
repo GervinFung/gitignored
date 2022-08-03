@@ -1,21 +1,24 @@
-type GitIgnoreTechs = ReadonlyArray<string>;
-type GitIgnoreSelectedIds = ReadonlyArray<string>;
+type Strings = ReadonlyArray<string>;
+type GitIgnoreTechs = Strings;
+type GitIgnoreSelectedIds = Strings;
 
-type GitIgnoreSelectedTechs = ReadonlyArray<
-    Readonly<{
-        name: string;
-        content: string;
-    }>
->;
+type GitIgnore = Readonly<{
+    name: string;
+    content: string;
+}>;
 
-type GitIgnoreNameAndContents = GitIgnoreSelectedTechs;
+type GitIgnoreSelectedTechs = ReadonlyArray<GitIgnore>;
+
+type GitIgnoreNamesAndContents = GitIgnoreSelectedTechs;
 
 type GitIgnoreNamesAndIds = ReadonlyArray<
     Readonly<{
-        name: GitIgnoreSelectedTechs[0]['name'];
+        name: GitIgnore['name'];
         id: string;
     }>
 >;
+
+type GitIgnoreNames = ReadonlyArray<Pick<GitIgnore, 'name'>>;
 
 type UpdateTime = Readonly<{
     bulkUpsertStatus: 'completed' | 'failed';
@@ -30,5 +33,6 @@ export type {
     GitIgnoreSelectedTechs,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedIds,
-    GitIgnoreNameAndContents,
+    GitIgnoreNamesAndContents,
+    GitIgnoreNames,
 };

@@ -1,4 +1,4 @@
-import mongodb from '../../../src/database/mongo';
+import Database from '../../../src/database/mongo';
 import testMutation from './mutation';
 import testQuery from './query';
 import testUtil from './util';
@@ -9,7 +9,7 @@ const testMongo = () =>
         testMutation();
         testQuery();
         afterAll(async () => {
-            const mongo = await mongodb;
+            const mongo = await Database.mongodb;
             await mongo.close();
         });
     });
