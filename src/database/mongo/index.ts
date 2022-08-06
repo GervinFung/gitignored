@@ -3,7 +3,6 @@ import {
     UpdateTime,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedTechs,
-    GitIgnoreNames,
     GitIgnoreNamesAndContents,
 } from '../../common/type';
 import scrapper from '../../scrapper';
