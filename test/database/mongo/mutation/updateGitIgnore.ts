@@ -29,12 +29,6 @@ const testUpdateGitIgnore = () =>
             ).toBe(true);
 
             expect(
-                (await mongo.getAllTechNames()).every(
-                    ({ name }, index) => name === namesAndIds[index]?.name
-                )
-            ).toBe(true);
-
-            expect(
                 (await mongo.getAllTechNamesAndContents()).every(
                     ({ name, content }, index) =>
                         name === namesAndIds[index]?.name &&

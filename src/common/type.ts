@@ -18,7 +18,7 @@ type GitIgnoreNamesAndIds = ReadonlyArray<
     }>
 >;
 
-type GitIgnoreNames = ReadonlyArray<Pick<GitIgnore, 'name'>>;
+type GitIgnoreNames = ReadonlyArray<Pick<GitIgnore, 'name'>['name']>;
 
 type UpdateTime = Readonly<{
     bulkUpsertStatus: 'completed' | 'failed';
