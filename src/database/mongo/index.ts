@@ -3,7 +3,6 @@ import {
     UpdateTime,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedTechs,
-    GitIgnoreNames,
     GitIgnoreNamesAndContents,
 } from '../../common/type';
 import scrapper from '../../scrapper';
@@ -158,16 +157,6 @@ class Database {
             id: _id.toHexString(),
         }));
 
-    getAllTechNames = async (): Promise<GitIgnoreNames> =>
-        await this.getTechs()
-            .find<
-                Readonly<
-                    Readonly<{
-                        name: GitIgnoreSelectedTechs[0]['name'];
-                    }>
-                >
-            >({}, { projection: { _id: 0, name: 1 } })
-            .toArray();
     getAllTechNamesAndContents = async (): Promise<GitIgnoreNamesAndContents> =>
         await this.getTechs()
             .find<
