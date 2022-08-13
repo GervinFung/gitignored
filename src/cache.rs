@@ -10,7 +10,7 @@ use std::path::Path;
 
 use crate::util::{
     Date, GitIgnoreNameAndContentList, LatestCommitTimeInDate, LatestCommitTimeInString,
-    NameAndContentList, NameList, Str,
+    NameAndContentList, NameList,
 };
 
 #[derive(Debug)]
@@ -69,15 +69,15 @@ impl SearchResult {
 }
 
 pub struct Cache {
-    cache: Str,
+    cache: String,
     commit_time_file_path: String,
     name_and_content_list_file_path: String,
 }
 
 impl Cache {
-    pub fn new(cache: Str) -> Self {
+    pub fn new(cache: String) -> Self {
         Cache {
-            cache,
+            cache: cache.clone(),
             commit_time_file_path: format!("{}/{}", cache, "latestCommitTime.json"),
             name_and_content_list_file_path: format!(
                 "{}/{}",
@@ -86,10 +86,11 @@ impl Cache {
         }
     }
     pub fn has_been_created(&self) -> bool {
-        Path::new(self.cache).exists()
+        Path::new(&self.cache.clone()).exists()
     }
     pub fn generate(&self, commit_time: Date, name_and_content_list: NameAndContentList) {
-        create_dir_all(self.cache).unwrap_or_else(|_| panic!("Unable to create cache directory"));
+        create_dir_all(self.cache.clone())
+            .unwrap_or_else(|_| panic!("Unable to create cache directory"));
         self.update_latest_commit_time(commit_time);
         self.update_name_and_content_list(name_and_content_list);
     }
@@ -311,14 +312,23 @@ impl Cache {
 #[cfg(test)]
 mod tests {
 
-    use std::path::Path;
+    use std::{fs, path::Path};
 
     use crate::{cache, util::NameAndContent};
     use chrono::DateTime;
+    use directories::ProjectDirs;
 
     #[test]
     fn it_should_create_and_update_cache() {
-        let cache = cache::Cache::new(".cache-test");
+        let cache = ProjectDirs::from("", ".gitignored", "gitignored-test")
+            .unwrap_or_else(|| panic!("Unable to create cache directory"));
+        let name = String::from(
+            cache
+                .cache_dir()
+                .to_str()
+                .unwrap_or_else(|| panic!("Unable to create cache directory")),
+        );
+        let cache = cache::Cache::new(name.clone());
         let latest_commit_time = DateTime::parse_from_rfc3339("2022-05-10T17:15:30+00:00").unwrap();
         let name_and_content_list = [NameAndContent::new(
             "Python".to_string(),
@@ -384,5 +394,7 @@ mod tests {
         // test custom outdir folder
         cache.generate_gitignore_outdir("temp-test/test1/test2/test3".to_string());
         assert!(Path::new("temp-test/test1/test2").exists());
+        fs::remove_dir_all(name)
+            .unwrap_or_else(|_| panic!("Unable to remove cache from previous test"));
     }
 }

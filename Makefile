@@ -58,7 +58,7 @@ build: pre-prod
 	rm -rf target/release && cargo build --release
 
 pre-test:
-	rm -rf .cache-test temp-test
+	rm -rf temp-test
 
 test-dev: pre-dev pre-test
 	cargo test

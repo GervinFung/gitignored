@@ -1,7 +1,6 @@
 target
 temp-dev
 temp-test
-.cache
 .cache-test
 .gitignore-temp
 .gitignore-original

@@ -9,6 +9,11 @@ readme="README.md"
 license-file="LICENSE"
 keywords=["gitignore", "git", "generator"]
 categories=["development-tools"]
+include = [
+    "src",
+    "Cargo.toml",
+    "docs",
+]
 
 [dependencies]
 # git = "https://github.com/carllerche/curl-rust"
@@ -16,6 +21,7 @@ categories=["development-tools"]
 chrono = { version = "0.4", features = ["serde"] }
 clap = "3.2.15"
 colored = "2.0.0"
+directories = "4.0.1"
 prettytable-rs = "0.8.0"
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = { version = "1.0", features = ["derive"] }

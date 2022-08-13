@@ -7,16 +7,24 @@ mod output;
 mod util;
 
 use cli::Cli;
+use directories::ProjectDirs;
 use env::Env;
 use input::Input;
 
 fn main() {
     let api = api::GitIgnoredApi::new(Env::API);
-    let cache = cache::Cache::new(".cache");
+    let cache = ProjectDirs::from("", ".gitignored", Env::CACHE)
+        .unwrap_or_else(|| panic!("Unable to create cache directory"));
+    let name = String::from(
+        cache
+            .cache_dir()
+            .to_str()
+            .unwrap_or_else(|| panic!("Unable to create cache directory")),
+    );
+    let cache = cache::Cache::new(name);
     let cli = Cli::new();
     let args_matcher = cli.args_matches();
     let output = output::Output::new();
-
     if !cache.has_been_created() {
         cache.generate(api.latest_commit_time(), api.name_and_content_list());
     }
