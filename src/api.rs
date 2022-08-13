@@ -48,11 +48,11 @@ mod tests {
     use chrono::{Local, Utc};
 
     use crate::{api, env};
+    use env::Env;
 
     #[test]
     fn it_should_call_gitignored_name_and_content() {
-        let env = env::Env::new();
-        let api = api::GitIgnoredApi::new(env.api());
+        let api = api::GitIgnoredApi::new(Env::API);
         let names_and_id_list = api.name_and_content_list();
         assert!(names_and_id_list.len() > 200);
     }
@@ -65,8 +65,7 @@ mod tests {
 
     #[test]
     fn it_should_call_gitignored_latest_commit_time() {
-        let env = env::Env::new();
-        let api = api::GitIgnoredApi::new(env.api());
+        let api = api::GitIgnoredApi::new(Env::API);
         let commit_time = api.latest_commit_time();
 
         let utc = Utc::now();

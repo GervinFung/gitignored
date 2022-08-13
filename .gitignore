@@ -6,3 +6,4 @@ temp-test
 .gitignore-temp
 .env
 script/node_modules
+src/env.rs

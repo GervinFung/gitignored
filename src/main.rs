@@ -1,5 +1,3 @@
-use input::Input;
-
 mod api;
 mod cache;
 mod cli;
@@ -8,12 +6,14 @@ mod input;
 mod output;
 mod util;
 
-fn main() {
-    let env = env::Env::new();
+use cli::Cli;
+use env::Env;
+use input::Input;
 
-    let api = api::GitIgnoredApi::new(env.api());
+fn main() {
+    let api = api::GitIgnoredApi::new(Env::API);
     let cache = cache::Cache::new(".cache");
-    let cli = cli::Cli::new();
+    let cli = Cli::new();
     let args_matcher = cli.args_matches();
     let output = output::Output::new();
 
@@ -24,7 +24,7 @@ fn main() {
     let get_outdir = || {
         let current_dir =
             std::env::current_dir().unwrap_or_else(|_| panic!("Unable to get current directory"));
-        let outdir = args_matcher.value_of(cli.outdir()).unwrap_or("");
+        let outdir = args_matcher.value_of(Cli::OUTDIR).unwrap_or("");
         let outdir = if outdir.is_empty() {
             "".to_string()
         } else {
@@ -36,33 +36,33 @@ fn main() {
                 .to_str()
                 .unwrap_or_else(|| panic!("Unable to unwrap current dir as str")),
             outdir,
-            env.file()
+            Env::FILE_NAME
         )
     };
 
-    if args_matcher.is_present(cli.list()) {
+    if args_matcher.is_present(Cli::LIST) {
         output.all_names_separated_by_first_character(
             cache.name_list(),
             args_matcher
-                .value_of(cli.width())
+                .value_of(Cli::COLUMNS)
                 .unwrap_or("4")
                 .parse::<u8>()
                 .unwrap_or_else(|_| panic!("Unable to parse as u8 for tabular column width")),
         );
-    } else if args_matcher.is_present(cli.search()) {
+    } else if args_matcher.is_present(Cli::SEARCH) {
         let matches = cache.search_name_list(
             args_matcher
-                .values_of(cli.search())
+                .values_of(Cli::SEARCH)
                 .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-s'"))
                 .collect::<Vec<_>>(),
         );
         output.exact(matches.exact());
         output.closest(matches.closest());
-    } else if args_matcher.is_present(cli.preview()) {
+    } else if args_matcher.is_present(Cli::PREVIEW) {
         let matches = cache.search_name_list(
             args_matcher
-                .values_of(cli.preview())
+                .values_of(Cli::PREVIEW)
                 .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-p'"))
                 .collect::<Vec<_>>(),
@@ -75,10 +75,10 @@ fn main() {
             .chain(matches.closest().into_iter().map(|elem| elem.closest()))
             .collect::<Vec<_>>();
         output.all_filtered_techs(cache.filter_name_and_content_list(preview_name_list));
-    } else if args_matcher.is_present(cli.generate()) {
+    } else if args_matcher.is_present(Cli::GENERATE) {
         let matches = cache.search_name_list(
             args_matcher
-                .values_of(cli.generate())
+                .values_of(Cli::GENERATE)
                 .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-g'"))
                 .collect::<Vec<_>>(),
@@ -100,10 +100,10 @@ fn main() {
         } else {
             output.terminated("Generate");
         }
-    } else if args_matcher.is_present(cli.append()) {
+    } else if args_matcher.is_present(Cli::APPEND) {
         let matches = cache.search_name_list(
             args_matcher
-                .values_of(cli.append())
+                .values_of(Cli::APPEND)
                 .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-a'"))
                 .collect::<Vec<_>>(),
@@ -125,7 +125,7 @@ fn main() {
         } else {
             output.terminated("Append");
         }
-    } else if args_matcher.is_present(cli.update()) && cache.has_been_created() {
+    } else if args_matcher.is_present(Cli::UPDATE) && cache.has_been_created() {
         let latest_commit_time = api.latest_commit_time();
         let cached_commit_time = cache.latest_commit_time();
         if cached_commit_time == latest_commit_time {

@@ -8,7 +8,7 @@ use crate::{
     util::{Date, NameAndContentList, NameList},
 };
 
-pub struct Output {}
+pub struct Output;
 
 impl Output {
     pub const fn new() -> Self {

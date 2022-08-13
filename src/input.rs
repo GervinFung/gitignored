@@ -3,7 +3,8 @@ use std::io::{self, stdout, Write};
 
 use crate::{cache::Matches, util::NameList};
 
-pub struct Input {}
+pub struct Input;
+
 enum InputResult {
     Continue {},
     Break { is_yes: bool },

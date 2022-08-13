@@ -21,21 +21,11 @@ const main = () => {
         `use crate::util::Str;
 
 #[derive(Debug)]
-pub struct Env {
-    api: Str,
-    file: Str,
-}
+pub struct Env;
 
 impl Env {
-    pub const fn new() -> Self {
-        Env { api: "${api}", file: "${fileName}" }
-    }
-    pub const fn api(&self) -> Str {
-        self.api
-    }
-    pub const fn file(&self) -> Str {
-        self.file
-    }
+    pub const API: Str = "${api}";
+    pub const FILE_NAME: Str = "${fileName}";
 }`,
         (err) =>
             err
