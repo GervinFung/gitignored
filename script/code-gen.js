@@ -16,8 +16,9 @@ const main = () => {
         api,
         fileName,
     });
+    const target = `${process.cwd()}/src/env.rs`;
     fs.writeFile(
-        `${process.cwd()}/src/env.rs`,
+        target,
         `use crate::util::Str;
 
 #[derive(Debug)]
@@ -30,7 +31,7 @@ impl Env {
         (err) =>
             err
                 ? console.error(err)
-                : console.log('generated rust file from .env')
+                : console.log(`generated ${target} from .env`)
     );
 };
 

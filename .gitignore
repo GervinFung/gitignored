@@ -4,6 +4,7 @@ temp-test
 .cache
 .cache-test
 .gitignore-temp
+.gitignore-original
 .env
 script/node_modules
 src/env.rs

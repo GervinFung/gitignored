@@ -25,49 +25,63 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default Listing
 
-![Default Listing](docs/list-default.png "Default Listing")
+![Default Listing](docs/list-default.png 'Default Listing')
 
 #### Listing with column number specified
 
-![Column Listing](docs/list-column.png "Column Listing")
+![Column Listing](docs/list-column.png 'Column Listing')
 
 #### Search
 
-![Search](docs/search.png "Search")
+![Search](docs/search.png 'Search')
 
 #### Preview
 
-![Preview](docs/preview.png "Preview")
+![Preview](docs/preview.png 'Preview')
 
 #### Default Generate
 
-![Default Generate](docs/generate.png "Default Generate")
+![Default Generate](docs/generate.png 'Default Generate')
 
 #### Generate with outdir specified
 
-![Outdir generate](docs/generate-outdir.png "Outdir Generate")
+![Outdir generate](docs/generate-outdir.png 'Outdir Generate')
 
 #### Default Append
 
-![Default Append](docs/append.png "Default Append")
+![Default Append](docs/append.png 'Default Append')
 
 #### Append with outdir specified
 
-![Outdir Append](docs/append-outdir.png "Outdir Append")
+![Outdir Append](docs/append-outdir.png 'Outdir Append')
 
 #### Updated Cache
 
-![Updated](docs/updated.png "Updated")
+![Updated](docs/updated.png 'Updated')
 
 #### Updating Cache
 
-![Updating](docs/updating.png "Updating")
+![Updating](docs/updating.png 'Updating')
 
 #### Of course, input validation
 
-![Input Validation](docs/input-validation.png "Input Validation")
+![Input Validation](docs/input-validation.png 'Input Validation')
 
 </details>
+
+## How To Use
+
+Install it
+
+```sh
+cargo install gitignored-cli
+```
+
+Run it
+
+```sh
+gitignored-cli (commands)
+```
 
 ## Tech Used
 
