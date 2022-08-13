@@ -1,0 +1,23 @@
+[package]
+name = "gitignored-cli"
+version = "0.0.0"
+edition = "2021"
+authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
+description ="Yet Another Git-Ignore File Generator Written in Rust"
+repository = "https://github.com/gitignored/cli"
+readme="README.md"
+license-file="LICENSE"
+keywords=["gitignore", "git", "generator"]
+categories=["development-tools"]
+
+[dependencies]
+# git = "https://github.com/carllerche/curl-rust"
+# [dependencies.curl]
+chrono = { version = "0.4", features = ["serde"] }
+clap = "3.2.15"
+colored = "2.0.0"
+prettytable-rs = "0.8.0"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+strsim = "0.10.0"

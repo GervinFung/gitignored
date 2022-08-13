@@ -1,0 +1,6 @@
+{
+    "type": "module",
+    "devDependencies": {
+        "dotenv": "^16.0.1"
+    }
+}

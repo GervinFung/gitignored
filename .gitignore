@@ -1,0 +1,8 @@
+target
+temp-dev
+temp-test
+.cache
+.cache-test
+.gitignore-temp
+.env
+script/node_modules
