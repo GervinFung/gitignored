@@ -1,3 +1,7 @@
+## 0.0.2 (14 Aug 2021)
+
+-   (Fix) README.md preview & slim package size
+
 ## 0.0.1 (14 Aug 2021)
 
 -   (Fix) Create cache

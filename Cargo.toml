@@ -1,6 +1,6 @@
 [package]
 name = "gitignored-cli"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
 description ="Yet Another Git-Ignore File Generator Written in Rust"

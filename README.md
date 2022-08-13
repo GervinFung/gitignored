@@ -25,47 +25,47 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default Listing
 
-![Default Listing](docs/list-default.png 'Default Listing')
+![Default Listing](https://github.com/GervinFung/gitignored-cli/blob/main/docs/list-default.png?raw=true 'Default Listing')
 
 #### Listing with column number specified
 
-![Column Listing](docs/list-column.png 'Column Listing')
+![Column Listing](https://github.com/GervinFung/gitignored-cli/blob/main/docs/list-column.png?raw=true 'Column Listing')
 
 #### Search
 
-![Search](docs/search.png 'Search')
+![Search](https://github.com/GervinFung/gitignored-cli/blob/main/docs/search.png?raw=true 'Search')
 
 #### Preview
 
-![Preview](docs/preview.png 'Preview')
+![Preview](https://github.com/GervinFung/gitignored-cli/blob/main/docs/preview.png?raw=true 'Preview')
 
 #### Default Generate
 
-![Default Generate](docs/generate.png 'Default Generate')
+![Default Generate](https://github.com/GervinFung/gitignored-cli/blob/main/docs/generate.png?raw=true 'Default Generate')
 
 #### Generate with outdir specified
 
-![Outdir generate](docs/generate-outdir.png 'Outdir Generate')
+![Outdir generate](https://github.com/GervinFung/gitignored-cli/blob/main/docs/generate-outdir.png?raw=true 'Outdir Generate')
 
 #### Default Append
 
-![Default Append](docs/append.png 'Default Append')
+![Default Append](https://github.com/GervinFung/gitignored-cli/blob/main/docs/append.png?raw=true 'Default Append')
 
 #### Append with outdir specified
 
-![Outdir Append](docs/append-outdir.png 'Outdir Append')
+![Outdir Append](https://github.com/GervinFung/gitignored-cli/blob/main/docs/append-outdir.png?raw=true 'Outdir Append')
 
 #### Updated Cache
 
-![Updated](docs/updated.png 'Updated')
+![Updated](https://github.com/GervinFung/gitignored-cli/blob/main/docs/updated.png?raw=true 'Updated')
 
 #### Updating Cache
 
-![Updating](docs/updating.png 'Updating')
+![Updating](https://github.com/GervinFung/gitignored-cli/blob/main/docs/updating.png?raw=true 'Updating')
 
 #### Of course, input validation
 
-![Input Validation](docs/input-validation.png 'Input Validation')
+![Input Validation](https://github.com/GervinFung/gitignored-cli/blob/main/docs/input-validation.png?raw=true 'Input Validation')
 
 </details>
 
