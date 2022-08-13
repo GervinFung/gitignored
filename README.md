@@ -1,6 +1,6 @@
 # **Git-Ignored**
 
-An Offline-first, Unix-first CLI application that let the developer generate various `.gitignore` templates
+An Offline-first CLI application that let the developer generate various `.gitignore` templates
 
 The templates are taken from the web application [Gitignored](https://gitignored.gtsb.io/), which is the GUI application of this application, check out the [repository](https://github.com/GervinFung/gitignored) if you are interested
 
