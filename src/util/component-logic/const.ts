@@ -1,9 +1,11 @@
 const api = {
     gitIgnored: '/api/gitignored',
     generate: '/api/generate',
-    commitTime: '/api/committime',
 } as const;
 
-const repo = 'https://github.com/gervinfung/gitignored';
+const constants = {
+    repo: 'https://github.com/Gitignored-App/web',
+    cargo: 'https://crates.io/crates/gitignored-cli',
+} as const;
 
-export { api, repo };
+export { api, constants };

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { VscGithubInverted } from 'react-icons/vsc';
-import { repo } from '../../util/component-logic/const';
+import { constants } from '../../util/component-logic/const';
 
 const GitHubIcon = () => (
     <Container>
         <a
-            href={repo}
+            href={constants.repo}
             target="_blank"
             rel="external nofollow noopener noreferrer"
         >

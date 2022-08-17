@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { repo } from '../../../util/component-logic/const';
+import { constants } from '../../../util/component-logic/const';
 
 const ExternalLinks = () => (
     <Container>
@@ -8,21 +8,25 @@ const ExternalLinks = () => (
             [
                 {
                     section: 'Report a bug',
-                    to: '/issues',
+                    link: `${constants.repo}/issues`,
                 },
                 {
                     section: 'How to contribute',
-                    to: '#contribution',
+                    link: `${constants.repo}#contribution`,
+                },
+                {
+                    section: 'Command line tool',
+                    link: constants.cargo,
                 },
                 {
                     section: 'Open source project',
-                    to: undefined,
+                    link: constants.repo,
                 },
             ] as const
-        ).map(({ section, to }) => (
+        ).map(({ section, link }) => (
             <a
                 key={section}
-                href={`${repo}${to ?? ''}`}
+                href={link}
                 target="_blank"
                 rel="external nofollow noopener noreferrer"
             >

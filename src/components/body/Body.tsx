@@ -20,6 +20,7 @@ import Contents from './content';
 import { parseAsGitIgnoreTechs } from '../../util/component-logic/parser';
 import { api } from '../../util/component-logic/const';
 import axios from 'axios';
+import Cli from './Cli';
 
 type CombinedTechs = undefined | GitIgnoreSelectedTechs[0]['content'];
 
@@ -112,6 +113,7 @@ const Body = () => {
                     }))
                 }
             />
+            <Cli />
             <Menu
                 selectedIds={selectedIds}
                 selectedTechs={selectedTechs}
