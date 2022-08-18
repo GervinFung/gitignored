@@ -6,6 +6,7 @@ mod input;
 mod output;
 mod util;
 
+use chrono::{DateTime, Utc};
 use cli::Cli;
 use directories::ProjectDirs;
 use env::Env;
@@ -26,7 +27,19 @@ fn main() {
     let args_matcher = cli.args_matches();
     let output = output::Output::new();
     if !cache.has_been_created() {
+        output.generating_cache();
         cache.generate(api.latest_commit_time(), api.name_and_content_list());
+        output.generated_cache();
+    }
+
+    let latest_commit_time = api.latest_commit_time();
+    let should_update_cache = cache.should_update(latest_commit_time);
+
+    let current_time = DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
+
+    if should_update_cache && cache.should_remind(current_time) {
+        output.update_available();
+        cache.update_last_remind_time(current_time);
     }
 
     let get_outdir = || {
@@ -61,7 +74,6 @@ fn main() {
         let matches = cache.search_name_list(
             args_matcher
                 .values_of(Cli::SEARCH)
-                .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-s'"))
                 .collect::<Vec<_>>(),
         );
@@ -71,7 +83,6 @@ fn main() {
         let matches = cache.search_name_list(
             args_matcher
                 .values_of(Cli::PREVIEW)
-                .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-p'"))
                 .collect::<Vec<_>>(),
         );
@@ -84,35 +95,49 @@ fn main() {
             .collect::<Vec<_>>();
         output.all_filtered_techs(cache.filter_name_and_content_list(preview_name_list));
     } else if args_matcher.is_present(Cli::GENERATE) {
-        let matches = cache.search_name_list(
-            args_matcher
-                .values_of(Cli::GENERATE)
-                .clone()
-                .unwrap_or_else(|| panic!("Unable to get arguments from '-g'"))
-                .collect::<Vec<_>>(),
-        );
-        let input = Input::new();
-        let closest = matches.closest();
-        let exact = matches.exact().into_iter();
-        let names = input
-            .validate_closest_names(closest.clone())
-            .into_iter()
-            .chain(exact.clone())
-            .collect::<Vec<_>>();
-
-        if (closest.len() + exact.len() == names.len()) || (input.confirm_to_proceed()) {
-            let out_dir = get_outdir();
-            output.generating(out_dir.clone());
-            cache.generate_gitignore_file(names, out_dir);
-            output.generated();
+        let is_force_override = args_matcher.is_present(Cli::FORCE);
+        let out_dir = get_outdir();
+        let already_has_destination_file = cache.already_has_destination_file(out_dir.clone());
+        if already_has_destination_file && !is_force_override {
+            output.already_has_destination_file(out_dir);
         } else {
-            output.terminated("Generate");
+            let matches = cache.search_name_list(
+                args_matcher
+                    .values_of(Cli::GENERATE)
+                    .unwrap_or_else(|| panic!("Unable to get arguments from '-g'"))
+                    .collect::<Vec<_>>(),
+            );
+            let input = Input::new();
+            let closest = matches.closest();
+            let exact = matches.exact().into_iter();
+            let names = input
+                .validate_closest_names(closest.clone())
+                .into_iter()
+                .chain(exact.clone())
+                .collect::<Vec<_>>();
+
+            if (closest.len() + exact.len() == names.len()) || (input.confirm_to_proceed()) {
+                if already_has_destination_file {
+                    output.overriding(out_dir.clone());
+                } else {
+                    output.generating(out_dir.clone());
+                }
+
+                cache.generate_gitignore_file(names, out_dir);
+
+                if already_has_destination_file {
+                    output.overrided();
+                } else {
+                    output.generated();
+                }
+            } else {
+                output.terminated("Generate");
+            }
         }
     } else if args_matcher.is_present(Cli::APPEND) {
         let matches = cache.search_name_list(
             args_matcher
                 .values_of(Cli::APPEND)
-                .clone()
                 .unwrap_or_else(|| panic!("Unable to get arguments from '-a'"))
                 .collect::<Vec<_>>(),
         );
@@ -134,12 +159,9 @@ fn main() {
             output.terminated("Append");
         }
     } else if args_matcher.is_present(Cli::UPDATE) && cache.has_been_created() {
-        let latest_commit_time = api.latest_commit_time();
-        let cached_commit_time = cache.latest_commit_time();
-        if cached_commit_time == latest_commit_time {
+        if cache.latest_commit_time() == latest_commit_time {
             output.already_up_to_date();
         } else {
-            output.show_commit_time_differences(cached_commit_time, latest_commit_time);
             output.updating();
             cache.generate(latest_commit_time, api.name_and_content_list());
             output.updated();

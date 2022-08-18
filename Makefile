@@ -33,7 +33,10 @@ search: pre-dev
 	cargo run -- -s rust node java vscode jetbrain whatever
 
 generate: pre-dev
-	cargo run -- -g rust node java vscode jetbrain whatever
+	cargo run -- -g rust node java vscode jetbrain whatever ${arg}
+
+force-generate: pre-dev
+	make generate arg=-f
 
 generate-outdir: pre-dev
 	rm -rf ${outdir} && cargo run -- -g rust node java vscode jetbrain whatever -o ${outdir}

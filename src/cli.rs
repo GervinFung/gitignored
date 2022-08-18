@@ -13,6 +13,7 @@ impl Cli {
     pub const OUTDIR: Str = "OUTDIR";
     pub const APPEND: Str = "APPEND";
     pub const UPDATE: Str = "UPDATE";
+    pub const FORCE: Str = "FORCE";
 
     pub const fn new() -> Self {
         Cli {}
@@ -58,7 +59,12 @@ impl Cli {
             .short(self.extract_first_char_from_str(Cli::GENERATE))
             .takes_value(true)
             .multiple(true)
-            .help("Generate the gitignore template(s) for i.e Rust, TypeScript, Intellij etc. WARNING: this will override any current gitignore"))
+            .help("Generate the gitignore template(s) for i.e Rust, TypeScript, Intellij etc. It will not override any current gitignore"))
+        .arg(Arg::with_name(Cli::FORCE)
+            .long(Cli::FORCE.to_lowercase().as_str())
+            .short(self.extract_first_char_from_str(Cli::FORCE))
+            .takes_value(false)
+            .help("Pair with generate. It will forcefully override any current gitignore"))
         .arg(Arg::with_name(Cli::OUTDIR)
             .long(Cli::OUTDIR.to_lowercase().as_str())
             .short(self.extract_first_char_from_str(Cli::OUTDIR))

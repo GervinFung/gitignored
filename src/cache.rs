@@ -9,8 +9,8 @@ use strsim::normalized_levenshtein;
 use std::path::Path;
 
 use crate::util::{
-    Date, GitIgnoreNameAndContentList, LatestCommitTimeInDate, LatestCommitTimeInString,
-    NameAndContentList, NameList,
+    Date, GitIgnoreNameAndContentList, LastRemindTimeInDate, LastRemindTimeInString,
+    LatestCommitTimeInDate, LatestCommitTimeInString, NameAndContentList, NameList,
 };
 
 #[derive(Debug)]
@@ -72,6 +72,7 @@ pub struct Cache {
     cache: String,
     commit_time_file_path: String,
     name_and_content_list_file_path: String,
+    last_remind_time_file_path: String,
 }
 
 impl Cache {
@@ -83,6 +84,7 @@ impl Cache {
                 "{}/{}",
                 cache, "gitIgnoreNamesAndContents.json"
             ),
+            last_remind_time_file_path: format!("{}/{}", cache, "remindUpdate.json"),
         }
     }
     pub fn has_been_created(&self) -> bool {
@@ -93,6 +95,52 @@ impl Cache {
             .unwrap_or_else(|_| panic!("Unable to create cache directory"));
         self.update_latest_commit_time(commit_time);
         self.update_name_and_content_list(name_and_content_list);
+    }
+    pub fn should_update(&self, latest_commit_time: Date) -> bool {
+        self.latest_commit_time() < latest_commit_time
+    }
+    pub fn should_remind(&self, current_time: Date) -> bool {
+        (current_time - self.last_remind_time()).num_seconds() > 86400
+    }
+    pub fn last_remind_time(&self) -> Date {
+        let file_path = self.last_remind_time_file_path.clone();
+        let latest_commit_time_json = read_to_string(file_path.clone())
+            .unwrap_or_else(|_| panic!("{}{}", "Unable to read from ", file_path));
+        let parsed: LastRemindTimeInString = serde_json::from_str(latest_commit_time_json.as_str())
+            .unwrap_or_else(|_| {
+                panic!(
+                    "{}{}",
+                    "Unable to parse last remind time as JSON from ", latest_commit_time_json
+                )
+            });
+        let commit_time_iso_format = parsed.latest_remind_time();
+        DateTime::parse_from_rfc3339(&commit_time_iso_format).unwrap_or_else(|_| {
+            panic!(
+                "{}{}",
+                "Unable to parse commit time as JSON from ", commit_time_iso_format
+            )
+        })
+    }
+    pub fn update_last_remind_time(&self, last_remind_time: Date) -> Date {
+        let file_path = self.last_remind_time_file_path.clone();
+        let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
+            panic!(
+                "{}{}",
+                "Unable to create last remind time cache file from ", file_path
+            )
+        });
+        let stringified =
+            serde_json::to_string_pretty(&LastRemindTimeInDate::new(last_remind_time))
+                .unwrap_or_else(|_| {
+                    panic!(
+                        "{}{}",
+                        "Unable to stringify last remind time of ", last_remind_time
+                    )
+                });
+        file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
+            panic!("{}{}", "Unable to write last remind time of ", stringified)
+        });
+        self.last_remind_time()
     }
     pub fn latest_commit_time(&self) -> Date {
         let file_path = self.commit_time_file_path.clone();
@@ -114,10 +162,11 @@ impl Cache {
         })
     }
     fn update_latest_commit_time(&self, commit_time: Date) -> Date {
-        let mut file = File::create(self.commit_time_file_path.clone()).unwrap_or_else(|_| {
+        let file_path = self.commit_time_file_path.clone();
+        let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
                 "{}{}",
-                "Unable to create latest commit time cache file from ", self.commit_time_file_path
+                "Unable to create latest commit time cache file from ", file_path
             )
         });
         let stringified = serde_json::to_string_pretty(&LatestCommitTimeInDate::new(commit_time))
@@ -152,14 +201,13 @@ impl Cache {
         &self,
         name_and_content_list: NameAndContentList,
     ) -> NameAndContentList {
-        let mut file =
-            File::create(self.name_and_content_list_file_path.clone()).unwrap_or_else(|_| {
-                panic!(
-                    "{}{}",
-                    "Unable to create name and content list cache file from ",
-                    self.name_and_content_list_file_path
-                )
-            });
+        let file_path = self.name_and_content_list_file_path.clone();
+        let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
+            panic!(
+                "{}{}",
+                "Unable to create name and content list cache file from ", file_path
+            )
+        });
         let stringified = serde_json::to_string_pretty(&GitIgnoreNameAndContentList::new(
             name_and_content_list.clone(),
         ))
@@ -218,6 +266,9 @@ impl Cache {
         fs::create_dir_all(split.split_at(len - 1).0.join("/"))
             .unwrap_or_else(|_| panic!("{}{}", "Unable to create outdir from ", file_name.clone()))
     }
+    pub fn already_has_destination_file(&self, file_name: String) -> bool {
+        Path::new(file_name.as_str()).exists()
+    }
     pub fn generate_gitignore_file(&self, name_list: NameList, file_name: String) {
         self.generate_gitignore_outdir(file_name.clone());
         let mut file = File::create(file_name.clone()).unwrap_or_else(|_| {
@@ -238,7 +289,7 @@ impl Cache {
     pub fn append_gitignore_file(&self, name_list: NameList, file_name: String) {
         self.generate_gitignore_outdir(file_name.clone());
         let gitignore = self.generate_content(name_list);
-        let is_exist = Path::new(file_name.as_str()).exists();
+        let is_exist = self.already_has_destination_file(file_name.clone());
         let mut file = fs::OpenOptions::new()
             .write(true)
             .append(is_exist)
@@ -341,6 +392,7 @@ mod tests {
         cache.generate(latest_commit_time, name_and_content_list.clone());
         // after creating cache
         assert!(cache.has_been_created());
+        assert!(!cache.should_update(latest_commit_time));
         assert!(latest_commit_time == cache.latest_commit_time());
         let cached_name_and_content_list = cache.name_and_content_list();
         assert_eq!(cached_name_and_content_list, name_and_content_list);
@@ -394,6 +446,19 @@ mod tests {
         // test custom outdir folder
         cache.generate_gitignore_outdir("temp-test/test1/test2/test3".to_string());
         assert!(Path::new("temp-test/test1/test2").exists());
+
+        // test last remind time
+        let last_remind_time = DateTime::parse_from_rfc3339("2022-05-10T17:15:40+00:00").unwrap();
+        assert_eq!(
+            last_remind_time,
+            cache.update_last_remind_time(last_remind_time)
+        );
+        assert!(
+            cache.should_remind(DateTime::parse_from_rfc3339("2022-05-11T17:15:41+00:00").unwrap())
+        );
+        assert!(!cache
+            .should_remind(DateTime::parse_from_rfc3339("2022-05-11T17:13:59+00:00").unwrap()));
+
         fs::remove_dir_all(name)
             .unwrap_or_else(|_| panic!("Unable to remove cache from previous test"));
     }

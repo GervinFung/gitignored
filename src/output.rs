@@ -5,7 +5,7 @@ use std::char;
 
 use crate::{
     cache::Matches,
-    util::{Date, NameAndContentList, NameList},
+    util::{NameAndContentList, NameList},
 };
 
 pub struct Output;
@@ -60,6 +60,34 @@ impl Output {
 
         println!();
     }
+    pub fn generating_cache(&self) {
+        println!("{}", "Generating cache...".yellow().bold())
+    }
+    pub fn generated_cache(&self) {
+        println!("{}", "Cache generated!".green().bold())
+    }
+    pub fn overriding(&self, path: String) {
+        println!(
+            "{}",
+            format!("{}{}", "Overriding .gitignore at ", path)
+                .yellow()
+                .bold()
+        );
+    }
+    pub fn overrided(&self) {
+        println!("{}", "Overriding completed".green().bold());
+    }
+    pub fn already_has_destination_file(&self, file_path: String) {
+        println!(
+            "{}",
+            format!(
+                "{}{}",
+                file_path, " already exists, do pass -f if you wish to overwrite it"
+            )
+            .red()
+            .bold()
+        )
+    }
     pub fn all_filtered_techs(&self, name_and_content_list: NameAndContentList) {
         let mut table = Table::new();
 
@@ -71,15 +99,17 @@ impl Output {
 
         table.printstd();
     }
+    pub fn update_available(&self) {
+        println!("{}", "There is an update available".blue().bold());
+        println!(
+            "{}{}{}",
+            "Pass in ".cyan().bold(),
+            "'-u'".blue().purple().italic(),
+            " argument to update the cache".cyan().bold(),
+        );
+    }
     pub fn already_up_to_date(&self) {
         println!("{}", "Already up to date".green().bold());
-    }
-    pub fn show_commit_time_differences(&self, cached_commit_time: Date, latest_commit_time: Date) {
-        println!(
-            "The previous commit time was {}\nThe latest commit time is {}",
-            cached_commit_time.to_string().purple().bold().italic(),
-            latest_commit_time.to_string().cyan().bold().italic()
-        );
     }
     pub fn updating(&self) {
         println!("{}", "Updating gitignore templates".yellow().bold());

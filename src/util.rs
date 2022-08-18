@@ -74,3 +74,25 @@ impl GitIgnoreNameAndContentList {
 }
 
 pub type Date = DateTime<FixedOffset>;
+
+// last remind time
+#[derive(Serialize, Deserialize, Debug)]
+pub struct LastRemindTimeInString {
+    lastRemindTime: String,
+}
+
+impl LastRemindTimeInString {
+    pub fn latest_remind_time(&self) -> String {
+        self.lastRemindTime.clone()
+    }
+}
+#[derive(Serialize, Deserialize, Debug)]
+pub struct LastRemindTimeInDate {
+    lastRemindTime: Date,
+}
+
+impl LastRemindTimeInDate {
+    pub const fn new(lastRemindTime: Date) -> Self {
+        LastRemindTimeInDate { lastRemindTime }
+    }
+}
