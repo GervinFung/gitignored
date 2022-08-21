@@ -1,6 +1,6 @@
 [package]
 name = "gitignored-cli"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
 description ="Yet Another Git-Ignore File Generator Written in Rust"
@@ -17,8 +17,6 @@ include = [
 ]
 
 [dependencies]
-# git = "https://github.com/carllerche/curl-rust"
-# [dependencies.curl]
 chrono = { version = "0.4", features = ["serde"] }
 clap = "3.2.15"
 colored = "2.0.0"

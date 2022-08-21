@@ -23,6 +23,10 @@ You don't need to have an internet connection to use it, unless you want to upda
 <details>
 <summary>Click to preview!</summary>
 
+#### Default or Help
+
+![Default or Help](docs/default-or-help.png 'Default or Help')
+
 #### Update Available
 
 ![Update Available](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/update-available.png 'Update Available')

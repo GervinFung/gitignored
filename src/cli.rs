@@ -28,9 +28,10 @@ impl Cli {
 
     pub fn args_matches(&self) -> ArgMatches {
         App::new("gitignored")
-        .version("0.0.0")
+        .version("0.0.4")
         .author("PoolOfDeath20 a.k.a Gervin Fung Da Xuen <gervinfungdaxuen@gmail.com>")
         .about("CLI application of gitignored")
+        .arg_required_else_help(true)
         .arg(Arg::with_name(Cli::LIST)
             .long(Cli::LIST.to_lowercase().as_str())
             .short(self.extract_first_char_from_str(Cli::LIST))
@@ -81,7 +82,6 @@ impl Cli {
             .short(self.extract_first_char_from_str(Cli::UPDATE))
             .long(Cli::UPDATE.to_lowercase().as_str())
             .takes_value(false)
-            .multiple(false)
             .help("Update the cache of gitignore templates"))
         .get_matches()
     }
