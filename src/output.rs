@@ -1,8 +1,6 @@
 use colored::Colorize;
 use prettytable::{Cell, Row, Table};
 
-use std::char;
-
 use crate::{
     cache::Matches,
     util::{NameAndContentList, NameList},
@@ -41,16 +39,8 @@ impl Output {
         name_list: NameList,
         number_of_columns: u8,
     ) {
-        let alphabets = (10..36)
-            .map(|i| {
-                char::from_digit(i, 36)
-                    .unwrap_or_else(|| panic!("Unable to generate alphabet"))
-                    .to_string()
-                    .to_uppercase()
-            })
-            .collect::<Vec<_>>();
-
-        for alphabet in alphabets {
+        for alphabet in 'A'..='Z' {
+            let alphabet = alphabet.to_string();
             println!("\n{}", alphabet.cyan().bold());
             self.print(
                 self.filter_names_by_first_character(name_list.clone(), alphabet.as_str()),

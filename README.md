@@ -25,7 +25,7 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default or Help
 
-![Default or Help](docs/default-or-help.png 'Default or Help')
+![Default or Help](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/default-or-help.png 'Default or Help')
 
 #### Update Available
 
