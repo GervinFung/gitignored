@@ -9,41 +9,27 @@ all:
 		make build
 
 NODE_BIN=node_modules/.bin/
-GATSBY=$(NODE_BIN)gatsby
 
 ## install
 install:
 	yarn install --frozen-lockfile
 
-## development
-start:
-	export NODE_ENV=development
-	$(GATSBY) clean && make generate-gatsby-config && $(GATSBY) develop
+## dev
+next=$(NODE_BIN)next
 
-## generate gatsby config file
-generate-gatsby-config:
-	node script/generate-gatsby-config.js
+clear-cache:
+	rm -rf .next
+
+dev: clear-cache
+	$(next) dev
 
 ## build
-build:
-	make generate-gatsby-config && $(GATSBY) build
+build: clear-cache
+	$(next) build
 
-## serve
-serve:
-	$(GATSBY) serve
-
-## test
-test:
-	export NODE_ENV=test
-	$(NODE_BIN)esbuild test/index.ts --sourcemap --bundle --minify --target=node16.3.1 --platform=node --outfile=__tests__/index.test.js &&\
-		$(NODE_BIN)jest __tests__
-
-## type-check
-typecheck:
-	$(NODE_BIN)tsc -p tsconfig.json --noEmit $(arguments)
-
-typecheck-watch:
-	make typecheck arguments=--watch
+## start
+start:
+	$(next) start
 
 ## format
 prettier=$(NODE_BIN)prettier
@@ -59,6 +45,20 @@ format:
 ## lint
 lint:
 	$(NODE_BIN)eslint src/ test/ -f='stylish' --color
+
+## typecheck
+tsc=$(NODE_BIN)tsc
+
+typecheck:
+	$(tsc) -p tsconfig.json $(arguments) 
+
+typecheck-watch:
+	make typecheck arguments=--w
+
+## test
+test:
+	$(NODE_BIN)esbuild test/index.ts --sourcemap --bundle --minify --target=node16.3.1 --platform=node --outfile=__test__/index.test.js &&\
+		$(NODE_BIN)jest __test__
 
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04

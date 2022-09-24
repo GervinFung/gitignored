@@ -1,33 +1,31 @@
 node_modules
-.pnp
-.pnp.js
 
-# gatsby
-.cache
-public
+# next.js
+.next/
+out/
+next-env.d.ts
 
-# gitignore scrapped, not this file
-gitignore
-
-# testing
-__tests__
+# generated
+script/**/*.generated.*
 
 # production
 build
+dist
+cache
 
-# custom gatsby config
-gatsby-config.ts
-gatsby-config.js
+# test
+__test__
 
-# misc
-.env
-.env.test
-.env.production
-.DS_Store
-
-temp.js
-temp.txt
-
-npm-debug.log*
+# debug
 yarn-debug.log*
 yarn-error.log*
+
+# local env files
+.env
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# vercel
+.vercel
