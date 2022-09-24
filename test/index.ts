@@ -1,6 +1,6 @@
-import testMongo from './database/mongo';
-import testScrapper from './scrapper';
-import testComponentLogic from './util/component-logic';
+import testMongo from './api/database/mongo';
+import testScrapper from './api/scrapper';
+import testComponentLogic from './web/component/util';
 
 const tests: ReadonlyArray<readonly [() => void, 'only'?]> = [
     [testScrapper],
