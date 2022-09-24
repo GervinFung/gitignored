@@ -42,7 +42,7 @@ Here's what the developers can do with it
 | Scripting Language                                                     | JavaScript        |
 | Testing                                                                | Jest & Esbuild    |
 | Styling                                                                | Styled-components |
-| Framework                                                              | Gatsby            |
+| Framework                                                              | NextJS            |
 | Build Automation Tool                                                  | Make              |
 | Text Editor                                                            | NeoVim            |
 | Dependency Management                                                  | Yarn              |
