@@ -1,3 +1,7 @@
+## 0.0.6 (24 Sept 2022)
+
+-   (Chore) Change api from `https://gitignored.gtsb.io` to `https://gitignored.vercel.app`
+
 ## 0.0.5 (6 Sept 2022)
 
 -   (Chore) Changed tabular format for list of available gitignore template from A to Z with character range notation instead of number

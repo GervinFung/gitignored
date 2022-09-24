@@ -2,7 +2,7 @@
 
 An Offline-first CLI application that let the developer generate various `.gitignore` templates
 
-The templates are taken from the web application [Gitignored](https://gitignored.gtsb.io/), which is the GUI application of this application, check out the [repository](https://github.com/Gitignored-App/gitignored) if you are interested
+The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application, check out the [repository](https://github.com/Gitignored-App/web) if you are interested
 
 **Side note**:
 The GUI application takes the templates from [gitignore](https://github.com/github/gitignore) of Github

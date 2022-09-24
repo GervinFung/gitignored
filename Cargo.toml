@@ -1,12 +1,12 @@
 [package]
 name = "gitignored-cli"
-version = "0.0.5"
+version = "0.0.6"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
-description ="Yet Another Git-Ignore File Generator Written in Rust"
+description ="The CLI Application of Gitignored. Provide A Faster Way to Generate .gitignore File via Caching"
 repository = "https://github.com/Gitignored-App/cli"
 readme="README.md"
-homepage = "https://gitignored.gtsb.io"
+homepage = "https://gitignored.vercel.app"
 license-file="LICENSE"
 keywords=["gitignore", "git", "generator"]
 categories=["command-line-utilities", "development-tools"]

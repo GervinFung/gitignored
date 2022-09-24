@@ -22,7 +22,7 @@ fn main() {
             .to_str()
             .unwrap_or_else(|| panic!("Unable to create cache directory")),
     );
-    let cache = cache::Cache::new(name);
+    let cache = cache::Cache::new(name, Env::API);
     let cli = Cli::new();
     let args_matcher = cli.args_matches();
     let output = output::Output::new();
