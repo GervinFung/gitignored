@@ -49,7 +49,7 @@ fn main() {
         let outdir = if outdir.is_empty() {
             "".to_string()
         } else {
-            format!("{}{}", outdir, "/")
+            format!("{}/", outdir)
         };
         format!(
             "{}/{}{}",

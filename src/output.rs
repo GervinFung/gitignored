@@ -59,7 +59,7 @@ impl Output {
     pub fn overriding(&self, path: String) {
         println!(
             "{}",
-            format!("{}{}", "Overriding .gitignore at ", path)
+            format!("{} {}", "Overriding .gitignore at", path)
                 .yellow()
                 .bold()
         );
@@ -71,8 +71,8 @@ impl Output {
         println!(
             "{}",
             format!(
-                "{}{}",
-                file_path, " already exists, do pass -f if you wish to overwrite it"
+                "{} {}",
+                file_path, "already exists, do pass -f if you wish to overwrite it"
             )
             .red()
             .bold()
@@ -117,7 +117,7 @@ impl Output {
     pub fn generating(&self, path: String) {
         println!(
             "{}",
-            format!("{}{}", "Generating .gitignore at ", path)
+            format!("{} {}", "Generating .gitignore at", path)
                 .yellow()
                 .bold()
         );
@@ -128,7 +128,7 @@ impl Output {
     pub fn appending(&self, path: String) {
         println!(
             "{}",
-            format!("{}{}", "Appending .gitignore at ", path)
+            format!("{} {}", "Appending .gitignore at", path)
                 .yellow()
                 .bold()
         );

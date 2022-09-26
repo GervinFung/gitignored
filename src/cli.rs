@@ -23,7 +23,7 @@ impl Cli {
         str.to_lowercase()
             .chars()
             .next()
-            .unwrap_or_else(|| panic!("{}{}", "Unable to extract first character from ", str))
+            .unwrap_or_else(|| panic!("{} {}", "Unable to extract first character from", str))
     }
 
     pub fn args_matches(&self) -> ArgMatches {

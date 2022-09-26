@@ -39,7 +39,7 @@ impl GitIgnoredApi {
             .unwrap_or_else(|_| panic!("Unable to get the latest commit time from api"))
             .latest_commit_time();
         DateTime::parse_from_rfc3339(&commit_time_iso_format)
-            .unwrap_or_else(|_| panic!("{}{}", "Unable to parse ", commit_time_iso_format))
+            .unwrap_or_else(|_| panic!("{} {}", "Unable to parse", commit_time_iso_format))
     }
 }
 

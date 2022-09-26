@@ -106,19 +106,19 @@ impl Cache {
     pub fn last_remind_time(&self) -> Date {
         let file_path = self.last_remind_time_file_path.clone();
         let latest_commit_time_json = read_to_string(file_path.clone())
-            .unwrap_or_else(|_| panic!("{}{}", "Unable to read from ", file_path));
+            .unwrap_or_else(|_| panic!("{} {}", "Unable to read from", file_path));
         let parsed: LastRemindTimeInString = serde_json::from_str(latest_commit_time_json.as_str())
             .unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to parse last remind time as JSON from ", latest_commit_time_json
+                    "{} {}",
+                    "Unable to parse last remind time as JSON from", latest_commit_time_json
                 )
             });
         let commit_time_iso_format = parsed.latest_remind_time();
         DateTime::parse_from_rfc3339(&commit_time_iso_format).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to parse commit time as JSON from ", commit_time_iso_format
+                "{} {}",
+                "Unable to parse commit time as JSON from", commit_time_iso_format
             )
         })
     }
@@ -126,39 +126,39 @@ impl Cache {
         let file_path = self.last_remind_time_file_path.clone();
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to create last remind time cache file from ", file_path
+                "{} {}",
+                "Unable to create last remind time cache file from", file_path
             )
         });
         let stringified =
             serde_json::to_string_pretty(&LastRemindTimeInDate::new(last_remind_time))
                 .unwrap_or_else(|_| {
                     panic!(
-                        "{}{}",
-                        "Unable to stringify last remind time of ", last_remind_time
+                        "{} {}",
+                        "Unable to stringify last remind time of", last_remind_time
                     )
                 });
         file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
-            panic!("{}{}", "Unable to write last remind time of ", stringified)
+            panic!("{} {}", "Unable to write last remind time of", stringified)
         });
         self.last_remind_time()
     }
     pub fn latest_commit_time(&self) -> Date {
         let file_path = self.commit_time_file_path.clone();
         let latest_commit_time_json = read_to_string(file_path.clone())
-            .unwrap_or_else(|_| panic!("{}{}", "Unable to read from ", file_path));
+            .unwrap_or_else(|_| panic!("{} {}", "Unable to read from", file_path));
         let parsed: LatestCommitTimeInString =
             serde_json::from_str(latest_commit_time_json.as_str()).unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to parse latest commit time as JSON from ", latest_commit_time_json
+                    "{} {}",
+                    "Unable to parse latest commit time as JSON from", latest_commit_time_json
                 )
             });
         let commit_time_iso_format = parsed.latest_commit_time();
         DateTime::parse_from_rfc3339(&commit_time_iso_format).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to parse commit time as JSON from ", commit_time_iso_format
+                "{} {}",
+                "Unable to parse commit time as JSON from", commit_time_iso_format
             )
         })
     }
@@ -166,21 +166,21 @@ impl Cache {
         let file_path = self.commit_time_file_path.clone();
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to create latest commit time cache file from ", file_path
+                "{} {}",
+                "Unable to create latest commit time cache file from", file_path
             )
         });
         let stringified = serde_json::to_string_pretty(&LatestCommitTimeInDate::new(commit_time))
             .unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to stringify latest commit time of ", commit_time
+                    "{} {}",
+                    "Unable to stringify latest commit time of", commit_time
                 )
             });
         file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to write latest commit time of ", stringified
+                "{} {}",
+                "Unable to write latest commit time of", stringified
             )
         });
         self.latest_commit_time()
@@ -188,12 +188,12 @@ impl Cache {
     pub fn name_and_content_list(&self) -> NameAndContentList {
         let file_path = self.name_and_content_list_file_path.clone();
         let stringified_name_and_content_list = read_to_string(file_path.clone())
-            .unwrap_or_else(|_| panic!("{}{}", "Unable to read from ", file_path));
+            .unwrap_or_else(|_| panic!("{} {}", "Unable to read from", file_path));
         let parsed: GitIgnoreNameAndContentList =
             serde_json::from_str(stringified_name_and_content_list.as_str()).unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to parse as JSON from ", stringified_name_and_content_list
+                    "{} {}",
+                    "Unable to parse as JSON from", stringified_name_and_content_list
                 )
             });
         parsed.gitignored_name_and_content_list()
@@ -205,8 +205,8 @@ impl Cache {
         let file_path = self.name_and_content_list_file_path.clone();
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to create name and content list cache file from ", file_path
+                "{} {}",
+                "Unable to create name and content list cache file from", file_path
             )
         });
         let stringified = serde_json::to_string_pretty(&GitIgnoreNameAndContentList::new(
@@ -214,14 +214,14 @@ impl Cache {
         ))
         .unwrap_or_else(|_| {
             panic!(
-                "{}{:?}",
-                "Unable to stringify name and content list of ", name_and_content_list
+                "{} {:?}",
+                "Unable to stringify name and content list of", name_and_content_list
             )
         });
         file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to write name and content list of ", stringified
+                "{} {}",
+                "Unable to write name and content list of", stringified
             )
         });
         self.name_and_content_list()
@@ -251,10 +251,9 @@ impl Cache {
                 .into_iter()
                 .map(|name_and_content| {
                     format!(
-                        "{}{}{}{}",
-                        "### The gitignore of ",
+                        "{} {}\n{}",
+                        "### The gitignore of",
                         name_and_content.name().to_uppercase(),
-                        "\n",
                         name_and_content.content()
                     )
                 })
@@ -266,7 +265,7 @@ impl Cache {
         let split = file_name.split('/').collect::<Vec<_>>();
         let len = split.len();
         fs::create_dir_all(split.split_at(len - 1).0.join("/"))
-            .unwrap_or_else(|_| panic!("{}{}", "Unable to create outdir from ", file_name.clone()))
+            .unwrap_or_else(|_| panic!("{} {}", "Unable to create outdir from", file_name.clone()))
     }
     pub fn already_has_destination_file(&self, file_name: String) -> bool {
         Path::new(file_name.as_str()).exists()
@@ -275,16 +274,16 @@ impl Cache {
         self.generate_gitignore_outdir(file_name.clone());
         let mut file = File::create(file_name.clone()).unwrap_or_else(|_| {
             panic!(
-                "{}{}",
-                "Unable to create .gitignore file from ",
+                "{} {}",
+                "Unable to create .gitignore file from",
                 file_name.clone()
             )
         });
         file.write_all(self.generate_content(name_list).as_bytes())
             .unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to write generated .gitignore to ", file_name
+                    "{} {}",
+                    "Unable to write generated .gitignore to", file_name
                 )
             })
     }
@@ -298,27 +297,27 @@ impl Cache {
             .create(!is_exist)
             .open(file_name.clone())
             .unwrap_or_else(|_| {
-                panic!("{}{}", "Unable to open/create file of ", file_name.clone())
+                panic!("{} {}", "Unable to open/create file of", file_name.clone())
             });
         if !is_exist {
             file.write_all(gitignore.as_bytes()).unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to write generated .gitignore content to ", file_name
+                    "{} {}",
+                    "Unable to write generated .gitignore content to", file_name
                 )
             })
         } else {
             file.write_all(
                 format!(
-                    "{}{}",
-                    "\nAnything below is generated by gitignored-cli\n", gitignore
+                    "\n{}\n{}",
+                    "Anything below is generated by gitignored-cli", gitignore
                 )
                 .as_bytes(),
             )
             .unwrap_or_else(|_| {
                 panic!(
-                    "{}{}",
-                    "Unable to append generated .gitignore content to ", file_name
+                    "{} {}",
+                    "Unable to append generated .gitignore content to", file_name
                 )
             })
         }
