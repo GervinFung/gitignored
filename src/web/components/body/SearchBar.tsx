@@ -2,38 +2,60 @@ import React from 'react';
 import Select from 'react-select';
 import styled from 'styled-components';
 import type {
+    DeepReadonly,
     GitIgnoreNamesAndIds,
     GitIgnoreSelectedIds,
 } from '../../../common/type';
 import { parseAsArray, parseAsString } from '../../../common/util/parser';
 
 const SearchBar = ({
+    names,
     namesAndIds,
-    setSelectedIds,
-}: Readonly<{
+    onChange,
+}: DeepReadonly<{
+    names: Array<string>;
     namesAndIds: GitIgnoreNamesAndIds;
-    setSelectedIds: (selectedIds: GitIgnoreSelectedIds) => void;
-}>) => (
-    <Container>
-        <GitIgnoreSelect
-            isMulti={true}
-            maxMenuHeight={200}
-            defaultValue={undefined}
-            placeholder="Search by Frameworks or Languages or IDEs or any Tech"
-            options={namesAndIds.map(({ id, name }) => ({
-                value: id,
-                label: name,
-            }))}
-            onChange={(selectedGitIgnoreTechs) =>
-                setSelectedIds(
-                    parseAsArray(selectedGitIgnoreTechs, (tech) =>
-                        parseAsString(tech.value)
-                    )
-                )
-            }
-        />
-    </Container>
-);
+    onChange: (selectedIds: GitIgnoreSelectedIds) => void;
+}>) => {
+    const Select = () =>
+        React.useMemo(
+            () => (
+                <GitIgnoreSelect
+                    isMulti={true}
+                    maxMenuHeight={200}
+                    placeholder="Search by Frameworks or Languages or IDEs or any Tech"
+                    options={namesAndIds.map(({ id, name }) => ({
+                        value: id,
+                        label: name,
+                    }))}
+                    onChange={(selectedGitIgnoreTechs) =>
+                        onChange(
+                            parseAsArray(selectedGitIgnoreTechs, (tech) =>
+                                parseAsString(tech.value)
+                            )
+                        )
+                    }
+                    defaultValue={namesAndIds.flatMap(({ id, name }) =>
+                        !names.includes(name)
+                            ? []
+                            : [
+                                  {
+                                      value: id,
+                                      label: name,
+                                  },
+                              ]
+                    )}
+                />
+            ),
+            [names.join()]
+        );
+
+    return (
+        <Container>
+            <Select />
+        </Container>
+    );
+};
 
 const Container = styled.div`
     display: flex;

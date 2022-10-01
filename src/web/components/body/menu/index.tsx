@@ -1,67 +1,54 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ToastError, ToastInfo, ToastPromise } from '../../toaser/Toaser';
-import type { ActionOption, CombinedTechs } from '../Body';
+import { ToastError, ToastPromise } from '../../toaser/Toaser';
+import { Option, CombinedTechs, getLatestSelectedTechs } from '../Body';
 import Download from './Download';
 import Preview from './Preview';
 import JSZip from 'jszip';
 import saveAs from 'file-saver';
-import axios from 'axios';
 import type {
     GitIgnoreSelectedIds,
     GitIgnoreSelectedTechs,
 } from '../../../../common/type';
-import { arrayDelimiter } from '../../../../common/const';
-import {
-    api,
-    parseAsGitIgnoreSelectedTechs,
-    combineGitIgnoreTemplates,
-} from '../../../util';
+import { combineGitIgnoreTemplates } from '../../../util';
 
 const Menus = ({
     selectedIds,
     selectedTechs,
+    hasCombinedTechs,
     setGitIgnoreTechs,
+    namesAndIdsIsEmpty,
     setCombinedGitIgnoreTech,
 }: Readonly<{
+    hasCombinedTechs: boolean;
+    namesAndIdsIsEmpty: boolean;
     selectedIds: GitIgnoreSelectedIds;
     selectedTechs: GitIgnoreSelectedTechs;
     setCombinedGitIgnoreTech: (current: CombinedTechs) => void;
     setGitIgnoreTechs: (
-        p: Readonly<{
-            actionOption: ActionOption;
+        _: Readonly<{
+            option: Option;
             selectedTechs: GitIgnoreSelectedTechs;
         }>
     ) => void;
 }>) => {
     const options = ['Combined', 'Separated'] as const;
 
-    const getLatestSelectedTechs = () =>
-        axios
-            .get(
-                `${api.generate}?selectedIds=${selectedIds.join(
-                    arrayDelimiter
-                )}`
-            )
-            .then(({ data }) =>
-                parseAsGitIgnoreSelectedTechs(data.gitIgnoreSelectedTechs)
-            );
-
-    const shouldNotTakeAction = () =>
+    const hasNoSelectedIdsAndTechs =
         !selectedIds.length && !selectedTechs.length;
 
     const setTemplates = ({
         content,
-        actionOption,
+        option,
         gitIgnoreSelectedTechs,
     }: Readonly<{
-        actionOption: ActionOption;
+        option: Option;
         content: string | undefined;
         gitIgnoreSelectedTechs: GitIgnoreSelectedTechs;
     }>) => {
         setCombinedGitIgnoreTech(content);
         setGitIgnoreTechs({
-            actionOption,
+            option,
             selectedTechs: gitIgnoreSelectedTechs,
         });
     };
@@ -69,147 +56,169 @@ const Menus = ({
     return (
         <Container>
             <Preview
-                options={['Both', ...options]}
+                noIdsSelected={hasNoSelectedIdsAndTechs}
+                noGitIgnoreNamesAndIds={namesAndIdsIsEmpty}
+                options={
+                    !(selectedTechs.length || hasCombinedTechs)
+                        ? ['Both', ...options]
+                        : ['Both', 'Clear', ...options]
+                }
                 onChange={(option) => {
-                    if (shouldNotTakeAction()) {
-                        return ToastInfo('You had not chosen any template yet');
+                    if (hasNoSelectedIdsAndTechs) {
+                        throw new Error('You had not chosen any template yet');
                     }
-                    const promise = new Promise<string>(async (res) => {
-                        try {
-                            const gitIgnoreSelectedTechs =
-                                await getLatestSelectedTechs();
-                            switch (option) {
-                                case 'Separated': {
-                                    setTemplates({
-                                        content: undefined,
-                                        actionOption: 'Preview',
-                                        gitIgnoreSelectedTechs,
-                                    });
-                                    break;
-                                }
-                                case 'Combined': {
-                                    setTemplates({
-                                        actionOption: 'Preview',
-                                        gitIgnoreSelectedTechs: [],
-                                        content: !selectedIds.length
-                                            ? undefined
-                                            : combineGitIgnoreTemplates(
-                                                  gitIgnoreSelectedTechs
-                                              ),
-                                    });
-                                    break;
-                                }
-                                case 'Both': {
-                                    setTemplates({
-                                        actionOption: 'Preview',
-                                        gitIgnoreSelectedTechs,
-                                        content: !selectedIds.length
-                                            ? undefined
-                                            : combineGitIgnoreTemplates(
-                                                  gitIgnoreSelectedTechs
-                                              ),
-                                    });
-                                    break;
-                                }
-                            }
-                            res('Generation completed!');
-                        } catch (error) {
-                            ToastError(error);
-                            res('Failed to generate');
+                    switch (option) {
+                        case 'Clear': {
+                            return setTemplates({
+                                content: undefined,
+                                option: 'preview',
+                                gitIgnoreSelectedTechs: [],
+                            });
                         }
-                        return undefined;
-                    });
+                    }
+                    const promise = new Promise<string>(
+                        async (resolve, reject) => {
+                            try {
+                                const gitIgnoreSelectedTechs =
+                                    await getLatestSelectedTechs(selectedIds);
+                                switch (option) {
+                                    case 'Separated': {
+                                        setTemplates({
+                                            content: undefined,
+                                            option: 'preview',
+                                            gitIgnoreSelectedTechs,
+                                        });
+                                        break;
+                                    }
+                                    case 'Combined': {
+                                        setTemplates({
+                                            option: 'preview',
+                                            gitIgnoreSelectedTechs: [],
+                                            content: !selectedIds.length
+                                                ? undefined
+                                                : combineGitIgnoreTemplates(
+                                                      gitIgnoreSelectedTechs
+                                                  ),
+                                        });
+                                        break;
+                                    }
+                                    case 'Both': {
+                                        setTemplates({
+                                            option: 'preview',
+                                            gitIgnoreSelectedTechs,
+                                            content: !selectedIds.length
+                                                ? undefined
+                                                : combineGitIgnoreTemplates(
+                                                      gitIgnoreSelectedTechs
+                                                  ),
+                                        });
+                                        break;
+                                    }
+                                }
+                                resolve('Generation completed!');
+                            } catch (error) {
+                                reject('Failed to generate');
+                            }
+                            return undefined;
+                        }
+                    );
                     ToastPromise({
                         promise,
                         pending: 'Generating template...',
                         success: undefined,
                         error: {
-                            render: () => ToastError('Failed to generate'),
+                            render: ({ data }) => data,
                         },
                     });
                     return undefined;
                 }}
             />
             <Download
+                noIdsSelected={hasNoSelectedIdsAndTechs}
+                noGitIgnoreNamesAndIds={namesAndIdsIsEmpty}
                 options={options}
                 onChange={(option) => {
-                    if (shouldNotTakeAction()) {
-                        return ToastInfo('You had not chosen any template yet');
+                    if (hasNoSelectedIdsAndTechs) {
+                        throw new Error('You had not chosen any template yet');
                     }
-                    const promise = new Promise<string>(async (res) => {
-                        try {
-                            const gitIgnoreSelectedTechs =
-                                await getLatestSelectedTechs();
-                            switch (option) {
-                                case 'Combined': {
-                                    const combinedTemplate =
-                                        combineGitIgnoreTemplates(
-                                            gitIgnoreSelectedTechs
+                    const promise = new Promise<string>(
+                        async (resolve, reject) => {
+                            try {
+                                const gitIgnoreSelectedTechs =
+                                    await getLatestSelectedTechs(selectedIds);
+                                switch (option) {
+                                    case 'Combined': {
+                                        const combinedTemplate =
+                                            combineGitIgnoreTemplates(
+                                                gitIgnoreSelectedTechs
+                                            );
+                                        setTemplates({
+                                            gitIgnoreSelectedTechs,
+                                            option: 'download',
+                                            content: !selectedIds.length
+                                                ? undefined
+                                                : combinedTemplate,
+                                        });
+                                        const blob = new Blob(
+                                            [combinedTemplate],
+                                            {
+                                                type: 'text/plain;charset=utf-8',
+                                            }
                                         );
-                                    setTemplates({
-                                        gitIgnoreSelectedTechs,
-                                        actionOption: 'Download',
-                                        content: !selectedIds.length
-                                            ? undefined
-                                            : combinedTemplate,
-                                    });
-                                    const blob = new Blob([combinedTemplate], {
-                                        type: 'text/plain;charset=utf-8',
-                                    });
-                                    saveAs(
-                                        blob,
-                                        'gitignored-combined.gitignore'
-                                    );
-                                    break;
-                                }
-                                case 'Separated': {
-                                    setTemplates({
-                                        content: undefined,
-                                        gitIgnoreSelectedTechs,
-                                        actionOption: 'Download',
-                                    });
-                                    const zip = new JSZip();
-                                    const zippes = gitIgnoreSelectedTechs.map(
-                                        ({ name, content }) =>
-                                            zip.file(
-                                                `${name}/.gitignore`,
-                                                content
-                                            )
-                                    );
-                                    const { length: zippedCount } = zippes;
-                                    const { length: parsedCount } =
-                                        gitIgnoreSelectedTechs;
-                                    if (zippedCount !== parsedCount) {
-                                        throw new Error(
-                                            `${zippes} has ${zippedCount} files, while parsed has ${parsedCount}`
+                                        saveAs(
+                                            blob,
+                                            'gitignored-combined.gitignore'
                                         );
+                                        break;
                                     }
-                                    zip.generateAsync({
-                                        type: 'blob',
-                                    })
-                                        .then((value) =>
-                                            saveAs(
-                                                value,
-                                                'gitignored-separated.zip'
+                                    case 'Separated': {
+                                        setTemplates({
+                                            content: undefined,
+                                            gitIgnoreSelectedTechs,
+                                            option: 'download',
+                                        });
+                                        const zip = new JSZip();
+                                        const zippes =
+                                            gitIgnoreSelectedTechs.map(
+                                                ({ name, content }) =>
+                                                    zip.file(
+                                                        `${name}/.gitignore`,
+                                                        content
+                                                    )
+                                            );
+                                        const { length: zippedCount } = zippes;
+                                        const { length: parsedCount } =
+                                            gitIgnoreSelectedTechs;
+                                        if (zippedCount !== parsedCount) {
+                                            throw new Error(
+                                                `${zippes} has ${zippedCount} files, while parsed has ${parsedCount}`
+                                            );
+                                        }
+                                        zip.generateAsync({
+                                            type: 'blob',
+                                        })
+                                            .then((value) =>
+                                                saveAs(
+                                                    value,
+                                                    'gitignored-separated.zip'
+                                                )
                                             )
-                                        )
-                                        .catch(ToastError);
-                                    break;
+                                            .catch(ToastError);
+                                        break;
+                                    }
                                 }
+                                resolve('Download completed!');
+                            } catch (error) {
+                                reject('Failed to download template');
                             }
-                            res('Download completed!');
-                        } catch (error) {
-                            ToastError(error);
-                            res('Failed to download template');
                         }
-                    });
+                    );
                     ToastPromise({
                         promise,
                         pending: 'Downloading template...',
                         success: undefined,
                         error: {
-                            render: () =>
-                                ToastError('Failed to download template'),
+                            render: ({ data }) => data,
                         },
                     });
                     return undefined;
