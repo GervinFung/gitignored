@@ -17,42 +17,59 @@ type MenuName = 'Preview' | 'Download';
 type MenuButtonStyledProps = MenuButtonMargin &
     Readonly<{
         name: MenuName;
+
+        disabled: boolean;
     }>;
 
 const Dropdown = <T extends string>({
-    menuItems,
     name,
-    onChange,
-    margin: { left, right },
     width,
+    onChange,
+    menuItems,
+    noIdsSelected,
+    noGitIgnoreNamesAndIds,
+    margin: { left, right },
 }: Readonly<{
-    menuItems: ReadonlyArray<T>;
-    onChange: (t: T) => void;
+    width: number;
     name: MenuName;
+    noIdsSelected: boolean;
+    onChange: (t: T) => void;
+    noGitIgnoreNamesAndIds: boolean;
+    menuItems: ReadonlyArray<T>;
     margin: Readonly<{
         left: number;
         right: number;
     }>;
-    width: number;
-}>) => (
-    <Menu
-        width={width}
-        transition
-        menuButton={
-            <MenuButtonStyled name={name} margin={`0 ${right}px 0 ${left}px`}>
-                {name}
-            </MenuButtonStyled>
-        }
-    >
-        {menuItems.map((item) => (
-            <MenuItem onClick={() => onChange(item)} key={item}>
-                {item}
-            </MenuItem>
-        ))}
-    </Menu>
-);
+}>) => {
+    const disabled = noGitIgnoreNamesAndIds || noIdsSelected;
+
+    return (
+        <Menu
+            transition
+            width={width}
+            menuButton={
+                <MenuButtonStyled
+                    name={name}
+                    disabled={disabled}
+                    margin={`0 ${right}px 0 ${left}px`}
+                >
+                    {name}
+                </MenuButtonStyled>
+            }
+        >
+            {!disabled &&
+                menuItems.map((item) => (
+                    <MenuItem onClick={() => onChange(item)} key={item}>
+                        {item}
+                    </MenuItem>
+                ))}
+        </Menu>
+    );
+};
 
 const MenuButtonBackground = css`
+    cursor: ${({ disabled }: MenuButtonStyledProps) =>
+        !disabled ? undefined : 'not-allowed'};
     margin: ${({ margin }: MenuButtonStyledProps) => margin};
     background-color: ${({ name }: MenuButtonStyledProps) =>
         ({ theme }) =>

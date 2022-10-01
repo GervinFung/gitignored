@@ -9,8 +9,6 @@ import Header from './components/header';
 import Footer from './components/footer';
 import theme from './theme/theme';
 
-const dimensions = [48, 72, 96, 144, 192, 256, 384, 512] as const;
-
 const Layout = ({
     title,
     children,
@@ -18,17 +16,19 @@ const Layout = ({
     title: string;
     children: React.ReactNode;
 }>) => {
-    React.useEffect(() => {
-        if (window !== undefined) {
-            injectStyle();
-        }
-    }, []);
+    const dimensions = [48, 72, 96, 144, 192, 256, 384, 512] as const;
 
     const url = 'https://gitignored.vercel.app';
     const description =
         'The Web Application of Gitignored. A more UI/UX Friendly Web Application that Generates Useful .gitignore templates. Preview/Copy/Download Single or Multiple .gitignore File(s)';
 
     const gitignoredTitle = `GitIgnored | ${title}`;
+
+    const iconPath = '/images/icons';
+
+    React.useEffect(() => {
+        injectStyle();
+    }, []);
 
     return (
         <Container>
@@ -52,7 +52,7 @@ const Layout = ({
                         alt: description,
                         width: dimension,
                         height: dimension,
-                        url: `/images/icons/icon-${dimension}x${dimension}.png`,
+                        url: `${iconPath}/icon-${dimension}x${dimension}.png`,
                     })),
                 }}
                 additionalMetaTags={[
@@ -106,16 +106,16 @@ const Layout = ({
                     {
                         rel: 'icon',
                         type: 'image/x-icon',
-                        href: '/images/icons/favicon.ico',
+                        href: `${iconPath}/favicon.ico`,
                     },
                     {
                         rel: 'apple-touch-icon',
                         type: 'image/x-icon',
-                        href: '/images/icons/favicon.ico',
+                        href: `${iconPath}/favicon.ico`,
                     },
                     ...dimensions.flatMap((dimension) => {
                         const sizes = `${dimension}x${dimension}`;
-                        const href = `/images/icons/icon-${sizes}.png`;
+                        const href = `${iconPath}/icon-${sizes}.png`;
                         const icon = {
                             href,
                             sizes,

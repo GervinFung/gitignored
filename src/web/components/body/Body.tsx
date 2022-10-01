@@ -1,65 +1,118 @@
 import React from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import IntroText from './IntroText';
 import SearchBar from './SearchBar';
 import Name from './Name';
 import Menu from './menu';
-import { ToastError, ToastPromise } from '../toaser/Toaser';
+import { ToastPromise } from '../toaser/Toaser';
 import { ToastContainer } from 'react-toastify';
-import { injectStyle } from 'react-toastify/dist/inject-style';
-import 'react-toastify/dist/ReactToastify.css';
 import theme from '../../theme/theme';
 import Contents from './content';
-import axios from 'axios';
 import Cli from './Cli';
 import type {
-    GitIgnoreNamesAndIds,
     GitIgnoreSelectedIds,
     GitIgnoreSelectedTechs,
 } from '../../../common/type';
-import { api, parseAsGitIgnoreTechs, title } from '../../util';
+import { api, parseAsGitIgnoreSelectedTechs, title } from '../../util';
+import type { ServerProps } from '../../../../pages';
+import { parseAsString } from '../../../common/util/parser';
+import axios from 'axios';
+import { arrayDelimiter } from '../../../common/const';
 
-type ActionOption = 'Preview' | 'Download';
+type Option = 'preview' | 'download';
 type CombinedTechs = undefined | GitIgnoreSelectedTechs[0]['content'];
 
-const Body = () => {
+const getLatestSelectedTechs = (selectedIds: GitIgnoreSelectedIds) =>
+    axios
+        .get(`${api.generate}?selectedIds=${selectedIds.join(arrayDelimiter)}`)
+        .then(({ data }) =>
+            parseAsGitIgnoreSelectedTechs(data.gitIgnoreSelectedTechs)
+        );
+
+const Body = ({
+    serverProps,
+}: Readonly<{
+    serverProps: ServerProps;
+}>) => {
+    const router = useRouter();
+    const namesDelimiter = ',';
+
     const [state, setState] = React.useState({
-        actionOption: undefined as undefined | ActionOption,
+        isPush: false as boolean,
+        option: undefined as undefined | Option,
         gitIgnore: {
-            namesAndIds: [] as GitIgnoreNamesAndIds,
             selectedIds: [] as GitIgnoreSelectedIds,
             combinedTechs: undefined as CombinedTechs,
             selectedTechs: [] as GitIgnoreSelectedTechs,
         },
     } as const);
 
+    const { response } = serverProps;
+
+    const namesAndIds =
+        response.status === 'failed' ? [] : response.gitIgnoreNamesAndIds;
+
     const {
-        actionOption,
-        gitIgnore: { namesAndIds, selectedTechs, combinedTechs, selectedIds },
+        isPush,
+        option,
+        gitIgnore: { selectedTechs, combinedTechs, selectedIds },
     } = state;
 
+    const names = namesAndIds
+        .filter(({ id }) => selectedIds.includes(id))
+        .map(({ name }) => name);
+
     React.useEffect(() => {
-        if (typeof window !== 'undefined') {
-            injectStyle();
+        // ref: https://nextjs.org/docs/routing/shallow-routing
+        if (isPush) {
+            setState((prev) => ({
+                ...prev,
+                isPush: false,
+            }));
+            const params = Object.entries({
+                names: names.join(namesDelimiter),
+            })
+                .flatMap(([key, value]) => (!value ? [] : [`${key}=${value}`]))
+                .join('&');
+            router.push(!params ? '' : `?${params}`, undefined, {
+                shallow: true,
+            });
         }
-        const promise = new Promise<string>((res) =>
-            axios
-                .get(api.gitIgnored)
-                .then(({ data }) => {
-                    setState((prev) => ({
-                        ...prev,
-                        gitIgnore: {
-                            ...prev.gitIgnore,
-                            namesAndIds: parseAsGitIgnoreTechs(
-                                data.gitIgnoreNamesAndIds
-                            ),
-                        },
-                    }));
-                    res('Loaded all .gitignore templates');
-                })
-                .catch(ToastError)
-        );
+    }, [option, selectedIds.join()]);
+
+    const { query } = router;
+    const queryNames = query.names;
+
+    React.useEffect(() => {
+        const names = parseAsString(queryNames ?? '').split(namesDelimiter);
+        if (names.length) {
+            setState((prev) => ({
+                ...prev,
+                option,
+                gitIgnore: {
+                    ...prev.gitIgnore,
+                    selectedIds: namesAndIds.flatMap(({ id, name }) =>
+                        !names.includes(name) ? [] : [id]
+                    ),
+                },
+            }));
+        }
+    }, [queryNames]);
+
+    React.useEffect(() => {
+        const { response } = serverProps;
+        const promise = new Promise<any>((resolve, reject) => {
+            setTimeout(() => {
+                switch (response.status) {
+                    case 'failed':
+                        return reject(response.error);
+                    case 'success':
+                        return resolve({});
+                }
+            }, 700);
+        });
         ToastPromise({
             promise,
             pending: {
@@ -77,12 +130,11 @@ const Body = () => {
                 ),
             },
             error: {
-                render: () =>
-                    ToastError(
-                        <div>
-                            Failed to load all <code>.gitignore</code> templates
-                        </div>
-                    ),
+                render: () => (
+                    <div>
+                        Failed to load all <code>.gitignore</code> templates
+                    </div>
+                ),
             },
         });
     }, []);
@@ -104,10 +156,12 @@ const Body = () => {
             <Name />
             <IntroText />
             <SearchBar
+                names={names}
                 namesAndIds={namesAndIds}
-                setSelectedIds={(selectedIds) =>
+                onChange={(selectedIds) =>
                     setState((prev) => ({
                         ...prev,
+                        isPush: true,
                         gitIgnore: {
                             ...prev.gitIgnore,
                             selectedIds,
@@ -117,31 +171,33 @@ const Body = () => {
             />
             <Cli />
             <Menu
+                hasCombinedTechs={Boolean(combinedTechs)}
                 selectedIds={selectedIds}
                 selectedTechs={selectedTechs}
-                setCombinedGitIgnoreTech={(combinedTechs) => {
+                namesAndIdsIsEmpty={!namesAndIds.length}
+                setCombinedGitIgnoreTech={(combinedTechs) =>
                     setState((prev) => ({
                         ...prev,
                         gitIgnore: {
                             ...prev.gitIgnore,
                             combinedTechs,
                         },
-                    }));
-                }}
-                setGitIgnoreTechs={({ actionOption, selectedTechs }) => {
+                    }))
+                }
+                setGitIgnoreTechs={({ option, selectedTechs }) =>
                     setState((prev) => ({
                         ...prev,
-                        actionOption,
+                        option,
                         gitIgnore: {
                             ...prev.gitIgnore,
                             selectedTechs,
                         },
-                    }));
-                }}
+                    }))
+                }
             />
             <Contents
                 selectedTechs={
-                    actionOption !== 'Preview'
+                    option !== 'preview'
                         ? []
                         : !combinedTechs
                         ? selectedTechs
@@ -165,6 +221,8 @@ const Container = styled.div`
     align-items: center;
 `;
 
-export type { CombinedTechs, ActionOption };
+export type { CombinedTechs, Option };
+
+export { getLatestSelectedTechs };
 
 export default Body;
