@@ -49,9 +49,11 @@ impl NameAndContent {
     pub const fn new(name: String, content: String) -> Self {
         NameAndContent { name, content }
     }
+
     pub fn name(&self) -> String {
         self.name.clone()
     }
+
     pub fn content(&self) -> String {
         self.content.clone()
     }
@@ -68,6 +70,7 @@ impl GitIgnoreNameAndContentList {
             gitIgnoreNamesAndContents,
         }
     }
+
     pub fn gitignored_name_and_content_list(&self) -> NameAndContentList {
         self.gitIgnoreNamesAndContents.clone()
     }

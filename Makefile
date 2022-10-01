@@ -20,6 +20,12 @@ pre-prod:
 	cp .env.production .env && make code-gen
 
 # cli-executable
+default: pre-dev
+	cargo run
+
+help: pre-dev
+	cargo run -- -h
+
 list: pre-dev
 	cargo run -- -l
 

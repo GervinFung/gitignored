@@ -1,7 +1,7 @@
 use colored::{ColoredString, Colorize};
 use std::io::{self, stdout, Write};
 
-use crate::{cache::Matches, util::NameList};
+use crate::{cache::templates::Matches, util::NameList};
 
 pub struct Input;
 
@@ -14,12 +14,15 @@ impl Input {
     pub const fn new() -> Self {
         Input {}
     }
+
     fn green_italic(&self, y: &str) -> ColoredString {
         y.green().italic()
     }
+
     fn red_italic(&self, n: &str) -> ColoredString {
         n.red().italic()
     }
+
     fn yes_or_no_only(&self) {
         println!(
             "Please enter '{}'/'{}' or '{}'/'{}' only",
@@ -29,6 +32,7 @@ impl Input {
             self.red_italic("N")
         );
     }
+
     fn get_input_result(&self) -> InputResult {
         stdout().flush().ok();
         let mut input = String::new();
@@ -43,6 +47,7 @@ impl Input {
         }
         InputResult::Continue {}
     }
+
     fn is_meant_closest(&self, original: String, closest: String) -> bool {
         loop {
             print!(
@@ -60,6 +65,7 @@ impl Input {
             }
         }
     }
+
     pub fn validate_closest_names(&self, closest: Matches) -> NameList {
         closest
             .iter()
@@ -67,6 +73,7 @@ impl Input {
             .map(|elem| elem.closest())
             .collect::<Vec<_>>()
     }
+
     pub fn confirm_to_proceed(&self) -> bool {
         loop {
             print!(

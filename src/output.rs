@@ -2,7 +2,7 @@ use colored::Colorize;
 use prettytable::{Cell, Row, Table};
 
 use crate::{
-    cache::Matches,
+    cache::templates::Matches,
     util::{NameAndContentList, NameList},
 };
 
@@ -12,6 +12,7 @@ impl Output {
     pub const fn new() -> Self {
         Output {}
     }
+
     fn filter_names_by_first_character(
         &self,
         name_list: NameList,
@@ -34,6 +35,7 @@ impl Output {
 
         table.printstd();
     }
+
     pub fn all_names_separated_by_first_character(
         &self,
         name_list: NameList,
@@ -50,12 +52,15 @@ impl Output {
 
         println!();
     }
+
     pub fn generating_cache(&self) {
         println!("{}", "Generating cache...".yellow().bold())
     }
+
     pub fn generated_cache(&self) {
         println!("{}", "Cache generated!".green().bold())
     }
+
     pub fn overriding(&self, path: String) {
         println!(
             "{}",
@@ -64,9 +69,11 @@ impl Output {
                 .bold()
         );
     }
+
     pub fn overrided(&self) {
         println!("{}", "Overriding completed".green().bold());
     }
+
     pub fn already_has_destination_file(&self, file_path: String) {
         println!(
             "{}",
@@ -78,6 +85,7 @@ impl Output {
             .bold()
         )
     }
+
     pub fn all_filtered_techs(&self, name_and_content_list: NameAndContentList) {
         let mut table = Table::new();
 
@@ -89,6 +97,7 @@ impl Output {
 
         table.printstd();
     }
+
     pub fn update_available(&self) {
         println!("{}", "There is an update available".blue().bold());
         println!(
@@ -98,15 +107,19 @@ impl Output {
             " argument to update the cache".cyan().bold(),
         );
     }
+
     pub fn already_up_to_date(&self) {
         println!("{}", "Already up to date".green().bold());
     }
+
     pub fn updating(&self) {
         println!("{}", "Updating gitignore templates".yellow().bold());
     }
+
     pub fn updated(&self) {
         println!("{}", "Update completed".green().bold());
     }
+
     pub fn terminated(&self, process_name: &str) {
         println!(
             "{} {}",
@@ -114,6 +127,7 @@ impl Output {
             "process terminated".green().bold()
         );
     }
+
     pub fn generating(&self, path: String) {
         println!(
             "{}",
@@ -122,9 +136,11 @@ impl Output {
                 .bold()
         );
     }
+
     pub fn generated(&self) {
         println!("{}", "Generation completed".green().bold());
     }
+
     pub fn appending(&self, path: String) {
         println!(
             "{}",
@@ -133,9 +149,11 @@ impl Output {
                 .bold()
         );
     }
+
     pub fn appended(&self) {
         println!("{}", "Append completed".green().bold());
     }
+
     pub fn exact(&self, exact: NameList) {
         if !exact.is_empty() {
             let exact = exact
@@ -155,6 +173,7 @@ impl Output {
             }
         }
     }
+
     pub fn closest(&self, closest: Matches) {
         let bright_blue_bold_italic = |string: String| string.bright_blue().bold().italic();
         let magneta_bold_italic = |string: String| string.magenta().bold().italic();
@@ -165,12 +184,12 @@ impl Output {
                     "Unfortunately, I do not have the template for {}",
                     closest
                         .iter()
-                        .map(|elem| { format!("{}", bright_blue_bold_italic(elem.original())) })
+                        .map(|elem| { format!("{}", magneta_bold_italic(elem.original())) })
                         .collect::<Vec<_>>()
                         .join(", ")
                 );
                 println!(
-                    "The closest I can get is {}. Perhaps that's what you wanted?",
+                    "The closest I can get is {}.\nPerhaps that's what you wanted?",
                     closest
                         .iter()
                         .map(|elem| {
@@ -186,7 +205,7 @@ impl Output {
             } else {
                 let non = closest
                     .iter()
-                    .map(|elem| format!("{}", bright_blue_bold_italic(elem.original())))
+                    .map(|elem| format!("{}", magneta_bold_italic(elem.original())))
                     .collect::<Vec<_>>();
                 let (res, last) = non.split_at(len - 1);
                 println!(
@@ -206,7 +225,7 @@ impl Output {
                     .collect::<Vec<_>>();
                 let (res, last) = closest_non_pair.split_at(len - 1);
                 println!(
-                    "The closest I can get is {} and {}. Perhaps that's what you wanted?",
+                    "The closest I can get is {} and {}.\nPerhaps that's what you wanted?",
                     res.join(", "),
                     last.join("")
                 );

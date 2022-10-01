@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use crate::util::{
     Date, GitIgnoreNameAndContentList, LatestCommitTimeInString, NameAndContentList, Str,
 };
@@ -12,27 +14,27 @@ impl GitIgnoredApi {
     pub const fn new(api: Str) -> Self {
         GitIgnoredApi { api }
     }
-    fn result_name_and_content_list(
-        &self,
-    ) -> Result<GitIgnoreNameAndContentList, Box<dyn std::error::Error>> {
+
+    fn result_name_and_content_list(&self) -> Result<GitIgnoreNameAndContentList, Box<dyn Error>> {
         Ok(
             reqwest::blocking::get(format!("{}{}", self.api, "/api/names-and-contents"))?
                 .json::<GitIgnoreNameAndContentList>()?,
         )
     }
+
     pub fn name_and_content_list(&self) -> NameAndContentList {
         self.result_name_and_content_list()
             .unwrap_or_else(|_| panic!("Unable to get the name and content list from api"))
             .gitignored_name_and_content_list()
     }
-    fn result_latest_commit_time(
-        &self,
-    ) -> Result<LatestCommitTimeInString, Box<dyn std::error::Error>> {
+
+    fn result_latest_commit_time(&self) -> Result<LatestCommitTimeInString, Box<dyn Error>> {
         Ok(
             reqwest::blocking::get(format!("{}{}", self.api, "/api/commit-time"))?
                 .json::<LatestCommitTimeInString>()?,
         )
     }
+
     pub fn latest_commit_time(&self) -> Date {
         let commit_time_iso_format = self
             .result_latest_commit_time()
