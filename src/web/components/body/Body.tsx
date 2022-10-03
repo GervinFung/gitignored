@@ -74,7 +74,10 @@ const Body = ({
             const params = Object.entries({
                 names: names.join(namesDelimiter),
             })
-                .flatMap(([key, value]) => (!value ? [] : [`${key}=${value}`]))
+                .flatMap(([key, value]) =>
+                    // ref: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams#preserving_plus_signs
+                    !value ? [] : [`${key}=${encodeURIComponent(value)}`]
+                )
                 .join('&');
             router.push(!params ? '' : `?${params}`, undefined, {
                 shallow: true,
@@ -86,7 +89,10 @@ const Body = ({
     const queryNames = query.names;
 
     React.useEffect(() => {
-        const names = parseAsString(queryNames ?? '').split(namesDelimiter);
+        const names = decodeURIComponent(parseAsString(queryNames ?? '')).split(
+            namesDelimiter
+        );
+        console.log({ names, queryNames });
         if (names.length) {
             setState((prev) => ({
                 ...prev,
