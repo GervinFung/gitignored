@@ -1,0 +1,11 @@
+{
+    "entry": ["pages/api/**/*.ts", "pages/**/*.tsx"],
+    "ignoreUnresolved": ["./Theme"],
+    "ignorePatterns": [
+        "**/node_modules/**",
+        "**/__test__/**",
+        "**/src/**/*.d.ts"
+    ],
+    "ignoreUnused": [],
+    "ignoreUnimported": []
+}

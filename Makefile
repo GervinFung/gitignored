@@ -44,7 +44,17 @@ format:
 
 ## lint
 lint:
-	$(NODE_BIN)eslint src/ test/ -f='stylish' --color
+	$(NODE_BIN)eslint src/ test/ -f='stylish' --color &&\
+		make find-unused-exports &&\
+		make find-unimported-files
+
+## find unused exports
+find-unused-exports:
+	$(NODE_BIN)find-unused-exports
+
+## find unimported files
+find-unimported-files:
+	$(NODE_BIN)unimported
 
 ## typecheck
 tsc=$(NODE_BIN)tsc

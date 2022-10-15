@@ -14,7 +14,7 @@ class Database {
     private readonly updateTime: string;
     private readonly scrapper: ReturnType<typeof scrapper>;
 
-    private static create = async () => {
+    private static readonly create = async () => {
         const config = mongodbConfig();
         const client = (() => {
             const createURL = () => {
@@ -57,11 +57,12 @@ class Database {
         this.scrapper = scrapper();
     }
 
-    private getTechs = () => this.database.collection(this.tech);
+    private readonly getTechs = () => this.database.collection(this.tech);
 
-    private getUpdateTime = () => this.database.collection(this.updateTime);
+    private readonly getUpdateTime = () =>
+        this.database.collection(this.updateTime);
 
-    private getLatestTimeCommitted = async () => {
+    private readonly getLatestTimeCommitted = async () => {
         const latestTimeUpdated = await this.getUpdateTime().findOne<
             Readonly<{
                 commitedAt: string;
@@ -74,12 +75,12 @@ class Database {
     };
 
     // testing purpose only
-    close = () => this.client.close();
-    clearCollections = async () =>
+    readonly close = () => this.client.close();
+    readonly clearCollections = async () =>
         (await this.getTechs().deleteMany({})) &&
         (await this.getUpdateTime().deleteMany({}));
 
-    bulkUpsertGitIgnoreTemplate = async (
+    readonly bulkUpsertGitIgnoreTemplate = async (
         gitIgnoreNamesAndContents: GitIgnoreSelectedTechs
     ): Promise<
         Readonly<{
