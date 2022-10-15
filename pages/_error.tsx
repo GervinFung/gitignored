@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Layout from '../src/web/App';
 import { ToastError } from '../src/web/components/toaser/Toaser';

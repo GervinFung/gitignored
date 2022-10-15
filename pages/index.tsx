@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { InferGetServerSidePropsType } from 'next';
-import * as React from 'react';
+import React from 'react';
 import Layout from '../src/web/App';
 import Body from '../src/web/components/body';
 import { api, parseAsGitIgnoreTechs } from '../src/web/util';

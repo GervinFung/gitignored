@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import { injectStyle } from 'react-toastify/dist/inject-style';
@@ -20,7 +20,7 @@ const Layout = ({
 
     const url = 'https://gitignored.vercel.app';
     const description =
-        'The Web Application of Gitignored. A more UI/UX Friendly Web Application that Generates Useful .gitignore templates. Preview/Copy/Download Single or Multiple .gitignore File(s)';
+        'The Web Application of Gitignored. A more UI/UX Friendly Web Application that generates useful .gitignore files for your project from by choosing different collection of templates stored by Github. Preview/Copy/Download Single or Multiple .gitignore File(s)';
 
     const gitignoredTitle = `GitIgnored | ${title}`;
 
