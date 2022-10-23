@@ -1,17 +1,8 @@
 import testMongo from './api/database/mongo';
 import testScrapper from './api/scrapper';
 import testComponentLogic from './web/component/util';
+import testCases from 'cases-of-test';
 
-const tests: ReadonlyArray<readonly [() => void, 'only'?]> = [
-    [testScrapper],
-    [testMongo],
-    [testComponentLogic],
-];
-
-const selectedTests = tests.filter(([_, only]) => only);
-
-if (process.env.IS_CI && selectedTests.length) {
-    throw new Error('cannot have "only" in ci cd');
-}
-
-(!selectedTests.length ? tests : selectedTests).forEach(([test]) => test());
+testCases({
+    tests: [[testScrapper], [testMongo], [testComponentLogic]],
+});
