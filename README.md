@@ -45,7 +45,7 @@ Here's what the developers can do with it
 | Framework                                                              | NextJS            |
 | Build Automation Tool                                                  | Make              |
 | Text Editor                                                            | NeoVim            |
-| Dependency Management                                                  | Yarn              |
+| Dependency Management                                                  | Pnpm              |
 | Continuous Integration, Continuous Delivery, and Continuous Deployment | GitHub Actions    |
 
 #### Make Commands
