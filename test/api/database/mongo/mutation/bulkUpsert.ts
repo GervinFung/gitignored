@@ -1,5 +1,6 @@
 import Database from '../../../../../src/api/database/mongo';
 import { parse } from '../../../../util';
+import { describe, it, expect } from 'vitest';
 
 const testBulkUpsert = () =>
     describe('Bulk Upsert', () => {

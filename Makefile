@@ -34,7 +34,7 @@ start:
 ## format
 prettier=$(NODE_BIN)prettier
 prettify:
-	$(prettier) --$(type) src/ test/
+	$(prettier) --ignore-path .gitignore --$(type) src/ test/
 
 format-check:
 	make prettify type=check
@@ -67,8 +67,7 @@ typecheck-watch:
 
 ## test
 test:
-	$(NODE_BIN)esbuild test/index.ts --sourcemap --bundle --minify --target=node16.3.1 --platform=node --outfile=__test__/index.test.js &&\
-		$(NODE_BIN)jest __test__
+	$(NODE_BIN)vitest
 
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04

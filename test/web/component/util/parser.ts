@@ -2,6 +2,7 @@ import {
     parseAsGitIgnoreSelectedTechs,
     parseAsGitIgnoreTechs,
 } from '../../../../src/web/util';
+import { describe, it, expect } from 'vitest';
 
 const testParser = () =>
     describe('Parser', () => {
