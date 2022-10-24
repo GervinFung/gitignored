@@ -1,6 +1,0 @@
-node_modules
-.next
-build
-__test__
-script/**/*.generated.*
-src/api/portfolio/data.json
