@@ -12,7 +12,7 @@ NODE_BIN=node_modules/.bin/
 
 ## install
 install:
-	yarn install --frozen-lockfile
+	pnpm i --frozen-lockfile
 
 ## dev
 next=$(NODE_BIN)next

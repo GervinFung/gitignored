@@ -17,6 +17,11 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v2
 
+            - name: Install PNPM
+              run: |
+                  sudo apt install npm
+                  npm i --location=global pnpm
+
             - name: Install MongoDB
               uses: supercharge/mongodb-github-action@1.7.0
               with:
