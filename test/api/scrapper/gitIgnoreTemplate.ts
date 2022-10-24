@@ -1,5 +1,6 @@
 import scrapper from '../../../src/api/scrapper';
 import { parse } from '../../util';
+import { describe, it, expect } from 'vitest';
 
 const testGitIgnoreTemplate = () =>
     describe('Git Ignore Scrapper', () => {

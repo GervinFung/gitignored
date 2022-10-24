@@ -34,7 +34,7 @@ start:
 ## format
 prettier=$(NODE_BIN)prettier
 prettify:
-	$(prettier) --$(type) src/ test/
+	$(prettier) --ignore-path .gitignore --$(type) src/ test/
 
 format-check:
 	make prettify type=check

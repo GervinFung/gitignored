@@ -3,6 +3,7 @@ import testMutation from './mutation';
 import testQuery from './query';
 import testUtil from './util';
 import testCases from 'cases-of-test';
+import { afterAll, describe } from 'vitest';
 
 const testMongo = () =>
     describe('MongoDB', () => {

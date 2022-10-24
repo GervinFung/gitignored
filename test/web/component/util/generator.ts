@@ -2,6 +2,7 @@ import {
     combineGitIgnoreTemplates,
     generateContrastingColor,
 } from '../../../../src/web/util';
+import { describe, it, expect } from 'vitest';
 
 const testGenerator = () =>
     describe('Generator', () => {

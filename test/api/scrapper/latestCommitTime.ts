@@ -1,4 +1,5 @@
 import scrapper from '../../../src/api/scrapper';
+import { describe, it, expect } from 'vitest';
 
 const testGitIgnoreRepoLatestCommitTime = () =>
     describe('Git Ignore Repo Latest Commit Time', () => {
