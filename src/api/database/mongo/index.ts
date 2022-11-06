@@ -38,7 +38,7 @@ class Database {
         })();
 
         await client.connect();
-        return new Database(client, config);
+        return new this(client, config);
     };
 
     static readonly mongodb: Promise<Database> = Database.create();
@@ -47,13 +47,10 @@ class Database {
         private readonly client: MongoClient,
         config: ReturnType<typeof mongodbConfig>
     ) {
-        const {
-            dbName,
-            collections: { tech, updateTime },
-        } = config;
-        this.tech = tech;
-        this.updateTime = updateTime;
-        this.database = client.db(dbName);
+        const { collections } = config;
+        this.tech = collections.tech;
+        this.updateTime = collections.updateTime;
+        this.database = client.db(config.dbName);
         this.scrapper = scrapper();
     }
 
@@ -98,16 +95,14 @@ class Database {
         const { acknowledged, insertedIds, insertedCount } =
             await techs.insertMany(Array.from(gitIgnoreNamesAndContents));
         if (
-            !(
-                acknowledged &&
-                insertedCount === gitIgnoreNamesAndContents.length
-            )
+            acknowledged &&
+            insertedCount === gitIgnoreNamesAndContents.length
         ) {
-            throw new Error(
-                `Faulty insertion, acknowledged: ${acknowledged}, insertedCount: ${insertedCount} and length: ${gitIgnoreNamesAndContents.length}`
-            );
+            return insertedIds;
         }
-        return insertedIds;
+        throw new Error(
+            `Faulty insertion, acknowledged: ${acknowledged}, insertedCount: ${insertedCount} and length: ${gitIgnoreNamesAndContents.length}`
+        );
     };
 
     getLatestCommitTime = async () => {

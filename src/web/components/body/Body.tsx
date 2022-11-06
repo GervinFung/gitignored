@@ -92,7 +92,6 @@ const Body = ({
         const names = decodeURIComponent(parseAsString(queryNames ?? '')).split(
             namesDelimiter
         );
-        console.log({ names, queryNames });
         if (names.length) {
             setState((prev) => ({
                 ...prev,

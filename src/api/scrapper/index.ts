@@ -51,28 +51,31 @@ const scrapper = () => ({
                 .concat(
                     nameAndContentList
                         .filter(({ name }) => duplicatedNameList.includes(name))
-                        .flatMap(({ name }, index, array) => {
-                            if (array[index - 1]?.name === name) {
-                                return [];
-                            }
-                            return [
-                                {
-                                    name,
-                                    content: Array.from(
-                                        new Set(
-                                            array
-                                                .filter(
-                                                    (element) =>
-                                                        element.name === name
-                                                )
-                                                .map(({ content }) => content)
-                                                .join('\n')
-                                                .split('\n')
-                                        )
-                                    ).join('\n'),
-                                },
-                            ];
-                        })
+                        .flatMap(({ name }, index, array) =>
+                            array[index - 1]?.name === name
+                                ? []
+                                : [
+                                      {
+                                          name,
+                                          content: Array.from(
+                                              new Set(
+                                                  array
+                                                      .filter(
+                                                          (element) =>
+                                                              element.name ===
+                                                              name
+                                                      )
+                                                      .map(
+                                                          ({ content }) =>
+                                                              content
+                                                      )
+                                                      .join('\n')
+                                                      .split('\n')
+                                              )
+                                          ).join('\n'),
+                                      },
+                                  ]
+                        )
                 );
             console.log(
                 `after combining duplicates, there are total of ${finalNameAndContentList.length} templates`

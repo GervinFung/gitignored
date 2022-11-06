@@ -1,39 +1,7 @@
 {
-    "root": true,
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
     "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "rules": {
-        "react/prop-types": 0,
-        "@typescript-eslint/explicit-function-return-type": 0,
-        "@typescript-eslint/explicit-module-boundary-types": 0,
-        "@typescript-eslint/ban-types": 0,
-        "@typescript-eslint/no-extra-semi": 2,
-        "@typescript-eslint/member-delimiter-style": 0,
-        "@typescript-eslint/no-explicit-any": 0,
-        "@typescript-eslint/no-var-requires": 2,
-        "@typescript-eslint/no-empty-function": 0,
-        "@typescript-eslint/camelcase": 0,
-        "no-async-promise-executor": 0,
-        "@typescript-eslint/no-namespace": 0,
-        "no-fallthrough": 0,
-        "@typescript-eslint/no-unused-vars": [
-            2,
-            { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
-        ],
-        "no-constant-condition": 2,
-        "no-restricted-syntax": [
-            2,
-            {
-                "selector": "TSEnumDeclaration",
-                "message": "Don't declare enums"
-            }
-        ],
-        "semi": [2, "always"]
-    }
+        "@poolofdeath20/eslint-config/node",
+        "@poolofdeath20/eslint-config/react",
+        "@poolofdeath20/eslint-config/styled-components-jsx"
+    ]
 }

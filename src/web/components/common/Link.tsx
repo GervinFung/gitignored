@@ -9,7 +9,7 @@ const CustomLink = ({
     param: Readonly<Parameters<typeof Link>[number]>;
 }>) => (
     <Link {...param}>
-        <a>{children}</a>
+        <a href={param.href.toString()}>{children}</a>
     </Link>
 );
 

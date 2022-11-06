@@ -8,8 +8,8 @@ type BackToTopAnimation = Readonly<{
 
 const BackToTop = ({ isScroll }: Readonly<{ isScroll: boolean }>) => {
     const [state, setState] = React.useState({
-        isAnimate: isScroll,
         isLoad: isScroll,
+        isAnimate: isScroll,
     });
 
     React.useEffect(() => {
@@ -17,7 +17,7 @@ const BackToTop = ({ isScroll }: Readonly<{ isScroll: boolean }>) => {
             ...prevState,
             isAnimate: isScroll,
         }));
-        setTimeout(
+        const timeOut = setTimeout(
             () =>
                 setState((prevState) => ({
                     ...prevState,
@@ -25,6 +25,7 @@ const BackToTop = ({ isScroll }: Readonly<{ isScroll: boolean }>) => {
                 })),
             isScroll ? 0 : 350
         );
+        return () => clearTimeout(timeOut);
     }, [isScroll]);
 
     const { isAnimate, isLoad } = state;
@@ -70,8 +71,9 @@ const FadeIn = keyframes`
     }
 `;
 
-const ArrowUpContainer = styled.div`
+const ArrowUpContainer = styled.button`
     border-radius: 50%;
+    border: none;
     &:hover {
         cursor: pointer;
         transition: 0.1s ease all;
@@ -103,7 +105,7 @@ const ArrowUpContainer = styled.div`
 `;
 
 const ArrowUp = styled(FaArrowUp)`
-    font-size: 1.5em !important;
+    font-size: 1.75em !important;
     color: ${({ theme }) => theme.pureWhite} !important;
 `;
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import type { GitIgnoreSelectedTechs } from '../../../../common/type';
 import { generateContrastingColor } from '../../../util';
 
@@ -24,14 +24,16 @@ const Content = ({
     const { isCopied } = state;
 
     React.useEffect(() => {
-        if (isCopied) {
-            setTimeout(() => {
-                setState((prev) => ({
-                    ...prev,
-                    isCopied: false,
-                }));
-            }, 1000 * 2);
+        if (!isCopied) {
+            return;
         }
+        const timeOut = setTimeout(() => {
+            setState((prev) => ({
+                ...prev,
+                isCopied: false,
+            }));
+        }, 1000 * 2);
+        return () => clearTimeout(timeOut);
     }, [isCopied]);
 
     return (
@@ -91,7 +93,7 @@ const NameAndCopyContainer = styled.div`
     justify-content: space-between;
 `;
 
-const BoxDisplay = styled.div`
+const BoxDisplay = css`
     padding: 8px 12px;
     font-size: 0.8em;
     width: fit-content;
@@ -99,15 +101,18 @@ const BoxDisplay = styled.div`
     box-sizing: border-box;
 `;
 
-const Name = styled(BoxDisplay)`
+const Name = styled.div`
     color: ${({ color }: NameProps) => color};
     background-color: ${({ backgroundColor }: NameProps) => backgroundColor};
+    ${BoxDisplay}
 `;
 
-const Button = styled(BoxDisplay)`
+const Button = styled.button`
     cursor: pointer;
     background-color: ${({ theme }) => theme.copyButtonBackground};
     color: ${({ theme }) => theme.pureWhite};
+    font-family: ${({ theme }) => theme.fontFamily};
+    ${BoxDisplay}
 `;
 
 const GitIgnoreContent = styled.pre`
