@@ -127,7 +127,7 @@ const Menus = ({
                         pending: 'Generating template...',
                         success: undefined,
                         error: {
-                            render: ({ data }) => data,
+                            render: ({ data }) => data as any,
                         },
                     });
                     return undefined;
@@ -218,7 +218,7 @@ const Menus = ({
                         pending: 'Downloading template...',
                         success: undefined,
                         error: {
-                            render: ({ data }) => data,
+                            render: ({ data }) => data as any,
                         },
                     });
                     return undefined;
