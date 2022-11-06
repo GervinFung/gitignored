@@ -11,9 +11,9 @@ const commitTime: EndPointFunc<Return> = async (req, res) => {
     if (req.method !== 'GET') {
         res.send('Non GET request is ignored');
     } else {
-        const mongo = await Database.mongodb;
+        const instance = await Database.instance();
         res.send({
-            latestCommitTime: await mongo.getLatestCommitTime(),
+            latestCommitTime: await instance.getLatestCommitTime(),
         });
     }
 };

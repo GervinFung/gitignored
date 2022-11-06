@@ -5,18 +5,18 @@ import { beforeEach, describe, it, expect } from 'vitest';
 const testGetContentAndName = () =>
     describe('Get Content and Name', () => {
         beforeEach(async () => {
-            await (await Database.mongodb).clearCollections();
+            await (await Database.instance()).clearCollections();
         });
         it('should throw error when empty array is passed', async () => {
-            const mongo = await Database.mongodb;
+            const database = await Database.instance();
             expect(
-                mongo.getContentAndNameFromSelectedIds([])
+                database.getContentAndNameFromSelectedIds([])
             ).rejects.toThrowError();
         });
         it('should return empty array when there is no match', async () => {
-            const mongo = await Database.mongodb;
+            const database = await Database.instance();
             expect(
-                await mongo.getContentAndNameFromSelectedIds([
+                await database.getContentAndNameFromSelectedIds([
                     new ObjectId('507f1f77bcf86cd799439011'),
                 ])
             ).toStrictEqual([]);

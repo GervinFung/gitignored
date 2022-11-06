@@ -13,15 +13,15 @@ const generate: EndPointFunc<Return> = async (req, res) => {
     if (req.method !== 'GET') {
         res.send('Non GET request is ignored');
     } else {
-        const mongo = await Database.mongodb;
-        await mongo.updateGitIgnoreTemplate();
+        const database = await Database.instance();
+        await database.updateGitIgnoreTemplate();
         const { query } = req;
         const { selectedIds } = query;
         res.send({
             gitIgnoreSelectedTechs:
                 typeof selectedIds !== 'string'
                     ? []
-                    : await mongo.getContentAndNameFromSelectedIds(
+                    : await database.getContentAndNameFromSelectedIds(
                           formObjectIdsFromString(selectedIds)
                       ),
         });

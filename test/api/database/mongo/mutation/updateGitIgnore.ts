@@ -5,13 +5,13 @@ import { beforeEach, describe, it, expect } from 'vitest';
 const testUpdateGitIgnore = () =>
     describe('Update Git Ignore', () => {
         beforeEach(async () => {
-            await (await Database.mongodb).clearCollections();
+            await (await Database.instance()).clearCollections();
         });
         it('should scrap and update', async () => {
-            const mongo = await Database.mongodb;
-            await mongo.updateGitIgnoreTemplate();
+            const database = await Database.instance();
+            await database.updateGitIgnoreTemplate();
 
-            const namesAndIds = await mongo.getAllTechNamesAndIds();
+            const namesAndIds = await database.getAllTechNamesAndIds();
 
             expect(namesAndIds.length > 200);
             expect(
@@ -23,14 +23,14 @@ const testUpdateGitIgnore = () =>
 
             expect(
                 (
-                    await mongo.getContentAndNameFromSelectedIds(
+                    await database.getContentAndNameFromSelectedIds(
                         namesAndIds.map(({ id }) => new ObjectId(id))
                     )
                 ).every(({ name }, index) => name === namesAndIds[index]?.name)
             ).toBe(true);
 
             expect(
-                (await mongo.getAllTechNamesAndContents()).every(
+                (await database.getAllTechNamesAndContents()).every(
                     ({ name, content }, index) =>
                         name === namesAndIds[index]?.name &&
                         typeof content === 'string'
