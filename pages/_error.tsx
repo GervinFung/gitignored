@@ -29,7 +29,10 @@ const ErrorPage: NextPage = () => {
                 <Title>404</Title>
                 <p>
                     You did&apos;t break the internet, just that, you manage to
-                    visit something that don&apos;t exist 😏
+                    visit something that don&apos;t exist{' '}
+                    <span role="img" aria-label="smug">
+                        😏
+                    </span>
                 </p>
                 <p>
                     Luckily, there is a fix, just type{' '}
@@ -40,7 +43,6 @@ const ErrorPage: NextPage = () => {
                     <Prompt />
                     <GitCommandPrompt
                         type="text"
-                        autoFocus
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
