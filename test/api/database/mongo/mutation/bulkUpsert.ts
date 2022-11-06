@@ -5,13 +5,14 @@ import { describe, it, expect } from 'vitest';
 const testBulkUpsert = () =>
     describe('Bulk Upsert', () => {
         it('should throw error when argument is empty array', async () => {
-            const mongo = await Database.mongodb;
+            const database = await Database.instance();
             expect(
-                mongo.bulkUpsertGitIgnoreTemplate([])
+                database.bulkUpsertGitIgnoreTemplate([])
             ).rejects.toThrowError();
         });
         it('should upsert when argument is not an empty array', async () => {
-            const mongo = await Database.mongodb;
+            const database = await Database.instance();
+
             const namesAndContents = [
                 {
                     content: 'Ts API',
@@ -27,11 +28,10 @@ const testBulkUpsert = () =>
                 },
             ] as const;
 
-            const gitIgnoreTemplates = await mongo.bulkUpsertGitIgnoreTemplate(
-                namesAndContents
-            );
+            const gitIgnoreTemplates =
+                await database.bulkUpsertGitIgnoreTemplate(namesAndContents);
 
-            const techs = await mongo.getAllTechNamesAndIds();
+            const techs = await database.getAllTechNamesAndIds();
             const [ts, java, js] = techs;
 
             expect(techs.length === 3).toBe(true);
@@ -40,7 +40,7 @@ const testBulkUpsert = () =>
             expect(js?.name === 'JavaScript').toBe(true);
 
             expect(
-                await mongo.getContentAndNameFromSelectedIds(
+                await database.getContentAndNameFromSelectedIds(
                     Array.from(
                         {
                             length:
@@ -56,7 +56,7 @@ const testBulkUpsert = () =>
             );
         });
         it('should oveerride previous data for upserting', async () => {
-            const mongo = await Database.mongodb;
+            const database = await Database.instance();
             const namesAndContents = [
                 {
                     content: 'Vengeance, Revenge',
@@ -64,18 +64,17 @@ const testBulkUpsert = () =>
                 },
             ] as const;
 
-            const gitIgnoreTemplates = await mongo.bulkUpsertGitIgnoreTemplate(
-                namesAndContents
-            );
+            const gitIgnoreTemplates =
+                await database.bulkUpsertGitIgnoreTemplate(namesAndContents);
 
-            const techs = await mongo.getAllTechNamesAndIds();
+            const techs = await database.getAllTechNamesAndIds();
             const [avenger] = techs;
 
             expect(techs.length === 1).toBe(true);
             expect(avenger?.name === 'Avengers').toBe(true);
 
             expect(
-                await mongo.getContentAndNameFromSelectedIds(
+                await database.getContentAndNameFromSelectedIds(
                     Array.from(
                         {
                             length: Object.entries(gitIgnoreTemplates).length,

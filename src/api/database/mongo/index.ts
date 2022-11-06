@@ -41,7 +41,18 @@ class Database {
         return new this(client, config);
     };
 
-    static readonly mongodb: Promise<Database> = Database.create();
+    private static database: Promise<Database> | undefined = undefined;
+
+    static readonly instance = (): Promise<Database> => {
+        const { database } = this;
+        switch (typeof database) {
+            case 'undefined': {
+                this.database = Database.create();
+                return this.database;
+            }
+        }
+        return database;
+    };
 
     private constructor(
         private readonly client: MongoClient,

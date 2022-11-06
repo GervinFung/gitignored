@@ -12,10 +12,10 @@ const gitIgnored: EndPointFunc<Return> = async (req, res) => {
     if (req.method !== 'GET') {
         res.send('Non GET request is ignored');
     } else {
-        const mongo = await Database.mongodb;
-        await mongo.updateGitIgnoreTemplate();
+        const database = await Database.instance();
+        await database.updateGitIgnoreTemplate();
         res.send({
-            gitIgnoreNamesAndIds: await mongo.getAllTechNamesAndIds(),
+            gitIgnoreNamesAndIds: await database.getAllTechNamesAndIds(),
         });
     }
 };

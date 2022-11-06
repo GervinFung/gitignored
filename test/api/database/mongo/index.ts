@@ -11,8 +11,7 @@ const testMongo = () =>
             tests: [[testUtil], [testMutation], [testQuery]],
         });
         afterAll(async () => {
-            const mongo = await Database.mongodb;
-            await mongo.close();
+            await (await Database.instance()).close();
         });
     });
 
