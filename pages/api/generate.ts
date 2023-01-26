@@ -8,16 +8,16 @@ type Return = Readonly<{
     gitIgnoreSelectedTechs: GitIgnoreSelectedTechs;
 }>;
 
-const generate: EndPointFunc<Return> = async (req, res) => {
-    await cors<Return>()(req, res);
-    if (req.method !== 'GET') {
-        res.send('Non GET request is ignored');
+const generate: EndPointFunc<Return> = async (request, response) => {
+    await cors<Return>()(request, response);
+    if (request.method !== 'GET') {
+        response.send('Non GET request is ignored');
     } else {
         const database = await Database.instance();
         await database.updateGitIgnoreTemplate();
-        const { query } = req;
+        const { query } = request;
         const { selectedIds } = query;
-        res.send({
+        response.send({
             gitIgnoreSelectedTechs:
                 typeof selectedIds !== 'string'
                     ? []
@@ -27,5 +27,7 @@ const generate: EndPointFunc<Return> = async (req, res) => {
         });
     }
 };
+
+export type { Return };
 
 export default generate;

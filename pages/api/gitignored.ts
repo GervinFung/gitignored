@@ -7,17 +7,20 @@ type Return = Readonly<{
     gitIgnoreNamesAndIds: GitIgnoreNamesAndIds;
 }>;
 
-const gitIgnored: EndPointFunc<Return> = async (req, res) => {
-    await cors<Return>()(req, res);
-    if (req.method !== 'GET') {
-        res.send('Non GET request is ignored');
+const gitIgnored: EndPointFunc<Return> = async (request, response) => {
+    await cors<Return>()(request, response);
+    if (request.method !== 'GET') {
+        response.send('Non GET request is ignored');
     } else {
         const database = await Database.instance();
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         await database.updateGitIgnoreTemplate();
-        res.send({
+        response.send({
             gitIgnoreNamesAndIds: await database.getAllTechNamesAndIds(),
         });
     }
 };
+
+export type { Return };
 
 export default gitIgnored;

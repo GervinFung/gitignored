@@ -40,7 +40,7 @@ Here's what the developers can do with it
 | ---------------------------------------------------------------------- | ----------------- |
 | Development Language                                                   | TypeScipt         |
 | Scripting Language                                                     | JavaScript        |
-| Testing                                                                | Jest & Esbuild    |
+| Testing                                                                | Vitest            |
 | Styling                                                                | Styled-components |
 | Framework                                                              | NextJS            |
 | Build Automation Tool                                                  | Make              |
@@ -52,18 +52,18 @@ Here's what the developers can do with it
 
 _*Below are the listed commands that you can use to build/develop/test this app*_
 
-| Command            | Usage                                             |
-| ------------------ | ------------------------------------------------- |
-| make start         | Start development                                 |
-| make install       | Install all dependencies                          |
-| make test          | Run all test code                                 |
-| make build         | Bundle and build the app                          |
-| make typecheck     | Run typechecking for source code                  |
-| make lint          | Run linter for source and test code               |
-| make format-check  | Run prettier to check source and test code format |
-| make format        | Run prettier to format source and test code       |
-| make install-mongo | Install MongoDB                                   |
-| make setup-mongo   | Setup MongoDB databases and collections           |
+| Command                                | Usage                                             |
+| -------------------------------------- | ------------------------------------------------- |
+| make start-(development OR production) | Start development                                 |
+| make build-(development OR production) | Bundle and build the app                          |
+| make install                           | Install all dependencies                          |
+| make test                              | Run all test code                                 |
+| make typecheck                         | Run typechecking for source code                  |
+| make lint                              | Run linter for source and test code               |
+| make format-check                      | Run prettier to check source and test code format |
+| make format                            | Run prettier to format source and test code       |
+| make install-mongo                     | Install MongoDB                                   |
+| make setup-mongo                       | Setup MongoDB databases and collections           |
 
 ## Environment Variables
 
