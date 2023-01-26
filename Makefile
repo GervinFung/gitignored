@@ -20,16 +20,27 @@ next=$(NODE_BIN)next
 clear-cache:
 	rm -rf .next
 
-dev: clear-cache
+start-development: clear-cache
 	$(next) dev
 
+start-production: clear-cache
+	$(next) start
+
+## deployment
+vercel-staging: staging
+	vercel
+
+vercel-production: production
+	vercel --prod
+
 ## build
-build: clear-cache
+build-development: clear-cache
+	cp .env.development .env &&\
 	$(next) build
 
-## start
-start:
-	$(next) start
+build-production: clear-cache
+	cp .env.production .env &&\
+	$(next) build
 
 ## format
 prettier=$(NODE_BIN)prettier

@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
 import { injectStyle } from 'react-toastify/dist/inject-style';
-
 import { DefaultSeo } from 'next-seo';
 import GlobalStyle from './theme/Global';
 import Header from './components/header';

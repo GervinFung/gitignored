@@ -15,33 +15,50 @@ import type {
     GitIgnoreSelectedIds,
     GitIgnoreSelectedTechs,
 } from '../../../common/type';
-import { api, parseAsGitIgnoreSelectedTechs, title } from '../../util';
-import type { ServerProps } from '../../../../pages';
+import { api, title } from '../../util';
 import { parseAsString } from '../../../common/util/parser';
 import axios from 'axios';
-import { arrayDelimiter } from '../../../common/const';
 
 type Option = 'preview' | 'download';
 type CombinedTechs = undefined | GitIgnoreSelectedTechs[0]['content'];
+import type { Return as GitIgnoredReturn } from '../../../../pages/api/gitignored';
+import type { Return as GenerateReturn } from '../../../../pages/api/generate';
+import { arrayDelimiter } from '../../../common/const';
 
 const getLatestSelectedTechs = (selectedIds: GitIgnoreSelectedIds) =>
     axios
         .get(`${api.generate}?selectedIds=${selectedIds.join(arrayDelimiter)}`)
-        .then(({ data }) =>
-            parseAsGitIgnoreSelectedTechs(data.gitIgnoreSelectedTechs)
+        .then(({ data }) => data.gitIgnoreSelectedTechs as GenerateReturn);
+
+const getLatestGitIgnoreNamesAndIds = () =>
+    axios
+        .get(`${api.gitIgnored}`)
+        .then(
+            ({ data }) =>
+                ({
+                    status: 'succees',
+                    gitIgnoreNamesAndIds:
+                        data.gitIgnoreNamesAndIds as GitIgnoredReturn['gitIgnoreNamesAndIds'],
+                } as const)
+        )
+        .catch(
+            (error) =>
+                ({
+                    status: 'failed',
+                    error,
+                } as const)
         );
 
-const Body = ({
-    serverProps,
-}: Readonly<{
-    serverProps: ServerProps;
-}>) => {
+const Body = () => {
     const router = useRouter();
     const namesDelimiter = ',';
 
     const [state, setState] = React.useState({
         isPush: false as boolean,
         option: undefined as undefined | Option,
+        response: undefined as
+            | undefined
+            | Awaited<ReturnType<typeof getLatestGitIgnoreNamesAndIds>>,
         gitIgnore: {
             selectedIds: [] as GitIgnoreSelectedIds,
             combinedTechs: undefined as CombinedTechs,
@@ -49,16 +66,71 @@ const Body = ({
         },
     } as const);
 
-    const { response } = serverProps;
-
-    const namesAndIds =
-        response.status === 'failed' ? [] : response.gitIgnoreNamesAndIds;
-
     const {
         isPush,
         option,
+        response,
         gitIgnore: { selectedTechs, combinedTechs, selectedIds },
     } = state;
+
+    const { query } = router;
+    const queryNames = query.names;
+
+    React.useEffect(() => {
+        ToastPromise({
+            promise: getLatestGitIgnoreNamesAndIds().then((response) => {
+                setState((prev) => ({
+                    ...prev,
+                    response,
+                }));
+                return response;
+            }),
+            pending: {
+                render: () => (
+                    <div>
+                        Loading all <code>.gitignore</code> templates
+                    </div>
+                ),
+            },
+            success: {
+                render: () => (
+                    <div>
+                        Loaded all <code>.gitignore</code> templates 😎
+                    </div>
+                ),
+            },
+            error: {
+                render: () => (
+                    <div>
+                        Failed to load all <code>.gitignore</code> templates
+                    </div>
+                ),
+            },
+        });
+    }, []);
+
+    const namesAndIds =
+        !response || response.status === 'failed'
+            ? []
+            : response.gitIgnoreNamesAndIds;
+
+    React.useEffect(() => {
+        const names = decodeURIComponent(parseAsString(queryNames ?? '')).split(
+            namesDelimiter
+        );
+        if (names.length) {
+            setState((prev) => ({
+                ...prev,
+                option,
+                gitIgnore: {
+                    ...prev.gitIgnore,
+                    selectedIds: namesAndIds.flatMap(({ id, name }) =>
+                        !names.includes(name) ? [] : [id]
+                    ),
+                },
+            }));
+        }
+    }, [queryNames]);
 
     const names = namesAndIds
         .filter(({ id }) => selectedIds.includes(id))
@@ -84,65 +156,6 @@ const Body = ({
             });
         }
     }, [option, selectedIds.join()]);
-
-    const { query } = router;
-    const queryNames = query.names;
-
-    React.useEffect(() => {
-        const names = decodeURIComponent(parseAsString(queryNames ?? '')).split(
-            namesDelimiter
-        );
-        if (names.length) {
-            setState((prev) => ({
-                ...prev,
-                option,
-                gitIgnore: {
-                    ...prev.gitIgnore,
-                    selectedIds: namesAndIds.flatMap(({ id, name }) =>
-                        !names.includes(name) ? [] : [id]
-                    ),
-                },
-            }));
-        }
-    }, [queryNames]);
-
-    React.useEffect(() => {
-        const { response } = serverProps;
-        const promise = new Promise<any>((resolve, reject) => {
-            setTimeout(() => {
-                switch (response.status) {
-                    case 'failed':
-                        return reject(response.error);
-                    case 'success':
-                        return resolve({});
-                }
-            }, 700);
-        });
-        ToastPromise({
-            promise,
-            pending: {
-                render: () => (
-                    <div>
-                        Loading all <code>.gitignore</code> templates
-                    </div>
-                ),
-            },
-            success: {
-                render: () => (
-                    <div>
-                        Loaded all <code>.gitignore</code> templates 😎
-                    </div>
-                ),
-            },
-            error: {
-                render: () => (
-                    <div>
-                        Failed to load all <code>.gitignore</code> templates
-                    </div>
-                ),
-            },
-        });
-    }, []);
 
     return (
         <Container>
