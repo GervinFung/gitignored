@@ -33,7 +33,7 @@ const main = () => {
     install({ mongoVersion });
 
     run('sudo systemctl start mongod');
-    run('mongod version');
+    run('mongod --version');
 };
 
 main();
