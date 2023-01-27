@@ -23,7 +23,9 @@ export default class Cache {
         return cache;
     };
 
-    updateGitIgnoreNamesAndIds = (gitIgnoreNamesAndIds: GitIgnoreNamesAndIds) =>
+    readonly updateGitIgnoreNamesAndIds = (
+        gitIgnoreNamesAndIds: GitIgnoreNamesAndIds
+    ) =>
         localForage
             .setItem(this.keys.gitIgnoreNamesAndIds, gitIgnoreNamesAndIds)
             .then(
@@ -41,7 +43,7 @@ export default class Cache {
                     } as const)
             );
 
-    getGitIgnoreNamesAndIds = () =>
+    readonly getGitIgnoreNamesAndIds = () =>
         localForage
             .getItem(this.keys.gitIgnoreNamesAndIds)
             .then(
@@ -59,6 +61,13 @@ export default class Cache {
                     } as const)
             );
 
-    canGetFromCache = (latestCommitTime: Date) =>
-        new Date().getTime() >= latestCommitTime.getTime();
+    readonly canGetFromCache = async (latestCommitTime: Date) =>
+        localForage
+            .getItem(this.keys.gitIgnoreNamesAndIds)
+            .then(
+                (item) =>
+                    Boolean(item) &&
+                    new Date().getTime() >= latestCommitTime.getTime()
+            )
+            .catch(() => false);
 }

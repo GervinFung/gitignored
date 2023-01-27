@@ -14,6 +14,13 @@ NODE_BIN=node_modules/.bin/
 install:
 	pnpm i --frozen-lockfile
 
+## deploy
+deploy-staging: clear-cache
+	cp .env.production .env && vercel
+
+deploy-production: clear-cache
+	cp .env.production .env && vercel --prod
+
 ## dev
 next=$(NODE_BIN)next
 

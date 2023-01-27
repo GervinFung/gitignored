@@ -147,7 +147,7 @@ const Body = () => {
 
     React.useEffect(() => {
         getLatestCommitTime()
-            .then((response) => {
+            .then(async (response) => {
                 switch (response.status) {
                     case 'failed': {
                         toastFeedback(setLatestGitIgnoreNamesAndIdsFromAPI());
@@ -155,9 +155,9 @@ const Body = () => {
                     }
                     case 'succeed': {
                         if (
-                            !cache.canGetFromCache(
+                            !(await cache.canGetFromCache(
                                 new Date(response.latestCommitTime)
-                            )
+                            ))
                         ) {
                             toastFeedback(
                                 setLatestGitIgnoreNamesAndIdsFromAPI()
