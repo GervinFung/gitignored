@@ -22,10 +22,6 @@ const install = ({ mongoVersion }) => {
 const main = () => {
     const image = process.env['ImageOS'];
     const defaultVersion = image == 'ubuntu22' ? '6.0' : '5.0';
-    console.log({
-        image,
-        defaultVersion,
-    });
     const mongoVersion = parseFloat(
         process.env['INPUT_MONGODB-VERSION'] || defaultVersion
     ).toFixed(1);
@@ -33,7 +29,6 @@ const main = () => {
     install({ mongoVersion });
 
     run('sudo systemctl start mongod');
-    run('mongod --version');
 };
 
 main();
