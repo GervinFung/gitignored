@@ -23,9 +23,7 @@ jobs:
                   npm i --location=global pnpm
 
             - name: Install MongoDB
-              uses: supercharge/mongodb-github-action@1.7.0
-              with:
-                  mongodb-version: 5.0
+              run: make install-mongo
 
             - name: Setup MongoDB
               run: make setup-mongo

@@ -11,9 +11,10 @@ const commitTime: EndPointFunc<Return> = async (request, response) => {
     if (request.method !== 'GET') {
         response.send('Non GET request is ignored');
     } else {
-        const instance = await Database.instance();
+        const database = await Database.instance();
+        await database.updateGitIgnoreTemplate();
         response.send({
-            latestCommitTime: await instance.getLatestCommitTime(),
+            latestCommitTime: await database.getLatestCommitTime(),
         });
     }
 };

@@ -116,7 +116,7 @@ class Database {
         );
     };
 
-    getLatestCommitTime = async () => {
+    readonly getLatestCommitTime = async () => {
         const latestCommitTime = await this.getUpdateTime().findOne<
             Readonly<{
                 commitedAt: string;
@@ -126,9 +126,14 @@ class Database {
             {},
             {
                 sort: { _id: -1 },
-                projection: { _id: 0, commitedAt: 1, createdAt: 1 },
+                projection: {
+                    _id: 0,
+                    commitedAt: 1,
+                    startedAt: 1,
+                },
             }
         );
+
         return !latestCommitTime
             ? await this.scrapper.getLatestTimeCommitted()
             : Math.abs(
@@ -141,15 +146,15 @@ class Database {
             : new Date(latestCommitTime.commitedAt);
     };
 
-    shouldBulkUpsert = async (
+    readonly shouldBulkUpsert = async (
         latestTimeCommitted: () => Promise<Date>
-    ): Promise<boolean> =>
+    ) =>
         !(await this.getUpdateTime().estimatedDocumentCount())
             ? true
             : (await latestTimeCommitted()).getTime() >
               (await this.getLatestTimeCommitted()).getTime();
 
-    getAllTechNamesAndIds = async (): Promise<GitIgnoreNamesAndIds> =>
+    readonly getAllTechNamesAndIds = async (): Promise<GitIgnoreNamesAndIds> =>
         (
             await this.getTechs()
                 .find<
@@ -166,19 +171,20 @@ class Database {
             id: _id.toHexString(),
         }));
 
-    getAllTechNamesAndContents = async (): Promise<GitIgnoreNamesAndContents> =>
-        await this.getTechs()
-            .find<
-                Readonly<
-                    Readonly<{
-                        name: GitIgnoreSelectedTechs[0]['name'];
-                        content: GitIgnoreSelectedTechs[0]['content'];
-                    }>
-                >
-            >({}, { projection: { _id: 0, name: 1, content: 1 } })
-            .toArray();
+    readonly getAllTechNamesAndContents =
+        async (): Promise<GitIgnoreNamesAndContents> =>
+            this.getTechs()
+                .find<
+                    Readonly<
+                        Readonly<{
+                            name: GitIgnoreSelectedTechs[0]['name'];
+                            content: GitIgnoreSelectedTechs[0]['content'];
+                        }>
+                    >
+                >({}, { projection: { _id: 0, name: 1, content: 1 } })
+                .toArray();
 
-    insertLatestTimeUpdated = async ({
+    readonly insertLatestTimeUpdated = async ({
         startedAt,
         commitedAt,
         bulkUpsertStatus,
@@ -200,9 +206,11 @@ class Database {
         return insertedId;
     };
 
-    updateGitIgnoreTemplate = async () => {
+    readonly updateGitIgnoreTemplate = async () => {
         if (!(await this.shouldBulkUpsert(this.getLatestCommitTime))) {
-            return;
+            return {
+                reason: 'no need to bulk upsert',
+            } as const;
         }
         const namesAndContents =
             await this.scrapper.getGitIgnoreNameAndContents();
@@ -224,9 +232,14 @@ class Database {
             bulkUpsertStatus: 'completed',
             commitedAt: await this.getLatestCommitTime(),
         });
+        return {
+            reason: 'buld upsert done',
+            getAllTechNamesAndContents: this.getAllTechNamesAndContents(),
+        } as const;
     };
+
     //ref: https://www.mongodb.com/docs/manual/reference/operator/#AdvancedQueries-%24in
-    getContentAndNameFromSelectedIds = async (
+    readonly getContentAndNameFromSelectedIds = async (
         objectIds: ReadonlyArray<ObjectId>
     ): Promise<GitIgnoreSelectedTechs> => {
         if (!objectIds.length) {

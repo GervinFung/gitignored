@@ -9,9 +9,6 @@ Here's what the developers can do with it
 1. Combine various templates into one to preview and/or download it
 2. Leave the generated templates as it is to preview and/or download it
 
-<details>
-<summary>Click to preview!</summary>
-
 #### Main Page
 
 ![Home](./docs/main.png 'Home')
@@ -31,8 +28,6 @@ Here's what the developers can do with it
 #### 404 Page
 
 ![404](./docs/404.png '404')
-
-</details>
 
 ## Tech Used
 
