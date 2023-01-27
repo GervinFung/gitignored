@@ -3,12 +3,13 @@ import type { GitIgnoreNamesAndContents } from '../../common/type';
 import { parseAsArray, parseAsString } from '../../common/util/parser';
 
 const scrapper = () => ({
-    getLatestTimeCommitted: async (): Promise<Date> => {
-        const { data } = await axios.get(
-            'https://api.github.com/repos/github/gitignore/branches/main'
-        );
-        return new Date(parseAsString(data.commit.commit.author.date));
-    },
+    getLatestTimeCommitted: async () =>
+        axios
+            .get('https://api.github.com/repos/github/gitignore/branches/main')
+            .then(
+                ({ data }) =>
+                    new Date(parseAsString(data.commit.commit.author.date))
+            ),
     //ref: https://docs.github.com/en/rest/git/trees#get-a-tree
     getGitIgnoreNameAndContents:
         async (): Promise<GitIgnoreNamesAndContents> => {

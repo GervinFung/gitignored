@@ -146,7 +146,6 @@ const Body = () => {
         });
 
     React.useEffect(() => {
-        // TODO: get the time from api, api use redis to cache
         getLatestCommitTime()
             .then((response) => {
                 switch (response.status) {

@@ -60,5 +60,5 @@ export default class Cache {
             );
 
     canGetFromCache = (latestCommitTime: Date) =>
-        new Date().getMilliseconds() >= latestCommitTime.getMilliseconds();
+        new Date().getTime() >= latestCommitTime.getTime();
 }
