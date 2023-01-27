@@ -86,6 +86,7 @@ install-mongo:
 	node script/mongo-setup/install.js
 
 setup-mongo:
+	sudo systemctl unmask mongod
 	sudo systemctl start mongod
 	sudo systemctl stop mongod
 	sudo systemctl restart mongod
