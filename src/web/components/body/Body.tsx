@@ -6,7 +6,7 @@ import IntroText from './IntroText';
 import SearchBar from './SearchBar';
 import Name from './Name';
 import Menu from './menu';
-import { ToastPromise } from '../toaser/Toaser';
+import { ToastError, ToastPromise } from '../toaser/Toaser';
 import { ToastContainer } from 'react-toastify';
 import theme from '../../theme/theme';
 import Contents from './content';
@@ -18,17 +18,22 @@ import type {
 import { api, title } from '../../util';
 import { parseAsString } from '../../../common/util/parser';
 import axios from 'axios';
+import Cache from '../../util/cache';
+import type { Return as GitIgnoredReturn } from '../../../../pages/api/gitignored';
+import type { Return as GenerateReturn } from '../../../../pages/api/generate';
+import type { Return as CommitTimeReturn } from '../../../../pages/api/commit-time';
+import { arrayDelimiter } from '../../../common/const';
 
 type Option = 'preview' | 'download';
 type CombinedTechs = undefined | GitIgnoreSelectedTechs[0]['content'];
-import type { Return as GitIgnoredReturn } from '../../../../pages/api/gitignored';
-import type { Return as GenerateReturn } from '../../../../pages/api/generate';
-import { arrayDelimiter } from '../../../common/const';
 
 const getLatestSelectedTechs = (selectedIds: GitIgnoreSelectedIds) =>
     axios
         .get(`${api.generate}?selectedIds=${selectedIds.join(arrayDelimiter)}`)
-        .then(({ data }) => data.gitIgnoreSelectedTechs as GenerateReturn);
+        .then(
+            ({ data }) =>
+                data.gitIgnoreSelectedTechs as GenerateReturn['gitIgnoreSelectedTechs']
+        );
 
 const getLatestGitIgnoreNamesAndIds = () =>
     axios
@@ -36,9 +41,29 @@ const getLatestGitIgnoreNamesAndIds = () =>
         .then(
             ({ data }) =>
                 ({
-                    status: 'succees',
+                    status: 'succeed',
                     gitIgnoreNamesAndIds:
                         data.gitIgnoreNamesAndIds as GitIgnoredReturn['gitIgnoreNamesAndIds'],
+                } as const)
+        )
+        .catch(
+            (error) =>
+                ({
+                    status: 'failed',
+                    error,
+                } as const)
+        );
+
+const getLatestCommitTime = () =>
+    axios
+        .get(`${api.commitTime}`)
+        .then(
+            ({ data }) =>
+                ({
+                    status: 'succeed',
+                    latestCommitTime: data.latestCommitTime as ReturnType<
+                        CommitTimeReturn['latestCommitTime']['toISOString']
+                    >,
                 } as const)
         )
         .catch(
@@ -52,6 +77,8 @@ const getLatestGitIgnoreNamesAndIds = () =>
 const Body = () => {
     const router = useRouter();
     const namesDelimiter = ',';
+
+    const cache = Cache.instance();
 
     const [state, setState] = React.useState({
         isPush: false as boolean,
@@ -76,15 +103,25 @@ const Body = () => {
     const { query } = router;
     const queryNames = query.names;
 
-    React.useEffect(() => {
+    const setLatestGitIgnoreNamesAndIdsFromAPI = () =>
+        getLatestGitIgnoreNamesAndIds().then((response) => {
+            setState((prev) => ({
+                ...prev,
+                response,
+            }));
+            switch (response.status) {
+                case 'succeed': {
+                    cache.updateGitIgnoreNamesAndIds(
+                        response.gitIgnoreNamesAndIds
+                    );
+                }
+            }
+            return response;
+        });
+
+    const toastFeedback = (promise: Promise<Object>) =>
         ToastPromise({
-            promise: getLatestGitIgnoreNamesAndIds().then((response) => {
-                setState((prev) => ({
-                    ...prev,
-                    response,
-                }));
-                return response;
-            }),
+            promise,
             pending: {
                 render: () => (
                     <div>
@@ -107,6 +144,49 @@ const Body = () => {
                 ),
             },
         });
+
+    React.useEffect(() => {
+        // TODO: get the time from api, api use redis to cache
+        getLatestCommitTime()
+            .then((response) => {
+                switch (response.status) {
+                    case 'failed': {
+                        toastFeedback(setLatestGitIgnoreNamesAndIdsFromAPI());
+                        break;
+                    }
+                    case 'succeed': {
+                        if (
+                            !cache.canGetFromCache(
+                                new Date(response.latestCommitTime)
+                            )
+                        ) {
+                            toastFeedback(
+                                setLatestGitIgnoreNamesAndIdsFromAPI()
+                            );
+                        } else {
+                            toastFeedback(
+                                cache
+                                    .getGitIgnoreNamesAndIds()
+                                    .then((response) => {
+                                        switch (response.status) {
+                                            case 'failed': {
+                                                return setLatestGitIgnoreNamesAndIdsFromAPI();
+                                            }
+                                            case 'succeed': {
+                                                setState((prev) => ({
+                                                    ...prev,
+                                                    response,
+                                                }));
+                                                return response;
+                                            }
+                                        }
+                                    })
+                            );
+                        }
+                    }
+                }
+            })
+            .catch(ToastError);
     }, []);
 
     const namesAndIds =

@@ -1,6 +1,7 @@
 const api = {
     gitIgnored: '/api/gitignored',
     generate: '/api/generate',
+    commitTime: '/api/commit-time',
 } as const;
 
 const constants = {

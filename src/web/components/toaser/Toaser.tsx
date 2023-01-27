@@ -1,4 +1,5 @@
 import { toast, ToastPromiseParams } from 'react-toastify';
+import { processErrorMessage } from '../../../common/error';
 
 const position = toast.POSITION.TOP_CENTER;
 
@@ -8,7 +9,7 @@ const ToastError = (
         autoClose?: number;
     }>
 ) =>
-    toast.error(error, {
+    toast.error(processErrorMessage(error), {
         autoClose: option?.autoClose ?? false,
         closeButton: true,
         position,
