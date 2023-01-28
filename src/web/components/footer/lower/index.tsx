@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import CopyRight from './CopyRight';
-import TechLogos from './TechLogos';
+import CopyRight from './copy-right';
+import TechLogos from './tech-logos';
 
 const Lower = () => (
     <Container>

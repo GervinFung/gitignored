@@ -1,16 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ToastError, ToastPromise } from '../../toaser/Toaser';
-import { Option, CombinedTechs, getLatestSelectedTechs } from '../Body';
-import Download from './Download';
-import Preview from './Preview';
+import { ToastError, ToastPromise } from '../../toaser/toaser';
+import type { Option, CombinedTechs } from '../';
+import Download from './download';
+import Preview from './preview';
 import JSZip from 'jszip';
 import saveAs from 'file-saver';
 import type {
     GitIgnoreSelectedIds,
     GitIgnoreSelectedTechs,
 } from '../../../../common/type';
-import { combineGitIgnoreTemplates } from '../../../util';
+import { api, combineGitIgnoreTemplates } from '../../../util';
+import axios from 'axios';
+import { arrayDelimiter } from '../../../../common/const';
+import type { Return as GenerateReturn } from '../../../../../pages/api/generate';
+
+const getLatestSelectedTechs = (selectedIds: GitIgnoreSelectedIds) =>
+    axios
+        .get(`${api.generate}?selectedIds=${selectedIds.join(arrayDelimiter)}`)
+        .then(
+            ({ data }) =>
+                data.gitIgnoreSelectedTechs as GenerateReturn['gitIgnoreSelectedTechs']
+        );
 
 const Menus = ({
     selectedIds,

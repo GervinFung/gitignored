@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ToastError } from '../toaser/Toaser';
+import { ToastError } from '../toaser/toaser';
 
 const Loading = () => (
     <Container>

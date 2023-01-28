@@ -1,5 +1,5 @@
 import React from 'react';
-import Dropdown from './Dropdown';
+import Dropdown from './dropdown';
 
 const Download = <T extends string>({
     options,

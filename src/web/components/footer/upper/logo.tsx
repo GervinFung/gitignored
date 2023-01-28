@@ -1,9 +1,8 @@
 import React from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { BungeeFont } from '../common/Font';
-import { title } from '../../util';
-import CustomLink from '../common/Link';
+import { title } from '../../../util';
+import CustomLink from '../../common/link';
 
 const Logo = () => (
     <CustomLink
@@ -12,10 +11,9 @@ const Logo = () => (
         }}
     >
         <Container>
-            <BungeeFont />
             <Image
-                width={50}
-                height={29}
+                width={70}
+                height={41}
                 quality={100}
                 alt={`Logo of ${title}`}
                 src="/images/icons/logo.webp"
