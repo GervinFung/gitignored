@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ExternalLinks from './ExternalLinks';
-import Logo from './Logo';
+import ExternalLinks from './external-links';
+import Logo from './logo';
 
 const Upper = () => (
     <Container>

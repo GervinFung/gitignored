@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
 import Layout from '../src/web/App';
-import { ToastError } from '../src/web/components/toaser/Toaser';
+import { ToastError } from '../src/web/components/toaser/toaser';
 
 const ErrorPage: NextPage = () => {
     const [state, setState] = React.useState({

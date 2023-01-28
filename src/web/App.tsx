@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { injectStyle } from 'react-toastify/dist/inject-style';
 import { DefaultSeo } from 'next-seo';
-import GlobalStyle from './theme/Global';
+import GlobalStyle from './theme/global';
 import Header from './components/header';
 import Footer from './components/footer';
 import theme from './theme/theme';
