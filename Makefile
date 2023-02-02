@@ -16,10 +16,10 @@ install:
 
 ## deploy
 deploy-staging: clear-cache
-	cp .env.production .env && vercel
+	cp .env.productions .env && vercel
 
 deploy-production: clear-cache
-	cp .env.production .env && vercel --prod
+	cp .env.productions .env && vercel --prod
 
 ## dev
 next=$(NODE_BIN)next
@@ -27,11 +27,14 @@ next=$(NODE_BIN)next
 clear-cache:
 	rm -rf .next
 
+## start
+start:
+	$(next) start $(arguments)
+
 start-development: clear-cache
 	$(next) dev
 
-start-production: clear-cache
-	$(next) start
+start-production: start
 
 ## deployment
 vercel-staging: staging
@@ -46,7 +49,11 @@ build-development: clear-cache
 	$(next) build
 
 build-production: clear-cache
-	cp .env.production .env &&\
+	cp .env.productions .env &&\
+	$(next) build
+
+build-testing: clear-cache
+	cp .env.testing .env &&\
 	$(next) build
 
 ## format
@@ -84,8 +91,16 @@ typecheck-watch:
 	make typecheck arguments=--w
 
 ## test
-test:
-	$(NODE_BIN)vitest
+test-type:
+	$(NODE_BIN)vitest test/$(path)/**/**.test.ts
+
+test-unit:
+	make test-type path="unit"
+
+test-integration:
+	make build-testing && make test-type path="integration"
+
+test: test-unit test-integration
 
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
