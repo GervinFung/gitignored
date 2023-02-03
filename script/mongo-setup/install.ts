@@ -1,12 +1,16 @@
 import child from 'child_process';
 
-const run = (command) => {
+const run = (command: string) => {
     console.log(command);
     child.execSync(command, { stdio: 'inherit' });
 };
 
 // ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
-const install = ({ mongoVersion }) => {
+const install = ({
+    mongoVersion,
+}: Readonly<{
+    mongoVersion: string;
+}>) => {
     run(
         `wget -qO - https://www.mongodb.org/static/pgp/server-${mongoVersion}.asc | sudo apt-key add -`
     );

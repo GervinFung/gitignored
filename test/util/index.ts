@@ -9,7 +9,7 @@ const parse = <T>(t: T | undefined): T => {
 };
 
 const serverConfig = {
-    port: 3000,
+    port: 8080,
 } as const;
 
 const httpResponseJson = async ({
@@ -47,9 +47,6 @@ class Server {
         server.stderr?.setEncoding('utf-8');
         await new Promise<void>((resolve) => {
             server.stdout?.on('data', (data: string) => {
-                console.log({
-                    data,
-                });
                 if (data.includes('ready - started server')) {
                     resolve();
                 }
