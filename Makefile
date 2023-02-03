@@ -9,6 +9,15 @@ all:
 		make build
 
 NODE_BIN=node_modules/.bin/
+VITE_NODE=$(NODE_BIN)vite-node
+NEXT=$(NODE_BIN)next
+
+## generate
+generate-webmanifest:
+	$(VITE_NODE) script/site/webmanifest.ts
+
+generate-sitemap:
+	$(NODE_BIN)next-sitemap
 
 ## install
 install:
@@ -16,7 +25,7 @@ install:
 
 ## env
 copy-env:
-	$(NODE_BIN)vite-node script/env/copy.ts ${arguments}
+	$(VITE_NODE) script/env/copy.ts ${arguments}
 
 development:
 	make copy-env arguments="-- --development"
@@ -45,10 +54,10 @@ clear-cache:
 
 ## start
 start:
-	$(next) start $(arguments)
+	$(NEXT) start $(arguments)
 
 start-development: clear-cache
-	$(next) dev
+	$(NEXT) dev
 
 start-production: start
 
@@ -60,14 +69,14 @@ vercel-production: production
 	vercel --prod
 
 ## build
-build-development: clear-cache development
-	$(next) build
+build-development: clear-cache check-projects-image-asset development build
 
-build-production: clear-cache production
-	$(next) build
+build-production: clear-cache check-projects-image-asset production build
 
-build-testing: clear-cache testing
-	$(next) build
+build-testing: clear-cache check-projects-image-asset testing build
+
+build:
+	$(NEXT) build && make generate-sitemap && make generate-webmanifest
 
 ## format
 prettier=$(NODE_BIN)prettier
@@ -118,7 +127,7 @@ test: test-unit test-integration
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
 install-mongo:
-	node script/mongo-setup/install.js
+	$(VITE_NODE) script/mongo-setup
 
 setup-mongo:
 	sudo systemctl unmask mongod
