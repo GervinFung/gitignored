@@ -9,7 +9,6 @@ const main = () => {
         childProcess.execSync(`cp .env.${environment} .env`, {
             stdio: 'inherit',
         });
-        console.log('hi');
     }
 };
 
