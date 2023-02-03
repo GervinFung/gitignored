@@ -14,12 +14,28 @@ NODE_BIN=node_modules/.bin/
 install:
 	pnpm i --frozen-lockfile
 
-## deploy
-deploy-staging: clear-cache
-	cp .env.productions .env && vercel
+## env
+copy-env:
+	$(NODE_BIN)vite-node script/env/copy.ts ${arguments}
 
-deploy-production: clear-cache
-	cp .env.productions .env && vercel --prod
+development:
+	make copy-env arguments="-- --development"
+
+staging:
+	make copy-env arguments="-- --staging"
+
+production:
+	make copy-env arguments="-- --productions"
+
+testing:
+	make copy-env arguments="-- --testing"
+
+## deploy
+deploy-staging: clear-cache staging
+	vercel
+
+deploy-production: clear-cache production
+	vercel --prod
 
 ## dev
 next=$(NODE_BIN)next
@@ -44,16 +60,13 @@ vercel-production: production
 	vercel --prod
 
 ## build
-build-development: clear-cache
-	cp .env.development .env &&\
+build-development: clear-cache development
 	$(next) build
 
-build-production: clear-cache
-	cp .env.productions .env &&\
+build-production: clear-cache production
 	$(next) build
 
-build-testing: clear-cache
-	cp .env.testing .env &&\
+build-testing: clear-cache testing
 	$(next) build
 
 ## format
