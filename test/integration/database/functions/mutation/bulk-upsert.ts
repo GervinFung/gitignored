@@ -1,19 +1,20 @@
 import Database from '../../../../../src/api/database/mongo';
 import { parse } from '../../../../util';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 
 const testBulkUpsert = () =>
     describe('Bulk Upsert', () => {
+        beforeAll(async () => {
+            await (await Database.instance()).clearCollections();
+        });
         it('should throw error when argument is empty array', async () => {
             const database = await Database.instance();
             expect(
                 database.bulkUpsertGitIgnoreTemplate([])
             ).rejects.toThrowError();
         });
-        it('should upsert when argument is not an empty array', async () => {
-            const database = await Database.instance();
-
-            const namesAndContents = [
+        const [first, second] = [
+            [
                 {
                     content: 'Ts API',
                     name: 'TypeScript',
@@ -26,18 +27,29 @@ const testBulkUpsert = () =>
                     content: 'Js API',
                     name: 'JavaScript',
                 },
-            ] as const;
+            ],
+            [
+                {
+                    content: 'Vengeance, Revenge',
+                    name: 'Avengers',
+                },
+            ],
+        ] as const;
+        it('should upsert when argument is not an empty array', async () => {
+            const database = await Database.instance();
 
             const gitIgnoreTemplates =
-                await database.bulkUpsertGitIgnoreTemplate(namesAndContents);
+                await database.bulkUpsertGitIgnoreTemplate(first);
 
             const techs = await database.getAllTechNamesAndIds();
-            const [ts, java, js] = techs;
 
-            expect(techs.length === 3).toBe(true);
-            expect(ts?.name === 'TypeScript').toBe(true);
-            expect(java?.name === 'Java').toBe(true);
-            expect(js?.name === 'JavaScript').toBe(true);
+            expect(
+                techs.filter((tech) =>
+                    first
+                        .map(({ name }) => name)
+                        .find((name) => name === tech.name)
+                )
+            ).toHaveLength(first.length);
 
             expect(
                 await database.getContentAndNameFromSelectedIds(
@@ -50,28 +62,22 @@ const testBulkUpsert = () =>
                     )
                 )
             ).toStrictEqual(
-                namesAndContents
+                first
                     .filter((_, index, arr) => index !== arr.length - 1)
                     .map(({ name, content }) => ({ name, content }))
             );
         });
         it('should oveerride previous data for upserting', async () => {
             const database = await Database.instance();
-            const namesAndContents = [
-                {
-                    content: 'Vengeance, Revenge',
-                    name: 'Avengers',
-                },
-            ] as const;
 
             const gitIgnoreTemplates =
-                await database.bulkUpsertGitIgnoreTemplate(namesAndContents);
+                await database.bulkUpsertGitIgnoreTemplate(second);
 
             const techs = await database.getAllTechNamesAndIds();
-            const [avenger] = techs;
+            const [, , , avenger] = techs;
 
-            expect(techs.length === 1).toBe(true);
-            expect(avenger?.name === 'Avengers').toBe(true);
+            expect(techs).toHaveLength(second.length + first.length);
+            expect(avenger?.name).toBe('Avengers');
 
             expect(
                 await database.getContentAndNameFromSelectedIds(
@@ -83,7 +89,7 @@ const testBulkUpsert = () =>
                     )
                 )
             ).toStrictEqual(
-                namesAndContents.map(({ name, content }) => ({ name, content }))
+                second.map(({ name, content }) => ({ name, content }))
             );
         });
     });

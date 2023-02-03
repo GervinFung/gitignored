@@ -8,7 +8,7 @@ import type {
 import scrapper from '../../scrapper';
 import mongodbConfig from './config';
 
-class Database {
+export default class Database {
     private readonly database: Db;
     private readonly tech: string;
     private readonly updateTime: string;
@@ -87,32 +87,56 @@ class Database {
     readonly clearCollections = async () =>
         (await this.getTechs().deleteMany({})) &&
         (await this.getUpdateTime().deleteMany({}));
-
     readonly bulkUpsertGitIgnoreTemplate = async (
         gitIgnoreNamesAndContents: GitIgnoreSelectedTechs
-    ): Promise<
-        Readonly<{
-            [key: number]: ObjectId;
-        }>
-    > => {
-        if (!gitIgnoreNamesAndContents.length) {
+    ) => {
+        const { length: contentCount } = gitIgnoreNamesAndContents;
+        if (!contentCount) {
             throw new Error('Scrapped data is empty');
         }
         const techs = this.getTechs();
-        const isDropped = await techs.deleteMany({});
-        if (!isDropped) {
-            throw new Error('Must drop collection');
-        }
-        const { acknowledged, insertedIds, insertedCount } =
-            await techs.insertMany(Array.from(gitIgnoreNamesAndContents));
-        if (
-            acknowledged &&
-            insertedCount === gitIgnoreNamesAndContents.length
-        ) {
-            return insertedIds;
+        const objectIds = (
+            await Promise.all(
+                gitIgnoreNamesAndContents.map(async ({ name, content }) => {
+                    try {
+                        const id = (
+                            await techs.findOne({
+                                name,
+                            })
+                        )?._id;
+                        return [
+                            !id
+                                ? (
+                                      await techs.insertOne({
+                                          name,
+                                          content,
+                                      })
+                                  ).insertedId
+                                : (
+                                      await techs.updateOne(
+                                          {
+                                              _id: id,
+                                          },
+                                          {
+                                              content,
+                                          }
+                                      )
+                                  ).upsertedId,
+                        ];
+                    } catch (error) {
+                        return [];
+                    }
+                })
+            )
+        ).flat();
+
+        const { length: insertedCount } = objectIds;
+
+        if (insertedCount == gitIgnoreNamesAndContents.length) {
+            return objectIds;
         }
         throw new Error(
-            `Faulty insertion, acknowledged: ${acknowledged}, insertedCount: ${insertedCount} and length: ${gitIgnoreNamesAndContents.length}`
+            `Faulty insertion, insertedCount: ${insertedCount} and contentCount: ${contentCount}`
         );
     };
 
@@ -255,5 +279,3 @@ class Database {
         );
     };
 }
-
-export default Database;

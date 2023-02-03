@@ -26,8 +26,14 @@ const testUpdateGitIgnore = () =>
                     await database.getContentAndNameFromSelectedIds(
                         namesAndIds.map(({ id }) => new ObjectId(id))
                     )
-                ).every(({ name }, index) => name === namesAndIds[index]?.name)
-            ).toBe(true);
+                )
+                    .map(({ name }) => name)
+                    .sort((a, b) => (a > b ? 1 : -1))
+            ).toStrictEqual(
+                namesAndIds
+                    .map(({ name }) => name)
+                    .sort((a, b) => (a > b ? 1 : -1))
+            );
 
             expect(
                 (await database.getAllTechNamesAndContents()).every(

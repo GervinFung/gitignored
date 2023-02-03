@@ -14,12 +14,28 @@ NODE_BIN=node_modules/.bin/
 install:
 	pnpm i --frozen-lockfile
 
-## deploy
-deploy-staging: clear-cache
-	cp .env.production .env && vercel
+## env
+copy-env:
+	$(NODE_BIN)vite-node script/env/copy.ts ${arguments}
 
-deploy-production: clear-cache
-	cp .env.production .env && vercel --prod
+development:
+	make copy-env arguments="-- --development"
+
+staging:
+	make copy-env arguments="-- --staging"
+
+production:
+	make copy-env arguments="-- --productions"
+
+testing:
+	make copy-env arguments="-- --testing"
+
+## deploy
+deploy-staging: clear-cache staging
+	vercel
+
+deploy-production: clear-cache production
+	vercel --prod
 
 ## dev
 next=$(NODE_BIN)next
@@ -27,11 +43,14 @@ next=$(NODE_BIN)next
 clear-cache:
 	rm -rf .next
 
+## start
+start:
+	$(next) start $(arguments)
+
 start-development: clear-cache
 	$(next) dev
 
-start-production: clear-cache
-	$(next) start
+start-production: start
 
 ## deployment
 vercel-staging: staging
@@ -41,12 +60,13 @@ vercel-production: production
 	vercel --prod
 
 ## build
-build-development: clear-cache
-	cp .env.development .env &&\
+build-development: clear-cache development
 	$(next) build
 
-build-production: clear-cache
-	cp .env.production .env &&\
+build-production: clear-cache production
+	$(next) build
+
+build-testing: clear-cache testing
 	$(next) build
 
 ## format
@@ -84,8 +104,16 @@ typecheck-watch:
 	make typecheck arguments=--w
 
 ## test
-test:
-	$(NODE_BIN)vitest
+test-type:
+	$(NODE_BIN)vitest test/$(path)/**/**.test.ts
+
+test-unit:
+	make test-type path="unit"
+
+test-integration:
+	make build-testing && make test-type path="integration"
+
+test: test-unit test-integration
 
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
