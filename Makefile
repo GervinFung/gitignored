@@ -127,7 +127,7 @@ test: test-unit test-integration
 ## mongo setup and installation
 # ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
 install-mongo:
-	$(VITE_NODE) script/mongo-setup
+	$(VITE_NODE) script/mongo-setup/install
 
 setup-mongo:
 	sudo systemctl unmask mongod
