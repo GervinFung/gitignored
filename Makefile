@@ -69,11 +69,11 @@ vercel-production: production
 	vercel --prod
 
 ## build
-build-development: clear-cache check-projects-image-asset development build
+build-development: clear-cache development build
 
-build-production: clear-cache check-projects-image-asset production build
+build-production: clear-cache production build
 
-build-testing: clear-cache check-projects-image-asset testing build
+build-testing: clear-cache testing build
 
 build:
 	$(NEXT) build && make generate-sitemap && make generate-webmanifest

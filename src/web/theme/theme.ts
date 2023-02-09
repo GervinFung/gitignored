@@ -1,6 +1,6 @@
-import type { DefaultTheme } from 'styled-components';
+import type { FontFamily } from '../components/common/font';
 
-const theme: Readonly<DefaultTheme> = {
+const theme = {
     pureWhite: '#FFF',
     black: '#121212',
     copyButtonBackground: '#282A36',
@@ -13,7 +13,7 @@ const theme: Readonly<DefaultTheme> = {
     gitIgnoreCodeColor: '#333333',
     darkThemeToggle: '#A2998B',
     lightThemeToggle: '#717171',
-    fontFamily: 'Roboto Mono',
-};
+    fontFamily: 'Roboto Mono' as FontFamily,
+} as const;
 
 export default theme;
