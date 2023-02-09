@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from '../src/web/App';
+import Layout from '../src/web/app';
 import Body from '../src/web/components/body';
 
 const IndexPage = () => (

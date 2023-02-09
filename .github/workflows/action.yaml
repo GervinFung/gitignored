@@ -22,16 +22,14 @@ jobs:
                   sudo apt install npm
                   npm i --location=global pnpm
 
+            - name: Install Depedencies
+              run: make install
+
             - name: Install MongoDB
               run: make install-mongo
 
             - name: Setup MongoDB
               run: make setup-mongo
-
-            - name: Install Depedencies
-              env:
-                  NODE_ENV: development
-              run: make install
 
             - name: Run Linter
               run: make lint

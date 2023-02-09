@@ -6,6 +6,8 @@ import GlobalStyle from './theme/global';
 import Header from './components/header';
 import Footer from './components/footer';
 import theme from './theme/theme';
+import { parseAsStringEnv } from '../api/util';
+import Head from 'next/head';
 
 const Layout = ({
     title,
@@ -16,7 +18,7 @@ const Layout = ({
 }>) => {
     const dimensions = [48, 72, 96, 144, 192, 256, 384, 512] as const;
 
-    const url = 'https://gitignored.vercel.app';
+    const url = process.env.ORIGIN;
     const description =
         'The Web Application of Gitignored. A more UI/UX Friendly Web Application that generates useful .gitignore files for your project from by choosing different collection of templates stored by Github. Preview/Copy/Download Single or Multiple .gitignore File(s)';
 
@@ -28,9 +30,38 @@ const Layout = ({
         injectStyle();
     }, []);
 
+    const env = process.env.NODE_ENV;
+
     return (
         <Container>
             <GlobalStyle />
+            <Head>
+                {env !== 'production' && env !== 'development'
+                    ? null
+                    : (() => {
+                          const gaMeasurementId = parseAsStringEnv({
+                              env: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+                              name: 'NEXT_PUBLIC_GA_MEASUREMENT_ID is not a string',
+                          });
+
+                          return (
+                              <>
+                                  <script
+                                      async
+                                      src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+                                  />
+                                  <script>
+                                      {[
+                                          'window.dataLayer = window.dataLayer || []',
+                                          'function gtag(){window.dataLayer.push(arguments);}',
+                                          `gtag('js', new Date())`,
+                                          `gtag('config', '${gaMeasurementId}', {page_path: window.location.pathname})`,
+                                      ].join('\n')}
+                                  </script>
+                              </>
+                          );
+                      })()}
+            </Head>
             <DefaultSeo
                 canonical={url}
                 title={gitignoredTitle}

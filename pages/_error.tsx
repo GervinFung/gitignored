@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import styled from 'styled-components';
-import Layout from '../src/web/App';
+import Layout from '../src/web/app';
 import { ToastError } from '../src/web/components/toaser/toaser';
 
 const ErrorPage: NextPage = () => {
@@ -11,15 +11,6 @@ const ErrorPage: NextPage = () => {
     });
 
     const { command } = state;
-
-    const Prompt = () => (
-        <GitPrompt>
-            <span>gitignored</span>
-            <span>@</span>
-            <span>developer</span>
-            <span>~&gt;</span>
-        </GitPrompt>
-    );
 
     const router = useRouter();
 
@@ -40,7 +31,12 @@ const ErrorPage: NextPage = () => {
                     to Home page
                 </p>
                 <GitCommandContainer>
-                    <Prompt />
+                    <GitPrompt>
+                        <span>gitignored</span>
+                        <span>@</span>
+                        <span>developer</span>
+                        <span>~&gt;</span>
+                    </GitPrompt>
                     <GitCommandPrompt
                         type="text"
                         autoComplete="off"
