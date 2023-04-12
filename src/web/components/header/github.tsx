@@ -5,7 +5,7 @@ import { constants } from '../../util';
 
 const GitHubIcon = () => (
     <Container>
-        <a
+        <ExternalLink
             href={constants.repo}
             target="_blank"
             rel="external nofollow noopener noreferrer"
@@ -13,7 +13,7 @@ const GitHubIcon = () => (
             <GitHubContainer>
                 <Github />
             </GitHubContainer>
-        </a>
+        </ExternalLink>
     </Container>
 );
 
@@ -24,6 +24,10 @@ const Container = styled.div`
 const GitHubContainer = styled.div`
     display: grid;
     place-items: center;
+`;
+
+const ExternalLink = styled.a`
+    text-decoration: none;
 `;
 
 const Github = styled(VscGithubInverted)`

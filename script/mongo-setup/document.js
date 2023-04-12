@@ -6,6 +6,7 @@
 // ref: https://www.mongodb.com/docs/manual/tutorial/write-scripts-for-the-mongo-shell/
 db = db.getSiblingDB('admin');
 
+// ref: https://www.mongodb.com/docs/v3.6/tutorial/enable-authentication/
 // ref: https://stackoverflow.com/questions/23943651/mongodb-admin-user-not-authorized
 db.createUser({
     user: 'runner',

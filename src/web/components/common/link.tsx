@@ -8,8 +8,8 @@ const CustomLink = ({
     children: React.ReactNode;
     param: Readonly<Parameters<typeof Link>[number]>;
 }>) => (
-    <Link {...param}>
-        <a href={param.href.toString()}>{children}</a>
+    <Link {...param} href={param.href.toString()}>
+        {children}
     </Link>
 );
 

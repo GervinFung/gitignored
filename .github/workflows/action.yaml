@@ -20,7 +20,7 @@ jobs:
             - name: Install PNPM
               run: |
                   sudo apt install npm
-                  npm i --location=global pnpm
+                  npm i --location=global pnpm@8
 
             - name: Install Depedencies
               run: make install
