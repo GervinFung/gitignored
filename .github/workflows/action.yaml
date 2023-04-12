@@ -28,8 +28,11 @@ jobs:
             - name: Install MongoDB
               run: make install-mongo
 
-            - name: Setup MongoDB
-              run: make setup-mongo
+            - name: Start MongoDB
+              run: make start-mongo
+
+            - name: Migrate Document
+              run: make migrate-mongo
 
             - name: Run Linter
               run: make lint

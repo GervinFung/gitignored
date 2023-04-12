@@ -18,11 +18,13 @@ install:
 install-mongo:
 	$(VITE_NODE) script/mongo-setup/install.ts
 
-setup-mongo:
+start-mongo:
 	sudo systemctl unmask mongod
 	sudo systemctl start mongod
 	sudo systemctl stop mongod
 	sudo systemctl restart mongod
+
+migrate-mongo:
 	mongosh < script/mongo-setup/document.js
 
 ## generate
