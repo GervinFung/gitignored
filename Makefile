@@ -6,22 +6,38 @@ all:
 		make typecheck &&\
 		make format-check &&\
 		make test &&\
-		make build
 
 NODE_BIN=node_modules/.bin/
 VITE_NODE=$(NODE_BIN)vite-node
 NEXT=$(NODE_BIN)next
 
+## install
+install:
+	pnpm i --frozen-lockfile
+
+install-mongo:
+	$(VITE_NODE) script/mongo-setup/install.ts
+
+start-mongo:
+	sudo systemctl unmask mongod
+	sudo systemctl start mongod
+	sudo systemctl stop mongod
+	sudo systemctl restart mongod
+
+migrate-mongo:
+	mongosh < script/mongo-setup/document.js
+
 ## generate
+generate: generate-resume
+
+generate-resume:
+	$(VITE_NODE) script/resume/generate.ts
+
 generate-webmanifest:
 	$(VITE_NODE) script/site/webmanifest.ts
 
 generate-sitemap:
 	$(NODE_BIN)next-sitemap
-
-## install
-install:
-	pnpm i --frozen-lockfile
 
 ## env
 copy-env:
@@ -39,49 +55,42 @@ production:
 testing:
 	make copy-env arguments="-- --testing"
 
-## deploy
-deploy-staging: clear-cache staging
+## deployment
+deploy-staging: build-staging
 	vercel
 
-deploy-production: clear-cache production
+deploy-production: build-production
 	vercel --prod
-
-## dev
-next=$(NODE_BIN)next
 
 clear-cache:
 	rm -rf .next
 
-## start
-start:
-	$(NEXT) start $(arguments)
-
-start-development: clear-cache
+start-development: development clear-cache
 	$(NEXT) dev
 
-start-production: start
+start-staging: staging clear-cache start
 
-## deployment
-vercel-staging: staging
-	vercel
-
-vercel-production: production
-	vercel --prod
+start-production: production clear-cache start
 
 ## build
 build-development: clear-cache development build
 
 build-production: clear-cache production build
 
+build-staging: clear-cache staging build
+
 build-testing: clear-cache testing build
 
 build:
-	$(NEXT) build && make generate-sitemap && make generate-webmanifest
+	$(NEXT) build
+
+## start
+start:
+	$(NEXT) start $(arguments)
 
 ## format
-prettier=$(NODE_BIN)prettier
 prettify:
-	$(prettier) --ignore-path .gitignore --$(type) src/ test/
+	$(NODE_BIN)prettier --ignore-path .gitignore  --$(type) src/ test/
 
 format-check:
 	make prettify type=check
@@ -123,15 +132,3 @@ test-integration:
 	make build-testing && make test-type path="integration"
 
 test: test-unit test-integration
-
-## mongo setup and installation
-# ref: https://www.digitalocean.com/community/tutorials/how-to-install-mongodb-on-ubuntu-20-04
-install-mongo:
-	$(VITE_NODE) script/mongo-setup/install
-
-setup-mongo:
-	sudo systemctl unmask mongod
-	sudo systemctl start mongod
-	sudo systemctl stop mongod
-	sudo systemctl restart mongod
-	mongosh < script/mongo-setup/document.js

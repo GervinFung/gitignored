@@ -58,7 +58,10 @@ class ErrorBoundary extends React.Component<
                     <LoadingMessage>Please try again</LoadingMessage>
                     <LoadingMessage>
                         If you think this is an issue, please file an issue{' '}
-                        <IssueLink href="https://github.com/Gitignored-App/web/issues">
+                        <IssueLink
+                            href="https://github.com/Gitignored-App/web/issues"
+                            rel="external nofollow noopener noreferrer"
+                        >
                             here
                         </IssueLink>
                     </LoadingMessage>
@@ -82,9 +85,7 @@ const LoadingMessage = styled.p`
     margin: 0 0 50px 0 !important;
 `;
 
-const IssueLink = styled.a.attrs({
-    rel: 'noopener noreferrer',
-})`
+const IssueLink = styled.a.attrs({})`
     text-decoration: none;
     color: ${({ theme }) => theme.primaryColor};
 `;

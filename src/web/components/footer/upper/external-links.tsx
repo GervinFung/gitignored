@@ -24,14 +24,14 @@ const ExternalLinks = () => (
                 },
             ] as const
         ).map(({ section, link }) => (
-            <a
+            <ExternalLink
                 key={section}
                 href={link}
                 target="_blank"
                 rel="external nofollow noopener noreferrer"
             >
                 {section}
-            </a>
+            </ExternalLink>
         ))}
     </Container>
 );
@@ -47,6 +47,10 @@ const Container = styled.div`
         padding: 8px;
         color: ${({ theme }) => theme.pureWhite};
     }
+`;
+
+const ExternalLink = styled.a`
+    text-decoration: none;
 `;
 
 export default ExternalLinks;

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { SiTypescript, SiGatsby, SiMongodb } from 'react-icons/si';
+import { SiTypescript, SiNextdotjs, SiMongodb } from 'react-icons/si';
 
 type IconsProps = Readonly<{
     rightMargin: number;
@@ -11,7 +11,7 @@ const TechLogos = () => (
         {[
             {
                 link: 'https://www.gatsbyjs.com/',
-                component: <Gatsby />,
+                component: <Nextjs />,
                 rightMargin: 0,
             },
             {
@@ -51,6 +51,7 @@ const IconContainer = styled.div`
     margin: ${({ rightMargin }: IconsProps) => `0 0 0 ${rightMargin}px`};
     > a {
         color: ${({ theme }) => theme.pureWhite};
+        text-decoration: none;
     }
 `;
 
@@ -58,7 +59,7 @@ const Icon = css`
     font-size: 1.5em;
 `;
 
-const Gatsby = styled(SiGatsby)`
+const Nextjs = styled(SiNextdotjs)`
     ${Icon}
 `;
 
