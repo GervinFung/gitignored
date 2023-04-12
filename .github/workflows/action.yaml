@@ -33,7 +33,7 @@ jobs:
 
             - name: Migrate Document
               run: |
-                  sleep 5
+                  sleep 1.5
                   make migrate-mongo
 
             - name: Run Linter
