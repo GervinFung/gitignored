@@ -3,16 +3,13 @@ import styled from 'styled-components';
 import { title } from '../../util';
 
 const Name = () => (
-    <Container>
+    <div>
         <HeaderName>{title}</HeaderName>
-    </Container>
+    </div>
 );
 
-const Container = styled.div`
-    font-family: Bungee;
-`;
-
 const HeaderName = styled.h1`
+    font-family: Bungee;
     font-size: 2.5em;
 `;
 

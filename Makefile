@@ -77,7 +77,7 @@ build-development: clear-cache development build
 
 build-production: clear-cache production build
 
-build-staging: clear-cache staging build
+build-staging: clear-cache production build
 
 build-testing: clear-cache testing build
 

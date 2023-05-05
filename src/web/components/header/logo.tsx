@@ -1,7 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
 import styled from 'styled-components';
-import { BungeeFont } from '../common/font';
 import { title } from '../../util';
 import CustomLink from '../common/link';
 
@@ -12,7 +11,6 @@ const Logo = () => (
         }}
     >
         <Container>
-            <BungeeFont />
             <Image
                 width={50}
                 height={29}

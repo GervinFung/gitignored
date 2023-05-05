@@ -3,14 +3,14 @@ import type { AppProps } from 'next/app';
 import styled, { ThemeProvider } from 'styled-components';
 import theme from '../src/web/theme/theme';
 import { ErrorBoundary, Loading } from '../src/web/components/error';
-import Font from '../src/web/components/common/font';
 import { ToastContainer } from 'react-toastify';
+import '../src/web/css/jetbrains.css';
+import '../src/web/css/bungee.css';
 
 const App = ({ Component, pageProps }: AppProps) => (
     <ThemeProvider theme={theme}>
         <EmptyContainer>
             <ToastContainer />
-            <Font fontFamily={theme.fontFamily} />
             <ErrorBoundary>
                 <React.Suspense fallback={<Loading />}>
                     <Component {...pageProps} />
