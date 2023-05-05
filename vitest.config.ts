@@ -1,6 +1,7 @@
 import ci from 'ci-info';
 import fs from 'fs';
 import { defineConfig } from 'vitest/config';
+import { parseAsString } from './src/common/util/parser';
 
 export default defineConfig(() => {
     const timeOut = 300_000;
@@ -24,7 +25,7 @@ export default defineConfig(() => {
                           const [key, value] = keyValuePair.split('=');
                           return {
                               ...prev,
-                              [key]: value,
+                              [parseAsString(key)]: value,
                           };
                       }, {}),
         },

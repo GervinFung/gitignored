@@ -1,5 +1,3 @@
-import type { FontFamily } from '../components/common/font';
-
 const theme = {
     pureWhite: '#FFF',
     black: '#121212',
@@ -13,7 +11,7 @@ const theme = {
     gitIgnoreCodeColor: '#333333',
     darkThemeToggle: '#A2998B',
     lightThemeToggle: '#717171',
-    fontFamily: 'Roboto Mono' as FontFamily,
+    fontFamily: 'JetBrains Mono',
 } as const;
 
 export default theme;

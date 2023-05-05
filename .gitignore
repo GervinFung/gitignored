@@ -34,3 +34,6 @@ yarn-error.log*
 public/sitemap*.xml
 public/site.webmanifest
 public/robots.txt
+
+# font
+public/font/jetbrains**

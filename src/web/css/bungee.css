@@ -1,0 +1,18 @@
+/* bungee-regular - latin */
+@font-face {
+    font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+    font-family: 'Bungee';
+    font-style: normal;
+    font-weight: 400;
+    src: url('/font/bungee-v11-latin-regular.eot'); /* IE9 Compat Modes */
+    src: url('/font/bungee-v11-latin-regular.eot?#iefix')
+            format('embedded-opentype'),
+        /* IE6-IE8 */ url('/font/bungee-v11-latin-regular.woff2')
+            format('woff2'),
+        /* Super Modern Browsers */ url('/font/bungee-v11-latin-regular.woff')
+            format('woff'),
+        /* Modern Browsers */ url('/font/bungee-v11-latin-regular.ttf')
+            format('truetype'),
+        /* Safari, Android, iOS */
+            url('/font/bungee-v11-latin-regular.svg#Bungee') format('svg'); /* Legacy iOS */
+}
