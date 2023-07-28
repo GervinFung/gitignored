@@ -20,8 +20,7 @@ Here's what the developers can do with this application
 
 You don't need to have an internet connection to use it, unless you want to update the cache
 
-<details>
-<summary>Click to preview!</summary>
+***Note: gitignored-cli is a work-in-progress library, so expect breaking changes in its API***
 
 #### Default or Help
 
@@ -79,8 +78,6 @@ You don't need to have an internet connection to use it, unless you want to upda
 #### Of course, input validation
 
 ![Input Validation](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/input-validation.png 'Input Validation')
-
-</details>
 
 ## How To Use
 
