@@ -1,15 +1,15 @@
 [package]
-name = "gitignored-cli"
+name = "gitignored"
 version = "0.0.6"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
 description ="The CLI Application of Gitignored. Provide A Faster Way to Generate .gitignore File via Caching"
 repository = "https://github.com/Gitignored-App/cli"
-readme="README.md"
+readme = "README.md"
 homepage = "https://gitignored.vercel.app"
-license-file="LICENSE"
-keywords=["gitignore", "git", "generator"]
-categories=["command-line-utilities", "development-tools"]
+license-file = "LICENSE"
+keywords = ["gitignore", "git", "generator"]
+categories = ["command-line-utilities", "development-tools"]
 include = [
     "src",
     "Cargo.toml",
@@ -18,7 +18,6 @@ include = [
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
-clap = "3.2.15"
 colored = "2.0.0"
 directories = "4.0.1"
 prettytable-rs = "0.8.0"

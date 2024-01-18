@@ -5,13 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
-  dotenv:
-    specifier: ^16.0.1
-    version: 16.0.1
+  toml:
+    specifier: ^3.0.0
+    version: 3.0.0
 
 packages:
 
-  /dotenv@16.0.1:
-    resolution: {integrity: sha512-1K6hR6wtk2FviQ4kEiSjFiH5rpzEVi8WW0x96aztHVMhEspNpc4DVOUTEHtEva5VThQ8IaBX1Pe4gSzpVVUsKQ==}
-    engines: {node: '>=12'}
+  /toml@3.0.0:
+    resolution: {integrity: sha512-y/mWCZinnvxjTKYhJ+pYxwD0mRLVvOtdS2Awbgxln6iEnt4rk0yBxeSBHkGJcPucRiG0e55mwWp+g/05rsrd6w==}
     dev: true

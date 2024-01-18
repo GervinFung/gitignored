@@ -17,14 +17,16 @@ jobs:
             - name: Install Rust
               run: make install-rust
 
-            - name: Install PNPM & Node
-              run: |
-                  sudo apt-get install npm
-                  sudo apt-get install nodejs
-                  npm install --location=global pnpm
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
 
-            - name: Install Dependencies
-              run: make install
+            - name: Install Node Dependencies
+              run: make install-node-packages
 
             - name: Run Code Generator
               run: make pre-prod

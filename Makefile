@@ -24,40 +24,43 @@ default: pre-dev
 	cargo run
 
 help: pre-dev
-	cargo run -- -h
+	cargo run -- --help
 
-list: pre-dev
-	cargo run -- -l
+version: pre-dev
+	cargo run -- --version
 
-list-column: pre-dev
-	cargo run -- -l -c $(c)
+show: pre-dev
+	cargo run -- template --show
+
+show-column: pre-dev
+	cargo run -- template --show --column $(c)
 
 preview: pre-dev
-	cargo run -- -p rust node java vscode jetbrain
+	cargo run -- template --preview rust node java vscode jetbrain
 
 search: pre-dev
-	cargo run -- -s rust node java vscode jetbrain whatever
+	cargo run -- template --search rust node java vscode jetbrain whatever
 
 generate: pre-dev
-	cargo run -- -g rust node java vscode jetbrain whatever ${arg}
+	cargo run -- template --generate rust node java vscode jetbrain whatever ${arg}
 
 force-generate: pre-dev
 	make generate arg=-f
 
 generate-outdir: pre-dev
-	rm -rf ${outdir} && cargo run -- -g rust node java vscode jetbrain whatever -o ${outdir}
+	rm -rf ${outdir} && cargo run -- template --generate rust node java vscode jetbrain whatever -o ${outdir}
 
 append: pre-dev
-	cargo run -- -a rust node java vscode jetbrain whatever
+	cargo run -- template --append rust node java vscode jetbrain whatever
 
 append-absent-outdir: pre-dev
-	rm -rf ${outdir} && cargo run -- -a rust node java vscode jetbrain whatever -o ${outdir}
+	rm -rf ${outdir} && cargo run -- template --append rust node java vscode jetbrain whatever -o ${outdir}
 
 append-existing-outdir: pre-dev
-	cargo run -- -a rust node java vscode jetbrain whatever -o ${outdir}
+	cargo run -- template --append rust node java vscode jetbrain whatever -o ${outdir}
 
 update: pre-dev
-	cargo run -- -u
+	cargo run -- template --update
 
 # non cli-executable
 check:
@@ -69,11 +72,12 @@ build: pre-prod
 pre-test:
 	rm -rf temp-test
 
-test-dev: pre-dev pre-test
-	cargo test
+test:
+	cargo test --no-fail-fast
 
-test-prod: pre-prod pre-test
-	cargo test
+test-dev: pre-dev pre-test test
+
+test-prod: pre-prod pre-test test
 
 format:
 	cargo fmt
@@ -89,8 +93,8 @@ clean:
 
 install-rust:
 	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -y | sh
-
-install:
+	
+install-node-packages:
 	cd script && pnpm install --frozen-lockfile
 
 pre-publish:

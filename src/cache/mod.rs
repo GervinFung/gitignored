@@ -102,7 +102,7 @@ impl Cache {
             .append_gitignore_file(self.api, name_list, file_name);
     }
 
-    pub fn search_name_list(&self, name_list: Vec<&str>) -> SearchResult {
+    pub fn search_name_list(&self, name_list: Vec<String>) -> SearchResult {
         self.templates.search_name_list(name_list)
     }
 }
@@ -177,7 +177,8 @@ mod tests {
         );
 
         // search name list
-        let searched_name_list = cache.search_name_list(["Java", "Python"].to_vec());
+        let searched_name_list =
+            cache.search_name_list(["Java".to_string(), "Python".to_string()].to_vec());
         assert_eq!(["Java"].to_vec(), searched_name_list.exact());
         // will always return closest name based on highest score
         assert!(!searched_name_list.closest().is_empty());

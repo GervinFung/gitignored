@@ -33,19 +33,22 @@ impl Input {
         );
     }
 
-    fn get_input_result(&self) -> InputResult {
+    fn input_result(&self) -> InputResult {
         stdout().flush().ok();
+
         let mut input = String::new();
+
         io::stdin()
             .read_line(&mut input)
             .unwrap_or_else(|_| panic!("Unable to read input"));
+
         let input = input.trim();
-        if "y" == input {
-            return InputResult::Break { is_yes: true };
-        } else if "n" == input {
-            return InputResult::Break { is_yes: false };
+
+        match input {
+            "y" => InputResult::Break { is_yes: true },
+            "n" => InputResult::Break { is_yes: false },
+            _ => InputResult::Continue {},
         }
-        InputResult::Continue {}
     }
 
     fn is_meant_closest(&self, original: String, closest: String) -> bool {
@@ -57,7 +60,7 @@ impl Input {
                 self.green_italic("y"),
                 self.red_italic("N"),
             );
-            match self.get_input_result() {
+            match self.input_result() {
                 InputResult::Break { is_yes } => break is_yes,
                 InputResult::Continue {} => {
                     self.yes_or_no_only();
@@ -81,7 +84,7 @@ impl Input {
                self.green_italic("y"),
                self.red_italic("N"),
             );
-            match self.get_input_result() {
+            match self.input_result() {
                 InputResult::Break { is_yes } => break is_yes,
                 InputResult::Continue {} => {
                     self.yes_or_no_only();

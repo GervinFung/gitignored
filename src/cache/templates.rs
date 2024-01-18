@@ -83,8 +83,10 @@ impl Templates {
 
     pub fn name_and_content_list(&self) -> NameAndContentList {
         let file_path = self.name_and_content_list_file_path.clone();
+
         let stringified_name_and_content_list = read_to_string(file_path.clone())
             .unwrap_or_else(|_| panic!("{} {}", "Unable to read from", file_path));
+
         let parsed: GitIgnoreNameAndContentList =
             serde_json::from_str(stringified_name_and_content_list.as_str()).unwrap_or_else(|_| {
                 panic!(
@@ -92,6 +94,7 @@ impl Templates {
                     "Unable to parse as JSON from", stringified_name_and_content_list
                 )
             });
+
         parsed.gitignored_name_and_content_list()
     }
 
@@ -100,12 +103,14 @@ impl Templates {
         name_and_content_list: NameAndContentList,
     ) -> NameAndContentList {
         let file_path = self.name_and_content_list_file_path.clone();
+
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
                 "{} {}",
                 "Unable to create name and content list cache file from", file_path
             )
         });
+
         let stringified = serde_json::to_string_pretty(&GitIgnoreNameAndContentList::new(
             name_and_content_list.clone(),
         ))
@@ -115,12 +120,14 @@ impl Templates {
                 "Unable to stringify name and content list of", name_and_content_list
             )
         });
+
         file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
             panic!(
                 "{} {}",
                 "Unable to write name and content list of", stringified
             )
         });
+
         self.name_and_content_list()
     }
 
@@ -136,6 +143,7 @@ impl Templates {
             .iter()
             .map(|name| name.to_uppercase())
             .collect::<Vec<_>>();
+
         self.name_and_content_list()
             .into_iter()
             .filter(|name_and_content| name_list.contains(&name_and_content.name().to_uppercase()))
@@ -164,8 +172,8 @@ impl Templates {
 
     pub fn generate_gitignore_outdir(&self, file_name: String) {
         let split = file_name.split('/').collect::<Vec<_>>();
-        let len = split.len();
-        create_dir_all(split.split_at(len - 1).0.join("/"))
+
+        create_dir_all(split.split_at(split.len() - 1).0.join("/"))
             .unwrap_or_else(|_| panic!("{} {}", "Unable to create outdir from", file_name))
     }
 
@@ -175,9 +183,11 @@ impl Templates {
 
     pub fn generate_gitignore_file(&self, api: Str, name_list: NameList, file_name: String) {
         self.generate_gitignore_outdir(file_name.clone());
+
         let mut file = File::create(file_name.clone()).unwrap_or_else(|_| {
             panic!("{} {}", "Unable to create .gitignore file from", file_name)
         });
+
         file.write_all(self.generate_content(api, name_list).as_bytes())
             .unwrap_or_else(|_| {
                 panic!(
@@ -189,53 +199,66 @@ impl Templates {
 
     pub fn append_gitignore_file(&self, api: Str, name_list: NameList, file_name: String) {
         self.generate_gitignore_outdir(file_name.clone());
+
         let gitignore = self.generate_content(api, name_list);
+
         let is_exist = self.already_has_destination_file(file_name.clone());
+
         let mut file = OpenOptions::new()
             .write(true)
             .append(is_exist)
             .create(!is_exist)
             .open(file_name.clone())
             .unwrap_or_else(|_| panic!("{} {}", "Unable to open/create file of", file_name));
-        if !is_exist {
-            file.write_all(gitignore.as_bytes()).unwrap_or_else(|_| {
-                panic!(
-                    "{} {}",
-                    "Unable to write generated .gitignore content to", file_name
-                )
-            })
-        } else {
-            file.write_all(gitignore.to_string().as_bytes())
+
+        match is_exist {
+            true => file
+                .write_all(gitignore.to_string().as_bytes())
                 .unwrap_or_else(|_| {
                     panic!(
                         "{} {}",
                         "Unable to append generated .gitignore content to", file_name
                     )
-                })
-        }
+                }),
+            false => file.write_all(gitignore.as_bytes()).unwrap_or_else(|_| {
+                panic!(
+                    "{} {}",
+                    "Unable to write generated .gitignore content to", file_name
+                )
+            }),
+        };
     }
 
-    pub fn search_name_list(&self, name_list: Vec<&str>) -> SearchResult {
+    pub fn search_name_list(&self, name_list: Vec<String>) -> SearchResult {
         let gitignored_name_list = self.name_list();
+
+        let perfect_score = 1.0;
+
         let matches = name_list
             .iter()
             .map(|name| {
                 let levenshtein = gitignored_name_list.iter().fold(
                     Levenshtein::new(0.0, name.to_string(), "".to_string()),
-                    |prev, curr| {
-                        if prev.score == 1.0 {
-                            return prev;
+                    |prev, curr| match prev.score == perfect_score {
+                        true => prev,
+                        false => {
+                            let score = normalized_levenshtein(name, curr);
+
+                            if score <= prev.score {
+                                return prev;
+                            }
+
+                            match score <= prev.score {
+                                true => prev,
+                                false => Levenshtein::new(score, prev.original, curr.to_string()),
+                            }
                         }
-                        let score = normalized_levenshtein(name, curr);
-                        if score <= prev.score {
-                            return prev;
-                        }
-                        Levenshtein::new(score, prev.original, curr.to_string())
                     },
                 );
                 Match::new(levenshtein.original, levenshtein.closest)
             })
             .collect::<Vec<_>>();
+
         SearchResult::new(
             matches
                 .iter()
