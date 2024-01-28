@@ -63,7 +63,7 @@ const main = () => {
 
     fs.writeFile(
         target,
-        `use crate::util::Str;
+        `use crate::types::Str;
 
 #[derive(Debug)]
 pub struct Env;

@@ -1,20 +1,21 @@
 pub mod templates;
 pub mod time;
 
-use std::{fs::create_dir_all, panic, path::Path};
+use crate::api::response::{TemplateNames, Templates};
+use std::{fs, panic, path::Path};
 
-use crate::util::{Date, NameAndContentList, NameList, Str};
+use crate::types::{Date, Str};
 
 use self::{
-    templates::{SearchResult, Templates},
-    time::Time,
+    templates::{SearchResult, TemplatesCache},
+    time::TimeCache,
 };
 
 pub struct Cache {
     api: Str,
     cache: String,
-    time: Time,
-    templates: Templates,
+    time: TimeCache,
+    templates: TemplatesCache,
 }
 
 impl Cache {
@@ -22,19 +23,19 @@ impl Cache {
         Cache {
             api,
             cache: cache.clone(),
-            time: Time::new(cache.clone()),
-            templates: Templates::new(cache),
+            time: TimeCache::new(cache.clone()),
+            templates: TemplatesCache::new(cache),
         }
     }
 
     #[cfg(test)]
-    fn name_and_content_list(&self) -> NameAndContentList {
-        self.templates.name_and_content_list()
+    fn templates(&self) -> Templates {
+        self.templates.templates()
     }
 
     #[cfg(test)]
-    fn generate_content(&self, name_list: NameList) -> String {
-        self.templates.generate_content(self.api, name_list)
+    fn generate_content(&self, template_names: TemplateNames) -> String {
+        self.templates.generate_content(self.api, template_names)
     }
 
     #[cfg(test)]
@@ -45,15 +46,18 @@ impl Cache {
     pub fn has_been_created(&self) -> bool {
         Path::new(&self.cache.clone()).exists()
     }
-    pub fn generate(&self, commit_time: Date, name_and_content_list: NameAndContentList) {
-        create_dir_all(self.cache.clone())
+
+    pub fn generate(&self, commit_time: Date, templates: Templates) {
+        fs::create_dir_all(self.cache.clone())
             .unwrap_or_else(|_| panic!("Unable to create cache directory"));
-        self.update_latest_commit_time(commit_time);
-        self.update_name_and_content_list(name_and_content_list);
+
+        self.update_latest_committed_time(commit_time);
+
+        self.update_templates(templates);
     }
 
-    pub fn should_update(&self, latest_commit_time: Date) -> bool {
-        self.time.should_update(latest_commit_time)
+    pub fn should_update(&self, latest_committed_time: Date) -> bool {
+        self.time.should_update(latest_committed_time)
     }
 
     pub fn should_remind(&self, current_time: Date) -> bool {
@@ -64,46 +68,42 @@ impl Cache {
         self.time.update_last_remind_time(last_remind_time)
     }
 
-    pub fn latest_commit_time(&self) -> Date {
-        self.time.latest_commit_time()
+    pub fn latest_committed_time(&self) -> Date {
+        self.time.latest_committed_time()
     }
 
-    fn update_latest_commit_time(&self, commit_time: Date) -> Date {
-        self.time.update_latest_commit_time(commit_time)
+    fn update_latest_committed_time(&self, commit_time: Date) -> Date {
+        self.time.update_latest_committed_time(commit_time)
     }
 
-    fn update_name_and_content_list(
-        &self,
-        name_and_content_list: NameAndContentList,
-    ) -> NameAndContentList {
-        self.templates
-            .update_name_and_content_list(name_and_content_list)
+    fn update_templates(&self, templates: Templates) -> Templates {
+        self.templates.update_templates(templates)
     }
 
-    pub fn name_list(&self) -> NameList {
-        self.templates.name_list()
+    pub fn template_names(&self) -> TemplateNames {
+        self.templates.template_names()
     }
 
-    pub fn filter_name_and_content_list(&self, name_list: Vec<String>) -> NameAndContentList {
-        self.templates.filter_name_and_content_list(name_list)
+    pub fn filter_templates(&self, template_names: Vec<String>) -> Templates {
+        self.templates.filter_templates(template_names)
     }
 
     pub fn already_has_destination_file(&self, file_name: String) -> bool {
         self.templates.already_has_destination_file(file_name)
     }
 
-    pub fn generate_gitignore_file(&self, name_list: NameList, file_name: String) {
+    pub fn generate_gitignore_file(&self, template_names: TemplateNames, file_name: String) {
         self.templates
-            .generate_gitignore_file(self.api, name_list, file_name);
+            .generate_gitignore_file(self.api, template_names, file_name);
     }
 
-    pub fn append_gitignore_file(&self, name_list: NameList, file_name: String) {
+    pub fn append_gitignore_file(&self, template_names: TemplateNames, file_name: String) {
         self.templates
-            .append_gitignore_file(self.api, name_list, file_name);
+            .append_gitignore_file(self.api, template_names, file_name);
     }
 
-    pub fn search_name_list(&self, name_list: Vec<String>) -> SearchResult {
-        self.templates.search_name_list(name_list)
+    pub fn search_template_names(&self, template_names: Vec<String>) -> SearchResult {
+        self.templates.search_template_names(template_names)
     }
 }
 
@@ -112,7 +112,7 @@ mod tests {
 
     use std::{fs, path::Path};
 
-    use crate::{cache, env::Env, util::NameAndContent};
+    use crate::{api::response::Template, cache, env::Env};
     use chrono::DateTime;
     use directories::ProjectDirs;
 
@@ -127,8 +127,9 @@ mod tests {
                 .unwrap_or_else(|| panic!("Unable to create cache directory")),
         );
         let cache = cache::Cache::new(name.clone(), Env::API);
-        let latest_commit_time = DateTime::parse_from_rfc3339("2022-05-10T17:15:30+00:00").unwrap();
-        let name_and_content_list = [NameAndContent::new(
+        let latest_committed_time =
+            DateTime::parse_from_rfc3339("2022-05-10T17:15:30+00:00").unwrap();
+        let templates = [Template::new(
             "Python".to_string(),
             "Everything".to_string(),
         )]
@@ -137,33 +138,31 @@ mod tests {
         // before creating cache
         assert!(!cache.has_been_created());
         // create
-        cache.generate(latest_commit_time, name_and_content_list.clone());
+        cache.generate(latest_committed_time, templates.clone());
         // after creating cache
         assert!(cache.has_been_created());
-        assert!(!cache.should_update(latest_commit_time));
-        assert_eq!(latest_commit_time, cache.latest_commit_time());
+        assert!(!cache.should_update(latest_committed_time));
+        assert_eq!(latest_committed_time, cache.latest_committed_time());
 
-        let cached_name_and_content_list = cache.name_and_content_list();
-        assert_eq!(cached_name_and_content_list, name_and_content_list);
+        let cached_templates = cache.templates();
+        assert_eq!(cached_templates, templates);
 
         // update
-        let latest_commit_time = DateTime::parse_from_rfc3339("2022-05-10T17:15:40+00:00").unwrap();
-        assert!(latest_commit_time == cache.update_latest_commit_time(latest_commit_time));
-        let name_and_content_list = [
-            NameAndContent::new("Java".to_string(), "Stream API".to_string()),
-            NameAndContent::new("Haskell".to_string(), "Monad".to_string()),
+        let latest_committed_time =
+            DateTime::parse_from_rfc3339("2022-05-10T17:15:40+00:00").unwrap();
+        assert!(latest_committed_time == cache.update_latest_committed_time(latest_committed_time));
+        let templates = [
+            Template::new("Java".to_string(), "Stream API".to_string()),
+            Template::new("Haskell".to_string(), "Monad".to_string()),
         ]
         .to_vec();
-        assert_eq!(
-            name_and_content_list,
-            cache.update_name_and_content_list(name_and_content_list.clone())
-        );
+        assert_eq!(templates, cache.update_templates(templates.clone()));
         // names only
-        assert_eq!(["Java", "Haskell"].to_vec(), cache.name_list());
+        assert_eq!(["Java", "Haskell"].to_vec(), cache.template_names());
         // filtered name and content
         assert_eq!(
-            name_and_content_list[1],
-            cache.filter_name_and_content_list(["Haskell".to_string()].to_vec())[0]
+            templates[1],
+            cache.filter_templates(["Haskell".to_string()].to_vec())[0]
         );
         // generate content
         assert_eq!(
@@ -177,11 +176,11 @@ mod tests {
         );
 
         // search name list
-        let searched_name_list =
-            cache.search_name_list(["Java".to_string(), "Python".to_string()].to_vec());
-        assert_eq!(["Java"].to_vec(), searched_name_list.exact());
+        let searched_template_names =
+            cache.search_template_names(["Java".to_string(), "Python".to_string()].to_vec());
+        assert_eq!(["Java"].to_vec(), searched_template_names.exact());
         // will always return closest name based on highest score
-        assert!(!searched_name_list.closest().is_empty());
+        assert!(!searched_template_names.closest().is_empty());
         // generate file
         cache.generate_gitignore_file(
             ["Java".to_string()].to_vec(),

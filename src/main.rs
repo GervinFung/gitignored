@@ -5,9 +5,8 @@ mod env;
 mod input;
 mod output;
 mod types;
-mod util;
 
-use api::GitIgnoredApi;
+use api::GitignoredApi;
 use cache::Cache;
 use chrono::{DateTime, Utc};
 use cli::{
@@ -49,7 +48,7 @@ fn main() {
             output.invalid_arguments(result.invalid_arguments());
         }
         OptionsResultKind::Never => {
-            let api = GitIgnoredApi::new(Env::API);
+            let api = GitignoredApi::new(Env::API);
 
             let cache = ProjectDirs::from("", ".gitignored", Env::CACHE)
                 .unwrap_or_else(|| panic!("Unable to create cache directory"));
@@ -63,15 +62,27 @@ fn main() {
 
             let cache = Cache::new(name, Env::API);
 
+            let templates = || api.templates().templates().unwrap().data().to_owned();
+
+            let latest_committed_time = || {
+                api.latest_committed_time()
+                    .latest_committed_time()
+                    .unwrap()
+                    .data()
+                    .to_owned()
+            };
+
             if !cache.has_been_created() {
                 output.generating_cache();
-                cache.generate(api.latest_commit_time(), api.name_and_content_list());
+
+                cache.generate(latest_committed_time(), templates());
+
                 output.generated_cache();
             }
 
-            let latest_commit_time = api.latest_commit_time();
+            let latest_committed_time = latest_committed_time();
 
-            let should_update_cache = cache.should_update(latest_commit_time);
+            let should_update_cache = cache.should_update(latest_committed_time);
 
             let current_time =
                 DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
@@ -105,11 +116,11 @@ fn main() {
             {
                 TemplateResultKind::Never => output.invalid_argument(argument),
                 TemplateResultKind::Update(result) => {
-                    match cache.latest_commit_time() == latest_commit_time {
+                    match cache.latest_committed_time() == latest_committed_time {
                         true => output.already_up_to_date(),
                         false => {
                             output.updating();
-                            cache.generate(latest_commit_time, api.name_and_content_list());
+                            cache.generate(latest_committed_time, templates());
                             output.updated();
                         }
                     };
@@ -117,14 +128,16 @@ fn main() {
                     output.invalid_arguments(result.invalid_arguments());
                 }
                 TemplateResultKind::Show(result) => {
-                    output
-                        .all_names_separated_by_first_character(cache.name_list(), result.column());
+                    output.all_names_separated_by_first_character(
+                        cache.template_names(),
+                        result.column(),
+                    );
 
                     output.invalid_arguments(result.invalid_arguments());
                 }
                 TemplateResultKind::Search(result) => {
                     if let Some(templates) = result.templates() {
-                        let matches = cache.search_name_list(templates);
+                        let matches = cache.search_template_names(templates);
 
                         output.exact(matches.exact());
                         output.closest(matches.closest());
@@ -132,25 +145,23 @@ fn main() {
                 }
                 TemplateResultKind::Preview(result) => {
                     if let Some(templates) = result.templates() {
-                        let matches = cache.search_name_list(templates);
+                        let matches = cache.search_template_names(templates);
 
                         output.exact(matches.exact());
                         output.closest(matches.closest());
 
-                        let preview_name_list = matches
+                        let preview_template_names = matches
                             .exact()
                             .into_iter()
                             .chain(matches.closest().into_iter().map(|elem| elem.closest()))
                             .collect::<Vec<_>>();
 
-                        output.all_filtered_techs(
-                            cache.filter_name_and_content_list(preview_name_list),
-                        );
+                        output.all_filtered_techs(cache.filter_templates(preview_template_names));
                     }
                 }
                 TemplateResultKind::Append(result) => {
                     if let Some(templates) = result.templates() {
-                        let matches = cache.search_name_list(templates);
+                        let matches = cache.search_template_names(templates);
 
                         let input = Input::new();
 
@@ -190,7 +201,7 @@ fn main() {
                         match already_has_destination_file && !result.force() {
                             true => output.already_has_destination_file(out_dir),
                             false => {
-                                let matches = cache.search_name_list(templates);
+                                let matches = cache.search_template_names(templates);
 
                                 let input = Input::new();
 

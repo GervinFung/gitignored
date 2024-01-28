@@ -9,8 +9,7 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::assignment::Assignment,
-    types::{OptionalVecString, VecString},
-    util::Str,
+    types::{OptionalVecString, Str, VecString},
 };
 
 use self::{
@@ -417,7 +416,7 @@ mod update_tests {
                 TemplateResultKind,
             },
         },
-        util::Str,
+        types::Str,
     };
 
     use super::{

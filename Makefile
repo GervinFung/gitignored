@@ -14,10 +14,10 @@ code-gen:
 	node script/code-gen.js && make format
 
 pre-dev:
-	cp .env.development .env && make code-gen
+	cp config/.env.development .env && make code-gen
 
 pre-prod:
-	cp .env.production .env && make code-gen
+	cp config/.env.production .env && make code-gen
 
 # cli-executable
 default: pre-dev

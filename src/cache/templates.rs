@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::{
     fs::{create_dir_all, read_to_string, File, OpenOptions},
     io::Write,
@@ -6,7 +7,16 @@ use std::{
 };
 use strsim::normalized_levenshtein;
 
-use crate::util::{GitIgnoreNameAndContentList, NameAndContentList, NameList, Str};
+use crate::{
+    api::response::{TemplateNames, Templates, TemplatesResponseDto},
+    types::Str,
+};
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TemplaesDto {
+    #[allow(non_snake_case)]
+    templates: Templates,
+}
 
 #[derive(Debug)]
 struct Levenshtein {
@@ -49,16 +59,16 @@ pub type Matches = Vec<Match>;
 
 #[derive(Debug)]
 pub struct SearchResult {
-    exact: NameList,
+    exact: TemplateNames,
     closest: Matches,
 }
 
 impl SearchResult {
-    pub const fn new(exact: NameList, closest: Matches) -> Self {
+    pub const fn new(exact: TemplateNames, closest: Matches) -> Self {
         SearchResult { exact, closest }
     }
 
-    pub fn exact(&self) -> NameList {
+    pub fn exact(&self) -> TemplateNames {
         self.exact.clone()
     }
 
@@ -67,102 +77,87 @@ impl SearchResult {
     }
 }
 
-pub struct Templates {
-    name_and_content_list_file_path: String,
+pub struct TemplatesCache {
+    templates_file_path: String,
 }
 
-impl Templates {
+impl TemplatesCache {
     pub fn new(cache: String) -> Self {
-        Templates {
-            name_and_content_list_file_path: format!(
-                "{}/{}",
-                cache, "gitIgnoreNamesAndContents.json"
-            ),
+        TemplatesCache {
+            templates_file_path: format!("{}/{}", cache, "gitIgnoreNamesAndContents.json"),
         }
     }
 
-    pub fn name_and_content_list(&self) -> NameAndContentList {
-        let file_path = self.name_and_content_list_file_path.clone();
+    pub fn templates(&self) -> Templates {
+        let file_path = self.templates_file_path.clone();
 
-        let stringified_name_and_content_list = read_to_string(file_path.clone())
-            .unwrap_or_else(|_| panic!("{} {}", "Unable to read from", file_path));
+        let stringified_templates = read_to_string(file_path.clone())
+            .unwrap_or_else(|_| panic!("Unable to read from {}", file_path));
 
-        let parsed: GitIgnoreNameAndContentList =
-            serde_json::from_str(stringified_name_and_content_list.as_str()).unwrap_or_else(|_| {
-                panic!(
-                    "{} {}",
-                    "Unable to parse as JSON from", stringified_name_and_content_list
-                )
-            });
+        let parsed: TemplatesResponseDto = serde_json::from_str(stringified_templates.as_str())
+            .unwrap_or_else(|_| panic!("Unable to parse as JSON from {}", stringified_templates));
 
-        parsed.gitignored_name_and_content_list()
+        parsed.templates()
     }
 
-    pub fn update_name_and_content_list(
-        &self,
-        name_and_content_list: NameAndContentList,
-    ) -> NameAndContentList {
-        let file_path = self.name_and_content_list_file_path.clone();
+    pub fn update_templates(&self, templates: Templates) -> Templates {
+        let file_path = self.templates_file_path.clone();
 
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
-                "{} {}",
-                "Unable to create name and content list cache file from", file_path
+                "Unable to create name and content list cache file from {}",
+                file_path
             )
         });
 
-        let stringified = serde_json::to_string_pretty(&GitIgnoreNameAndContentList::new(
-            name_and_content_list.clone(),
-        ))
+        let stringified = serde_json::to_string_pretty(&TemplaesDto {
+            templates: templates.clone(),
+        })
         .unwrap_or_else(|_| {
             panic!(
-                "{} {:?}",
-                "Unable to stringify name and content list of", name_and_content_list
+                "Unable to stringify name and content list of {:?}",
+                templates
             )
         });
 
-        file.write_all(stringified.as_bytes()).unwrap_or_else(|_| {
-            panic!(
-                "{} {}",
-                "Unable to write name and content list of", stringified
-            )
-        });
+        file.write_all(stringified.as_bytes())
+            .unwrap_or_else(|_| panic!("Unable to write name and content list of {}", stringified));
 
-        self.name_and_content_list()
+        self.templates()
     }
 
-    pub fn name_list(&self) -> NameList {
-        self.name_and_content_list()
+    pub fn template_names(&self) -> TemplateNames {
+        self.templates()
             .into_iter()
-            .map(|name_and_content| name_and_content.name())
+            .map(|template| template.name().clone())
             .collect::<Vec<_>>()
     }
 
-    pub fn filter_name_and_content_list(&self, name_list: Vec<String>) -> NameAndContentList {
-        let name_list = name_list
+    pub fn filter_templates(&self, template_names: Vec<String>) -> Templates {
+        let names = template_names
             .iter()
             .map(|name| name.to_uppercase())
             .collect::<Vec<_>>();
 
-        self.name_and_content_list()
+        self.templates()
             .into_iter()
-            .filter(|name_and_content| name_list.contains(&name_and_content.name().to_uppercase()))
+            .filter(|template| names.contains(&template.name().to_uppercase()))
             .collect::<Vec<_>>()
     }
 
-    pub fn generate_content(&self, api: Str, name_list: NameList) -> String {
+    pub fn generate_content(&self, api: Str, template_names: TemplateNames) -> String {
         format!(
             "{} {}\n\n{}",
             "Generated by gitignore-cli. Templates are taken from",
             api,
-            self.filter_name_and_content_list(name_list)
+            self.filter_templates(template_names)
                 .into_iter()
-                .map(|name_and_content| {
+                .map(|template| {
                     format!(
                         "{} {}\n{}",
                         "### The gitignore of",
-                        name_and_content.name().to_uppercase(),
-                        name_and_content.content()
+                        template.name().to_uppercase(),
+                        template.content()
                     )
                 })
                 .collect::<Vec<_>>()
@@ -174,33 +169,37 @@ impl Templates {
         let split = file_name.split('/').collect::<Vec<_>>();
 
         create_dir_all(split.split_at(split.len() - 1).0.join("/"))
-            .unwrap_or_else(|_| panic!("{} {}", "Unable to create outdir from", file_name))
+            .unwrap_or_else(|_| panic!("Unable to create outdir from {}", file_name))
     }
 
     pub fn already_has_destination_file(&self, file_name: String) -> bool {
         Path::new(file_name.as_str()).exists()
     }
 
-    pub fn generate_gitignore_file(&self, api: Str, name_list: NameList, file_name: String) {
+    pub fn generate_gitignore_file(
+        &self,
+        api: Str,
+        template_names: TemplateNames,
+        file_name: String,
+    ) {
         self.generate_gitignore_outdir(file_name.clone());
 
-        let mut file = File::create(file_name.clone()).unwrap_or_else(|_| {
-            panic!("{} {}", "Unable to create .gitignore file from", file_name)
-        });
+        let mut file = File::create(file_name.clone())
+            .unwrap_or_else(|_| panic!("Unable to create .gitignore file from {}", file_name));
 
-        file.write_all(self.generate_content(api, name_list).as_bytes())
-            .unwrap_or_else(|_| {
-                panic!(
-                    "{} {}",
-                    "Unable to write generated .gitignore to", file_name
-                )
-            })
+        file.write_all(self.generate_content(api, template_names).as_bytes())
+            .unwrap_or_else(|_| panic!("Unable to write generated .gitignore to {}", file_name))
     }
 
-    pub fn append_gitignore_file(&self, api: Str, name_list: NameList, file_name: String) {
+    pub fn append_gitignore_file(
+        &self,
+        api: Str,
+        template_names: TemplateNames,
+        file_name: String,
+    ) {
         self.generate_gitignore_outdir(file_name.clone());
 
-        let gitignore = self.generate_content(api, name_list);
+        let gitignore = self.generate_content(api, template_names);
 
         let is_exist = self.already_has_destination_file(file_name.clone());
 
@@ -209,48 +208,49 @@ impl Templates {
             .append(is_exist)
             .create(!is_exist)
             .open(file_name.clone())
-            .unwrap_or_else(|_| panic!("{} {}", "Unable to open/create file of", file_name));
+            .unwrap_or_else(|_| panic!("Unable to open/create file of {}", file_name));
 
         match is_exist {
             true => file
                 .write_all(gitignore.to_string().as_bytes())
                 .unwrap_or_else(|_| {
                     panic!(
-                        "{} {}",
-                        "Unable to append generated .gitignore content to", file_name
+                        "Unable to append generated .gitignore content to {}",
+                        file_name
                     )
                 }),
             false => file.write_all(gitignore.as_bytes()).unwrap_or_else(|_| {
                 panic!(
-                    "{} {}",
-                    "Unable to write generated .gitignore content to", file_name
+                    "Unable to write generated .gitignore content to {}",
+                    file_name
                 )
             }),
         };
     }
 
-    pub fn search_name_list(&self, name_list: Vec<String>) -> SearchResult {
-        let gitignored_name_list = self.name_list();
+    pub fn search_template_names(&self, template_names: Vec<String>) -> SearchResult {
+        let gitignored_template_names = self.template_names();
 
         let perfect_score = 1.0;
 
-        let matches = name_list
+        let matches = template_names
             .iter()
             .map(|name| {
-                let levenshtein = gitignored_name_list.iter().fold(
+                let levenshtein = gitignored_template_names.iter().fold(
                     Levenshtein::new(0.0, name.to_string(), "".to_string()),
                     |prev, curr| match prev.score == perfect_score {
                         true => prev,
                         false => {
                             let score = normalized_levenshtein(name, curr);
 
-                            if score <= prev.score {
-                                return prev;
-                            }
-
                             match score <= prev.score {
                                 true => prev,
-                                false => Levenshtein::new(score, prev.original, curr.to_string()),
+                                false => match score <= prev.score {
+                                    true => prev,
+                                    false => {
+                                        Levenshtein::new(score, prev.original, curr.to_string())
+                                    }
+                                },
                             }
                         }
                     },

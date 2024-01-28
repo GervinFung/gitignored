@@ -2,9 +2,9 @@ use colored::Colorize;
 use prettytable::{Cell, Row, Table};
 
 use crate::{
+    api::response::{TemplateNames, Templates},
     cache::templates::Matches,
     types::OptionalVecString,
-    util::{NameAndContentList, NameList},
 };
 
 pub struct Output;
@@ -16,20 +16,20 @@ impl Output {
 
     fn filter_names_by_first_character(
         &self,
-        name_list: NameList,
+        template_names: TemplateNames,
         first_character: &str,
-    ) -> NameList {
-        name_list
+    ) -> TemplateNames {
+        template_names
             .into_iter()
             .filter(|name| name.starts_with(first_character))
             .collect::<Vec<_>>()
     }
 
-    fn print(&self, name_list: NameList, number_of_columns: u8) {
+    fn print(&self, template_names: TemplateNames, number_of_columns: u8) {
         let mut table = Table::new();
 
         // while another row can be constructed, construct one and add to table
-        for chunk in name_list.chunks(number_of_columns.into()) {
+        for chunk in template_names.chunks(number_of_columns.into()) {
             let cells = chunk.iter().map(|item| Cell::new(item)).collect::<Vec<_>>();
 
             let row = Row::new(cells);
@@ -46,7 +46,7 @@ impl Output {
 
     pub fn all_names_separated_by_first_character(
         &self,
-        name_list: NameList,
+        template_names: TemplateNames,
         number_of_columns: u8,
     ) {
         for alphabet in 'A'..='Z' {
@@ -55,7 +55,7 @@ impl Output {
             println!("\n{}", alphabet.cyan().bold());
 
             self.print(
-                self.filter_names_by_first_character(name_list.clone(), alphabet.as_str()),
+                self.filter_names_by_first_character(template_names.clone(), alphabet.as_str()),
                 number_of_columns,
             );
         }
@@ -96,13 +96,13 @@ impl Output {
         )
     }
 
-    pub fn all_filtered_techs(&self, name_and_content_list: NameAndContentList) {
+    pub fn all_filtered_techs(&self, templates: Templates) {
         let mut table = Table::new();
 
-        for name_and_content in name_and_content_list {
-            let name = Cell::new(name_and_content.name().as_str());
+        for template in templates {
+            let name = Cell::new(template.name().as_str());
 
-            let content = Cell::new(name_and_content.content().as_str());
+            let content = Cell::new(template.content().as_str());
 
             table.add_row(Row::new([name, content].to_vec()));
         }
@@ -179,7 +179,7 @@ impl Output {
         };
     }
 
-    pub fn exact(&self, exact: NameList) {
+    pub fn exact(&self, exact: TemplateNames) {
         if !exact.is_empty() {
             let exact = exact
                 .iter()

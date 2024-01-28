@@ -2,8 +2,7 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::{assignment::Assignment, options::KeywordKind},
-    types::OptionalVecString,
-    util::Str,
+    types::{OptionalVecString, Str},
 };
 
 use super::OptionPairs;
@@ -166,9 +165,6 @@ impl Append {
                 }
             });
 
-        match result {
-            None => AppendTemplateResult::IsNotValid,
-            Some(result) => result,
-        }
+        result.unwrap_or(AppendTemplateResult::IsNotValid)
     }
 }

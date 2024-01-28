@@ -1,4 +1,7 @@
-use crate::{env::Env, types::OptionalVecString, util::Str};
+use crate::{
+    env::Env,
+    types::{OptionalVecString, Str},
+};
 
 use super::assignment::Assignment;
 
@@ -29,6 +32,18 @@ impl ValidOptionsResult {
 pub enum OptionsResult {
     IsNotValid,
     IsValid(ValidOptionsResult),
+}
+
+impl OptionsResult {
+    pub fn map<Function>(self, function: Function) -> Self
+    where
+        Function: FnOnce(ValidOptionsResult) -> OptionsResult,
+    {
+        match self {
+            OptionsResult::IsNotValid => OptionsResult::IsNotValid,
+            OptionsResult::IsValid(result) => function(result),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -139,24 +154,21 @@ impl Options {
                         )),
                     }
                 }
-                _ => match result {
-                    OptionsResult::IsNotValid => OptionsResult::IsNotValid,
-                    OptionsResult::IsValid(result) => match result.invalid_arguments() {
-                        None => OptionsResult::IsValid(ValidOptionsResult::new(
-                            value.to_owned(),
-                            Option::Some(vec![argument.to_string()]),
-                        )),
-                        Some(invalid_arguments) => OptionsResult::IsValid(ValidOptionsResult::new(
-                            value.to_owned(),
-                            Option::Some(
-                                invalid_arguments
-                                    .into_iter()
-                                    .chain(vec![argument.to_string()])
-                                    .collect::<Vec<_>>(),
-                            ),
-                        )),
-                    },
-                },
+                _ => result.map(|result| match result.invalid_arguments() {
+                    None => OptionsResult::IsValid(ValidOptionsResult::new(
+                        value.to_owned(),
+                        Option::Some(vec![argument.to_string()]),
+                    )),
+                    Some(invalid_arguments) => OptionsResult::IsValid(ValidOptionsResult::new(
+                        value.to_owned(),
+                        Option::Some(
+                            invalid_arguments
+                                .into_iter()
+                                .chain(vec![argument.to_string()])
+                                .collect::<Vec<_>>(),
+                        ),
+                    )),
+                }),
             },
         )
     }

@@ -1,7 +1,7 @@
 use colored::{ColoredString, Colorize};
 use std::io::{self, stdout, Write};
 
-use crate::{cache::templates::Matches, util::NameList};
+use crate::{api::response::TemplateNames, cache::templates::Matches};
 
 pub struct Input;
 
@@ -69,7 +69,7 @@ impl Input {
         }
     }
 
-    pub fn validate_closest_names(&self, closest: Matches) -> NameList {
+    pub fn validate_closest_names(&self, closest: Matches) -> TemplateNames {
         closest
             .iter()
             .filter(|elem| self.is_meant_closest(elem.original(), elem.closest()))

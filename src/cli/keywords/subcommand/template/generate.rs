@@ -2,8 +2,7 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::{assignment::Assignment, options::KeywordKind},
-    types::OptionalVecString,
-    util::Str,
+    types::{OptionalVecString, Str},
 };
 
 use super::{append::Outdir, OptionPairs};
@@ -202,9 +201,6 @@ impl Generate {
                 },
             );
 
-        match result {
-            None => GenerateTemplateResult::IsNotValid,
-            Some(result) => result,
-        }
+        result.unwrap_or(GenerateTemplateResult::IsNotValid)
     }
 }
