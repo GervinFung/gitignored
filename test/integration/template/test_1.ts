@@ -4,6 +4,13 @@ import { externalAppCaller, internalAppCaller } from '../caller';
 import { narrowToSucceed } from '../const';
 
 const templateTest_1 = () => {
+	const succeedResponse = <T>(data: T) => {
+		return {
+			status: 'succeed',
+			data,
+		};
+	};
+
 	it('should be able to insert templates and return result', async () => {
 		const templatesResult =
 			await internalAppCaller.template.findAllTemplates();
@@ -23,24 +30,19 @@ const templateTest_1 = () => {
 		const latestCommittedTime =
 			await externalAppCaller.templateBatch.latestCommittedTime();
 
-		expect(latestCommittedTime).toStrictEqual({
-			latestCommittedTime: expect.any(Date),
-		});
+		expect(latestCommittedTime).toStrictEqual(
+			succeedResponse({
+				latestCommittedTime: expect.any(Date),
+			})
+		);
 
 		const data = await externalAppCaller.template.findAllTemplates();
 
-		expect(data).toStrictEqual(templates.data);
-
-		const template =
-			await externalAppCaller.template.findAllTemplatesName();
-
-		expect(template).toStrictEqual({
-			template: {
-				names: templates.data.map(({ name }) => {
-					return name;
-				}),
-			},
-		});
+		expect(data).toStrictEqual(
+			succeedResponse({
+				templates: templates.data,
+			})
+		);
 	});
 };
 

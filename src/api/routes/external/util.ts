@@ -2,16 +2,33 @@ import type { AsyncResult } from '@poolofdeath20/util';
 import type { EndPointFunc, Response } from '../../cors';
 import cors from '../../cors';
 
+type Result<T> = Readonly<
+	| {
+			status: 'failed';
+			reason: string;
+	  }
+	| {
+			status: 'succeed';
+			data: T;
+	  }
+>;
+
 const result = <T>(operation: () => Promise<AsyncResult<T>>) => {
-	return async () => {
+	return async (): Promise<Result<T>> => {
 		const result = await operation();
 
 		return result.match({
 			onFailed: (error) => {
-				return error.message;
+				return {
+					status: 'failed',
+					reason: error.message,
+				};
 			},
 			onSucceed: (data) => {
-				return data;
+				return {
+					status: 'succeed',
+					data,
+				};
 			},
 		});
 	};
