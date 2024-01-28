@@ -5,9 +5,9 @@ import { beforeEach, describe } from 'vitest';
 import templateTest_1 from './template/test_1';
 
 const testIntegration = () => {
-	// beforeEach(() => {
-	// 	child.execSync('make reset-database', { stdio: [] });
-	// });
+	beforeEach(() => {
+		child.execSync('make reset-database', { stdio: [] });
+	});
 
 	describe('Integration Test', () => {
 		const testCases: ReadonlyArray<readonly [() => void, 'only'?]> = [
