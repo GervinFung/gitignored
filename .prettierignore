@@ -1,0 +1,42 @@
+node_modules
+
+# next.js
+.next
+out
+next-env.d.ts
+
+# generated
+script/**/*.generated.*
+script/**/*.webp
+.prettierrc
+.tscache
+env.d.ts
+public/service-worker.js
+public/workbox-*.js
+src/api/database/supabase/type.ts
+supabase/config.toml
+supabase/.temp/import_maps/**.json
+
+src/api/database/type-definition
+
+# production
+build
+dist
+cache
+
+# local env files
+.env
+.env.productions
+.env.staging
+
+# vercel
+.vercel
+
+# sitemap
+public/sitemap*.xml
+public/site.webmanifest
+public/robots.txt
+
+# pnpm
+pnpm-lock.yaml
+.pnpm-store

@@ -1,7 +1,6 @@
 {
-    "extends": [
-        "@poolofdeath20/eslint-config/node",
-        "@poolofdeath20/eslint-config/react",
-        "@poolofdeath20/eslint-config/styled-components-jsx"
-    ]
+	"extends": [
+		"@poolofdeath20/eslint-config/node",
+		"@poolofdeath20/eslint-config/react"
+	]
 }

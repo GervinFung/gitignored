@@ -1,35 +1,93 @@
 import React from 'react';
-import styled from 'styled-components';
-import GitHubIcon from './github';
-import Logo from './logo';
 
-const Header = () => (
-    <Container>
-        <Logo />
-        <RightContainer>
-            <GitHubIcon />
-        </RightContainer>
-    </Container>
-);
+import Image from 'next/image';
 
-const Container = styled.div`
-    width: 100%;
-    padding: 16px 24px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    > a {
-        text-decoration: none;
-    }
-    background-color: ${({ theme }) => theme.primaryColor};
-`;
+import {
+	Link,
+	Box,
+	Button,
+	ButtonGroup,
+	Container,
+	IconButton,
+	Flex,
+	HStack,
+} from '@chakra-ui/react';
 
-const RightContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    grid-gap: 8px;
-`;
+import { SiGithub } from 'react-icons/si';
+
+import InternalLink from '../common/link';
+
+import { constants, title } from '../../util/const';
+
+const Header = () => {
+	return (
+		<Box as="section">
+			<Box as="nav" bg="bg-surface" borderBottom="1px solid">
+				<Container py={4} maxWidth="80%">
+					<HStack spacing={10} display="flex" justify="space-between">
+						<InternalLink
+							param={{
+								href: '/',
+							}}
+						>
+							<Image
+								width={50}
+								height={29}
+								quality={100}
+								alt={`Logo of ${title}`}
+								src="/images/icons/logo.webp"
+							/>
+						</InternalLink>
+						<Flex gap={8}>
+							<ButtonGroup variant="ghost" spacing={4}>
+								{(
+									[
+										'Home',
+										'Documentation',
+										'Templates',
+									] as const
+								).map((link) => {
+									return (
+										<InternalLink
+											key={link}
+											param={{
+												href: `/${
+													link === 'Home'
+														? ''
+														: link ===
+															  'Documentation'
+															? 'docs'
+															: link.toLowerCase()
+												}`,
+											}}
+										>
+											<Button key={link}>{link}</Button>
+										</InternalLink>
+									);
+								})}
+								<Link
+									isExternal
+									href={constants.repo}
+									target="_blank"
+									rel="external nofollow noopener noreferrer"
+								>
+									<IconButton
+										aria-label="Github"
+										icon={
+											<SiGithub
+												fontSize="1.65em"
+												textDecoration="none"
+											/>
+										}
+									/>
+								</Link>
+							</ButtonGroup>
+						</Flex>
+					</HStack>
+				</Container>
+			</Box>
+		</Box>
+	);
+};
 
 export default Header;

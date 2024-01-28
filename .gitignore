@@ -1,30 +1,30 @@
 node_modules
 
 # next.js
-.next/
-out/
+.next
+out
 next-env.d.ts
 
 # generated
 script/**/*.generated.*
+script/**/*.webp
+.prettierrc
+.tscache
+env.d.ts
+public/service-worker.js*
+public/workbox-*.js*
+supabase/config.toml
+src/api/database/supabase/type.ts
+test/snapshot/snapshot-images/__diff_output__
 
 # production
 build
 dist
 cache
 
-# test
-__test__
-
-# debug
-yarn-debug.log*
-yarn-error.log*
-
 # local env files
 .env
-.env.development
-.env.testing
-.env.productions
+.env.production
 .env.staging
 
 # vercel
@@ -34,6 +34,3 @@ yarn-error.log*
 public/sitemap*.xml
 public/site.webmanifest
 public/robots.txt
-
-# font
-public/font/jetbrains**

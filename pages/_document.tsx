@@ -1,59 +1,49 @@
 import React from 'react';
 import Document, {
-    DocumentContext,
-    Head,
-    Main,
-    NextScript,
-    Html,
+	type DocumentContext,
+	Head,
+	Main,
+	NextScript,
+	Html,
 } from 'next/document';
-import { ServerStyleSheet } from 'styled-components';
 
 export default class Doc extends Document {
-    static getInitialProps = async (documentContext: DocumentContext) => {
-        const sheet = new ServerStyleSheet();
-        const { renderPage } = documentContext;
+	static getInitialProps = async (context: DocumentContext) => {
+		const { renderPage: originalRenderPage } = context;
 
-        try {
-            // Run the React rendering logic synchronously
-            documentContext.renderPage = () =>
-                renderPage({
-                    // Useful for wrapping the whole react tree
-                    enhanceApp: (App) => (props) =>
-                        sheet.collectStyles(<App {...props} />),
-                    // Useful for wrapping in a per-page basis
-                    enhanceComponent: (Component) => Component,
-                });
-            const initialProps = await Document.getInitialProps(
-                documentContext
-            );
-            return {
-                ...initialProps,
-                styles: (
-                    <>
-                        {initialProps.styles}
-                        {sheet.getStyleElement()}
-                    </>
-                ),
-            };
-        } finally {
-            sheet.seal();
-        }
-    };
+		// Run the React rendering logic synchronously
+		context.renderPage = () => {
+			return originalRenderPage({
+				// Useful for wrapping the whole react tree
+				enhanceApp: (App) => {
+					return App;
+				},
+				// Useful for wrapping in a per-page basis
+				enhanceComponent: (Component) => {
+					return Component;
+				},
+			});
+		};
 
-    render = () => (
-        <Html lang="en">
-            <Head />
-            <meta charSet="utf-8" />
-            <body
-                style={{
-                    margin: 0,
-                    padding: 0,
-                    overflowX: 'hidden',
-                }}
-            >
-                <Main />
-                <NextScript />
-            </body>
-        </Html>
-    );
+		// Run the parent `getInitialProps`, it now includes the custom `renderPage`
+		return await Document.getInitialProps(context);
+	};
+
+	render = () => {
+		return (
+			<Html lang="en">
+				<Head />
+				<body
+					style={{
+						padding: 0,
+						margin: 0,
+						overflowX: 'hidden',
+					}}
+				>
+					<Main />
+					<NextScript />
+				</body>
+			</Html>
+		);
+	};
 }

@@ -1,29 +1,45 @@
 import React from 'react';
+
 import type { AppProps } from 'next/app';
-import styled, { ThemeProvider } from 'styled-components';
-import theme from '../src/web/theme/theme';
-import { ErrorBoundary, Loading } from '../src/web/components/error';
-import { ToastContainer } from 'react-toastify';
+
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+
+import ErrorBoundary from '../src/web/components/error/boundary';
+
+import trpc from '../src/web/hooks/trpc';
+
 import '../src/web/css/jetbrains.css';
 import '../src/web/css/bungee.css';
 
-const App = ({ Component, pageProps }: AppProps) => (
-    <ThemeProvider theme={theme}>
-        <EmptyContainer>
-            <ToastContainer />
-            <ErrorBoundary>
-                <React.Suspense fallback={<Loading />}>
-                    <Component {...pageProps} />
-                </React.Suspense>
-            </ErrorBoundary>
-        </EmptyContainer>
-    </ThemeProvider>
-);
+const App = (props: AppProps) => {
+	return (
+		<ChakraProvider
+			theme={extendTheme({
+				fonts: {
+					heading: 'Jetbrains Mono',
+					body: 'Jetbrains Mono',
+				},
+				styles: {
+					global: {
+						body: {
+							margin: 0,
+							padding: 0,
+							overflowX: 'hidden',
+							backgroundColor: 'transparent',
+							transition: 'all ease-in-out 0.1s',
+						},
+						html: {
+							scrollBehavior: 'smooth',
+						},
+					},
+				},
+			})}
+		>
+			<ErrorBoundary>
+				<props.Component {...props.pageProps} />
+			</ErrorBoundary>
+		</ChakraProvider>
+	);
+};
 
-const EmptyContainer = styled.main`
-    .Toastify__toast-body {
-        font-family: ${({ theme }) => theme.fontFamily}, sans-serif !important;
-    }
-`;
-
-export default App;
+export default trpc.withTRPC(App);
