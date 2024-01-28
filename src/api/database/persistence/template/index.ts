@@ -79,63 +79,7 @@ class TemplatePersistence {
 			});
 	};
 
-	private readonly findManyNameIn = async (
-		props: DeepReadonly<{
-			batch: {
-				id: number;
-			};
-		}>
-	) => {
-		return this.template()
-			.select('name')
-			.eq('batch_id', props.batch.id)
-			.order('name', { ascending: true })
-			.then((result) => {
-				if (result.error) {
-					return DatabaseOperation.failed(result.error);
-				}
-
-				return DatabaseOperation.succeed({
-					template: {
-						names: result.data.map(({ name }) => {
-							return name;
-						}),
-					},
-				});
-			});
-	};
-
-	readonly findManyName = async () => {
-		return this.templateBatch()
-			.findLatestOne()
-			.then((result) => {
-				return result.flatMap((batch) => {
-					return batch.match({
-						some: (batch) => {
-							return this.findManyNameIn({ batch });
-						},
-						none: async () => {
-							const result =
-								await this.templateBatch().insertion();
-
-							return result.flatMap(async (batch) => {
-								return this.insertion({
-									batch,
-								}).then((result) => {
-									return result.flatMap(() => {
-										return this.findManyNameIn({
-											batch,
-										});
-									});
-								});
-							});
-						},
-					});
-				});
-			});
-	};
-
-	readonly findMany = async (): Promise<AsyncTemplates> => {
+	readonly internalFindMany = async (): Promise<AsyncTemplates> => {
 		return this.templateBatch()
 			.findLatestOne()
 			.then((result) => {
@@ -163,6 +107,16 @@ class TemplatePersistence {
 					});
 				});
 			});
+	};
+
+	readonly externalFindMany = async () => {
+		return this.internalFindMany().then((result) => {
+			return result.map(async (templates) => {
+				return {
+					templates,
+				};
+			});
+		});
 	};
 }
 

@@ -26,12 +26,7 @@ const testSnapshot = () => {
 	describe('Snapshot Test', () => {
 		expect.extend({ toMatchImageSnapshot });
 
-		const docs = [
-			'commit-time',
-			'introduction',
-			'templates-name',
-			'templates',
-		]
+		const docs = ['commit-time', 'introduction', 'templates']
 			.map((link) => {
 				return `docs/api/${link}`;
 			})
