@@ -1,92 +1,179 @@
+import { AsyncOperation, Defined } from '@poolofdeath20/util';
+
 import axios from 'axios';
-import type { GitIgnoreNamesAndContents } from '../../common/type';
-import { parseAsArray, parseAsString } from '../../common/util/parser';
 
-const scrapper = () => ({
-    getLatestTimeCommitted: async () =>
-        axios
-            .get('https://api.github.com/repos/github/gitignore/branches/main')
-            .then(
-                ({ data }) =>
-                    new Date(parseAsString(data.commit.commit.author.date))
-            ),
-    //ref: https://docs.github.com/en/rest/git/trees#get-a-tree
-    getGitIgnoreNameAndContents:
-        async (): Promise<GitIgnoreNamesAndContents> => {
-            const { data } = await axios.get(
-                'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1'
-            );
-            const nameAndContentList = await Promise.all(
-                parseAsArray(data.tree, (branch) => {
-                    const path = parseAsString(branch.path);
-                    return !path.includes('.gitignore') ? [] : [path];
-                })
-                    .flat()
-                    .map(async (path) => ({
-                        name: parseAsString(path.split('/').pop()).replace(
-                            '.gitignore',
-                            ''
-                        ),
-                        content: parseAsString(
-                            (
-                                await axios.get(
-                                    `https://raw.githubusercontent.com/github/gitignore/main/${path}`
-                                )
-                            ).data
-                        ),
-                    }))
-            );
-            console.log(`scrapped ${nameAndContentList.length} templates`);
-            const duplicatedNameList = Array.from(
-                new Set(
-                    nameAndContentList
-                        .map(({ name }) => name)
-                        .filter(
-                            (name, index, names) =>
-                                names.indexOf(name) !== index
-                        )
-                )
-            );
-            const finalNameAndContentList = nameAndContentList
-                .filter(({ name }) => !duplicatedNameList.includes(name))
-                .concat(
-                    nameAndContentList
-                        .filter(({ name }) => duplicatedNameList.includes(name))
-                        .flatMap(({ name }, index, array) =>
-                            array[index - 1]?.name === name
-                                ? []
-                                : [
-                                      {
-                                          name,
-                                          content: Array.from(
-                                              new Set(
-                                                  array
-                                                      .filter(
-                                                          (element) =>
-                                                              element.name ===
-                                                              name
-                                                      )
-                                                      .map(
-                                                          ({ content }) =>
-                                                              content
-                                                      )
-                                                      .join('\n')
-                                                      .split('\n')
-                                              )
-                                          ).join('\n'),
-                                      },
-                                  ]
-                        )
-                );
-            console.log(
-                `after combining duplicates, there are total of ${finalNameAndContentList.length} templates`
-            );
-            return finalNameAndContentList.sort((a, b) =>
-                a.name.localeCompare(b.name, undefined, {
-                    ignorePunctuation: true,
-                })
-            );
-        },
-});
+import { parse, object, array, string, transform } from 'valibot';
+import { singleFlowParser } from '../../common/parser';
 
-export default scrapper;
+type AsyncTemplates = Awaited<ReturnType<Scrapper['templates']>>;
+
+const schemas = {
+	latestTimeCommitted: transform(string(), (value) => {
+		return new Date(value);
+	}),
+	template: {
+		properties: {
+			content: string(),
+		},
+		list: array(
+			transform(
+				object({
+					path: string(),
+				}),
+				({ path }) => {
+					return path;
+				}
+			)
+		),
+	},
+} as const;
+
+class Scrapper {
+	private constructor() {}
+
+	static readonly create = () => {
+		return new this();
+	};
+
+	readonly latestTimeCommitted = async () => {
+		return axios
+			.get('https://api.github.com/repos/github/gitignore/branches/main')
+			.then(({ data }) => {
+				return data.commit.commit.author.date;
+			})
+			.then(singleFlowParser(schemas.latestTimeCommitted))
+			.then(AsyncOperation.succeed)
+			.catch(AsyncOperation.failed);
+	};
+
+	readonly templates = async () => {
+		const result = await axios
+			.get(
+				'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1'
+			)
+			.then(({ data }) => {
+				return data.tree;
+			})
+			.then(singleFlowParser(schemas.template.list))
+			.then((path) => {
+				return path.filter((path) => {
+					return path.includes('.gitignore');
+				});
+			})
+			.then((path) => {
+				return Promise.all(
+					path.map(async (path) => {
+						const content = await axios.get(
+							`https://raw.githubusercontent.com/github/gitignore/main/${path}`
+						);
+
+						return {
+							content: parse(
+								schemas.template.properties.content,
+								content.data
+							),
+							name: Defined.parse(path.split('/').at(-1))
+								.orThrow(
+									new Error(
+										`There should be an element after splitting by '/'`
+									)
+								)
+								.replace('.gitignore', ''),
+						};
+					})
+				);
+			})
+			.then(AsyncOperation.succeed)
+			.catch(AsyncOperation.failed);
+
+		return result.map(async (list) => {
+			const duplicates = Array.from(
+				new Set(
+					list
+						.map(({ name }) => {
+							return name;
+						})
+						.filter((name, index, names) => {
+							return names.indexOf(name) !== index;
+						})
+				)
+			);
+
+			const templates = list
+				.filter(({ name }) => {
+					return !duplicates.includes(name);
+				})
+				.concat(
+					list
+						.filter(({ name }) => {
+							return duplicates.includes(name);
+						})
+						.flatMap(({ name }, index, array) => {
+							if (array[index - 1]?.name === name) {
+								return [];
+							}
+
+							return [
+								{
+									name,
+									content: Array.from(
+										new Set(
+											array
+												.filter((element) => {
+													return (
+														element.name === name
+													);
+												})
+												.map(({ content }) => {
+													return content;
+												})
+												.join('\n')
+												.split('\n')
+										)
+									).join('\n'),
+								},
+							];
+						})
+				)
+				.map((template, _, templates) => {
+					const linesOfContent = template.content.split('\n');
+
+					const file = Defined.parse(linesOfContent.at(0)).orThrow(
+						new Error('Content should have at least a line')
+					);
+
+					const isReferToOtherTemplate =
+						linesOfContent.length === 1 &&
+						file.includes('.gitignore');
+
+					if (!isReferToOtherTemplate) {
+						return template;
+					}
+
+					const templateNameReferred = file.replace('.gitignore', '');
+
+					return {
+						...template,
+						content: Defined.parse(
+							templates.find(({ name }) => {
+								return name === templateNameReferred;
+							})
+						).orThrow(
+							new Error(
+								`There is no template referred by ${template.name}`
+							)
+						).content,
+					};
+				});
+
+			return templates.toSorted((a, b) => {
+				return a.name.localeCompare(b.name, undefined, {
+					ignorePunctuation: true,
+				});
+			});
+		});
+	};
+}
+
+export type { AsyncTemplates };
+export { Scrapper };

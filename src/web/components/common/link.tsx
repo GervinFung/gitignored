@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { type PropsWithChildren } from 'react';
+
 import Link from 'next/link';
 
-const CustomLink = ({
-    param,
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-    param: Readonly<Parameters<typeof Link>[number]>;
-}>) => (
-    <Link {...param} href={param.href.toString()}>
-        {children}
-    </Link>
-);
+const InternalLink = (
+	props: PropsWithChildren &
+		Readonly<{
+			param: Readonly<Parameters<typeof Link>[number]>;
+		}>
+) => {
+	return (
+		<Link {...props.param} href={props.param.href.toString()}>
+			{props.children}
+		</Link>
+	);
+};
 
-export default CustomLink;
+export default InternalLink;

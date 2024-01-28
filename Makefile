@@ -1,59 +1,67 @@
-.PHONY: build test all
+.PHONY: build test
 MAKEFLAGS += --silent
 
-all:
-	make lint &&\
-		make typecheck &&\
-		make format-check &&\
-		make test &&\
-
-NODE_BIN=node_modules/.bin/
-VITE_NODE=$(NODE_BIN)vite-node
-NEXT=$(NODE_BIN)next
+## docker setup ubuntu
+install-docker:
+	sh script/docker/install.sh
 
 ## install
 install:
 	pnpm i --frozen-lockfile
 
-install-mongo:
-	$(VITE_NODE) script/mongo-setup/install.ts
+generate-local-database-type:
+	pnpm supabase gen types typescript --local > src/api/database/supabase/type.ts
 
-start-mongo:
-	sudo systemctl unmask mongod
-	sudo systemctl start mongod
-	sudo systemctl stop mongod
-	sudo systemctl restart mongod
-
-migrate-mongo:
-	mongosh < script/mongo-setup/document.js
-
-## generate
-generate: generate-resume
-
-generate-resume:
-	$(VITE_NODE) script/resume/generate.ts
-
-generate-webmanifest:
-	$(VITE_NODE) script/site/webmanifest.ts
-
-generate-sitemap:
-	$(NODE_BIN)next-sitemap
+## telemetry
+opt-out-telemetry:
+	pnpm next telemetry disable
 
 ## env
+generate-typesafe-environment:
+	pnpm vite-node script/env/type-def.ts
+
 copy-env:
-	$(VITE_NODE) script/env/copy.ts ${arguments}
+	cp config/.env.${environment} .env
 
-development:
-	make copy-env arguments="-- --development"
+copy-env-development:
+	make copy-env environment="development" && cp supabase/config/normal.toml supabase/config.toml
 
-staging:
-	make copy-env arguments="-- --staging"
+copy-env-testing:
+	make copy-env environment="testing" && cp supabase/config/test.toml supabase/config.toml
 
-production:
-	make copy-env arguments="-- --productions"
+copy-env-staging:
+	make copy-env environment="staging"
 
-testing:
-	make copy-env arguments="-- --testing"
+copy-env-production:
+	make copy-env environment="production"
+
+## generate
+generate: generate-webmanifest generate-sitemap
+
+generate-webmanifest:
+	pnpm vite-node script/site/webmanifest.ts
+
+generate-sitemap:
+	pnpm next-sitemap
+
+# database resest
+migrate-up:
+	pnpm supabase migration up
+
+db-push:
+	pnpm supabase db-push
+
+reset-database:
+	pnpm supabase db reset && make generate-typesafe-environment && make generate-local-database-type
+
+restart-database:
+	pnpm supabase stop && pnpm supabase start
+
+start-testing-database:
+	pnpm supabase stop && make copy-env-testing && pnpm supabase start
+
+start-development-database:
+	pnpm supabase stop && make copy-env-development && pnpm supabase start
 
 ## deployment
 deploy-staging: build-staging
@@ -65,70 +73,64 @@ deploy-production: build-production
 clear-cache:
 	rm -rf .next
 
-start-development: development clear-cache
-	$(NEXT) dev
+# development
+start-development: clear-cache dev
 
-start-staging: staging clear-cache start
+start-testing: clear-cache dev
 
-start-production: production clear-cache start
+start-staging: clear-cache dev
+
+start-production: clear-cache dev
 
 ## build
-build-development: clear-cache development build
+build-development: clear-cache build
 
-build-production: clear-cache production build
+build-production: clear-cache build generate
 
-build-staging: clear-cache production build
+build-staging: clear-cache build
 
-build-testing: clear-cache testing build
+build-testing: clear-cache build
 
 build:
-	$(NEXT) build
+	pnpm next build
 
 ## start
 start:
-	$(NEXT) start $(arguments)
+	pnpm next start $(arguments)
+
+## dev
+dev:
+	pnpm next dev
 
 ## format
-prettify:
-	$(NODE_BIN)prettier --ignore-path .gitignore  --$(type) src/ test/
+format:
+	pnpm prettier --$(type) .
 
 format-check:
-	make prettify type=check
+	make format type=check
 
-format:
-	make prettify type=write
+format-write:
+	make format type=write && pnpm vite-node script/formatter/sql.ts
 
 ## lint
 lint:
-	$(NODE_BIN)eslint src/ test/ -f='stylish' --color &&\
-		make find-unused-exports &&\
-		make find-unimported-files
-
-## find unused exports
-find-unused-exports:
-	$(NODE_BIN)find-unused-exports
-
-## find unimported files
-find-unimported-files:
-	$(NODE_BIN)unimported
+	pnpm eslint --ignore-path .gitignore --ext .mjs,.tsx,.ts --color && pnpm knip
 
 ## typecheck
-tsc=$(NODE_BIN)tsc
-
 typecheck:
-	$(tsc) -p tsconfig.json $(arguments) 
-
-typecheck-watch:
-	make typecheck arguments=--w
+	pnpm tsc -p tsconfig.json $(arguments) 
 
 ## test
 test-type:
-	$(NODE_BIN)vitest test/$(path)/**/**.test.ts
+	pnpm vitest test/$(path)/**.test.ts $(arguments)
 
 test-unit:
-	make test-type path="unit"
+	pnpm vitest test/unit/**/**.test.ts $(arguments)
 
 test-integration:
-	make build-testing && make test-type path="integration"
+	make test-type path="integration" arguments="$(arguments)"
 
-test: test-unit test-integration
+test-snapshot:
+	make test-type path="snapshot" arguments="$(arguments)"
+
+test: build-testing test-unit test-integration test-snapshot

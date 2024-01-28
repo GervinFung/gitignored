@@ -2,62 +2,57 @@ name: gitignored-ci-cd
 
 on: [push, pull_request]
 
-env:
-    IS_CI: true
-
 jobs:
     all:
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
             matrix:
-                threads:
-                    - '4'
+                node-version: [20]
+                threads: [4]
+
         steps:
             - name: Checkout Code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
-            - name: Install PNPM
-              run: |
-                  sudo apt install npm
-                  npm i --location=global pnpm@8
+            - uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: 'pnpm'
 
             - name: Install Depedencies
-              run: make install
+              run: pnpm i
 
-            - name: Install MongoDB
-              run: make install-mongo
+            - name: Install Puppeteer
+              run: node node_modules/puppeteer/install.mjs
 
-            - name: Start MongoDB
-              run: make start-mongo
+            - name: Env
+              run: make copy-env-testing
 
-            - name: Migrate Document
-              run: |
-                  sleep 1.5
-                  make migrate-mongo
+            - name: Start Database
+              run: make start-testing-database
 
-            - name: Run Linter
+            - name: Run Sql Migration
+              run: make migrate-up
+
+            - name: Generate Type Definitions
+              run: make generate-typesafe-environment
+
+            - name: Generate Database Type Definitions
+              run: make generate-local-database-type
+
+            - name: Lint code
               run: make lint
 
-            - name: Run Typecheck
+            - name: Typecheck code
               run: make typecheck
 
-            - name: Run Format Check
+            - name: Format Check
               run: make format-check
 
-            - name: Run Tests
-              env:
-                  MONGO_DB: testGitignored
-                  MONGO_COLLECTION_TECH: tech
-                  MONGO_COLLECTION_UPDATE_TIME: updatetime
-                  MONGO_USER: runner
-                  MONGO_PASSWORD: mongodb
-                  MONGO_ADDRESS: localhost
-                  MONGO_PORT: 27017
-                  NODE_ENV: test
+            - name: Test
               run: make test
-
-            - name: Run Build
-              env:
-                  NODE_ENV: production
-              run: make build
