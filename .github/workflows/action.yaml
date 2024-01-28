@@ -27,9 +27,6 @@ jobs:
             - name: Install Depedencies
               run: pnpm i
 
-            - name: Install Puppeteer
-              run: node node_modules/puppeteer/install.mjs
-
             - name: Env
               run: make copy-env-testing
 
