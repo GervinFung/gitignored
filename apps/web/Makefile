@@ -64,10 +64,10 @@ start-development-database:
 	pnpm supabase stop && make copy-env-development && pnpm supabase start
 
 ## deployment
-deploy-staging: build-staging
+deploy-staging: copy-env-staging build-staging
 	vercel
 
-deploy-production: build-production
+deploy-production: copy-env-production build-production
 	vercel --prod
 
 clear-cache:
