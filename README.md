@@ -13,41 +13,41 @@ Here's what the developers can do with it
 
 #### Home Page
 
-![Home](./test/snapshot/snapshot-images/home.png)
+![Home](apps/web/test/snapshot/snapshot-images/home.png)
 
 #### Templates
 
-![Templates](./test/snapshot/snapshot-images/templates.png)
+![Templates](apps/web/test/snapshot/snapshot-images/templates.png)
 
 #### Docs Introduction
 
-![Docs](./test/snapshot/snapshot-images/docs.png)
+![Docs](apps/web/test/snapshot/snapshot-images/docs.png)
 
 #### Docs Content
 
-![Docs](./test/snapshot/snapshot-images/docs/content/getting-started.png)
+![Docs](apps/web/test/snapshot/snapshot-images/docs/content/getting-started.png)
 
 #### Docs API
 
 ##### Introduction
 
-![Introduction](./test/snapshot/snapshot-images/docs/api/introduction.png)
+![Introduction](apps/web/test/snapshot/snapshot-images/docs/api/introduction.png)
 
 ##### Commit Time
 
-![Commit-Time](./test/snapshot/snapshot-images/docs/api/commit-time.png)
+![Commit-Time](apps/web/test/snapshot/snapshot-images/docs/api/commit-time.png)
 
 ##### Templates
 
-![Templtes](./test/snapshot/snapshot-images/docs/api/templates.png)
+![Templtes](apps/web/test/snapshot/snapshot-images/docs/api/templates.png)
 
 ##### Templates Name
 
-![Templtes-Name](./test/snapshot/snapshot-images/docs/api/templates-name.png)
+![Templtes-Name](apps/web/test/snapshot/snapshot-images/docs/api/templates-name.png)
 
 #### 404 Page
 
-![404](./test/snapshot/snapshot-images/error.png)
+![404](apps/web/test/snapshot/snapshot-images/error.png)
 
 ## Tech Used
 
@@ -65,7 +65,7 @@ Here's what the developers can do with it
 
 #### Make Commands
 
-_*Below are the non-exhaustive listed commands that you can use to build/develop/test this app. For more command, checkout [Makefile](./aakefile)*_
+_*Below are the non-exhaustive listed commands that you can use to build/develop/test this app. For more command, checkout [Makefile](apps/web/Makefile)*_
 
 | Command                                                      | Usage                                             |
 | ------------------------------------------------------------ | ------------------------------------------------- |
@@ -127,60 +127,60 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default or Help
 
-![Default or Help](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/default-or-help.png 'Default or Help')
+![Default or Help](apps/cli/docs/default-or-help.png)
 
 #### Update Available
 
-![Update Available](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/update-available.png 'Update Available')
+![Update Available](apps/cli/docs/update-available.png)
 
 #### Default Listing
 
-![Default Listing](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/list-default.png 'Default Listing')
+![Default Listing](apps/cli/docs/list-default.png)
 
 #### Listing with column number specified
 
-![Column Listing](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/list-column.png 'Column Listing')
+![Column Listing](apps/cli/docs/list-column.png)
 
 #### Search
 
-![Search](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/search.png 'Search')
+![Search](apps/cli/docs/search.png)
 
 #### Preview
 
-![Preview](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/preview.png 'Preview')
+![Preview](apps/cli/docs/preview.png)
 
 #### Default Generate
 
-![Default Generate](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/generate.png 'Default Generate')
-![Error Default Generate](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/error-generate.png 'Error Default Generate')
+![Default Generate](apps/cli/docs/generate.png)
+![Error Default Generate](apps/cli/docs/error-generate.png)
 
 #### Force Generate
 
-![Force Generate](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/force-generate.png 'Force Generate')
+![Force Generate](apps/cli/docs/force-generate.png)
 
 #### Generate with outdir specified
 
-![Outdir generate](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/generate-outdir.png 'Outdir Generate')
+![Outdir generate](apps/cli/docs/generate-outdir.png)
 
 #### Default Append
 
-![Default Append](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/append.png 'Default Append')
+![Default Append](apps/cli/docs/append.png)
 
 #### Append with outdir specified
 
-![Outdir Append](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/append-outdir.png 'Outdir Append')
+![Outdir Append](apps/cli/docs/append-outdir.png)
 
 #### Updated Cache
 
-![Updated](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/updated.png 'Updated')
+![Updated](apps/cli/docs/updated.png)
 
 #### Updating Cache
 
-![Updating](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/updating.png 'Updating')
+![Updating](apps/cli/docs/updating.png)
 
 #### Of course, input validation
 
-![Input Validation](https://raw.githubusercontent.com/Gitignored-App/cli/main/docs/input-validation.png 'Input Validation')
+![Input Validation](apps/cli/docs/input-validation.png)
 
 ## How To Use
 
@@ -220,13 +220,6 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 | make check     | Run compiler checking on code                   |
 | make lint      | Run linter for code                             |
 | make format    | Run formatter to format the code                |
-
-## Development
-
-**I used localhost instead of using the url of a production-ready web application to speed up development process as the API call can be processed much quicker**
-
-1. Clone this [cli repo](https://github.com/Gitignored-App/cli) and this [web repo](https://github.com/Gitignored-App/web)
-2. Refer to the commands specified in each Makefile
 
 ## Contribution
 
