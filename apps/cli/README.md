@@ -2,7 +2,7 @@
 
 An Offline-first CLI application that let the developer generate various `.gitignore` templates
 
-The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application, check out the [repository](https://github.com/Gitignored-App/web) if you are interested
+The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application, check out the [repository](https://github.com/GervinFung/gitignored) if you are interested
 
 **Side note**:
 The GUI application takes the templates from [gitignore](https://github.com/github/gitignore) of Github
@@ -118,19 +118,12 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 | make lint      | Run linter for code                             |
 | make format    | Run formatter to format the code                |
 
-## Development
-
-**I used localhost instead of using the url of a production-ready web application to speed up development process as the API call can be processed much quicker**
-
-1. Clone this [cli repo](https://github.com/Gitignored-App/cli) and this [web repo](https://github.com/Gitignored-App/web)
-2. Refer to the commands specified in each Makefile
-
 ## Contribution
 
 **Make sure you can run `make`, otherwise you need to run commands listed in `Makefile` separately**
 
 1. Open an issue
-2. Fork this repo and this [repo](https://github.com/Gitignored-App/cli)
+2. Fork this repo
 3. Write test
 
 ## Changes

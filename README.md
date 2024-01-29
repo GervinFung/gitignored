@@ -1,5 +1,9 @@
 # **Gitignored**
 
+<p align="center">
+    <img src="apps/web/public/images/icons/icon-256x256.png" />
+</p>
+
 ## Web App
 
 A web application that let the developer generate various `.gitignore` templates, available [here](https://gitignored.vercel.app)
@@ -40,10 +44,6 @@ Here's what the developers can do with it
 ##### Templates
 
 ![Templtes](apps/web/test/snapshot/snapshot-images/docs/api/templates.png)
-
-##### Templates Name
-
-![Templtes-Name](apps/web/test/snapshot/snapshot-images/docs/api/templates-name.png)
 
 #### 404 Page
 
