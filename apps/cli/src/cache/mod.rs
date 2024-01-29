@@ -44,12 +44,14 @@ impl Cache {
     }
 
     pub fn has_been_created(&self) -> bool {
-        Path::new(&self.cache.clone()).exists()
+        Path::new(&self.cache).exists()
     }
 
-    pub fn generate(&self, commit_time: Date, templates: Templates) {
+    pub fn generate(&self, last_remind_time: Date, commit_time: Date, templates: Templates) {
         fs::create_dir_all(self.cache.clone())
             .unwrap_or_else(|_| panic!("Unable to create cache directory"));
+
+        self.update_last_remind_time(last_remind_time);
 
         self.update_latest_committed_time(commit_time);
 
@@ -120,15 +122,15 @@ mod tests {
     fn it_should_create_and_update_cache() {
         let cache = ProjectDirs::from("", ".gitignored", "gitignored-test")
             .unwrap_or_else(|| panic!("Unable to create cache directory"));
-        let name = String::from(
-            cache
-                .cache_dir()
-                .to_str()
-                .unwrap_or_else(|| panic!("Unable to create cache directory")),
-        );
-        let cache = cache::Cache::new(name.clone(), Env::API);
+        let name = cache
+            .cache_dir()
+            .to_str()
+            .unwrap_or_else(|| panic!("Unable to create cache directory"))
+            .to_string();
+        let cache = cache::Cache::new(name.to_owned(), Env::API);
         let latest_committed_time =
             DateTime::parse_from_rfc3339("2022-05-10T17:15:30+00:00").unwrap();
+        let last_remind_time = DateTime::parse_from_rfc3339("2022-05-10T18:15:30+00:00").unwrap();
         let templates = [Template::new(
             "Python".to_string(),
             "Everything".to_string(),
@@ -138,7 +140,11 @@ mod tests {
         // before creating cache
         assert!(!cache.has_been_created());
         // create
-        cache.generate(latest_committed_time, templates.clone());
+        cache.generate(
+            last_remind_time,
+            latest_committed_time,
+            templates.to_owned(),
+        );
         // after creating cache
         assert!(cache.has_been_created());
         assert!(!cache.should_update(latest_committed_time));
@@ -156,10 +162,10 @@ mod tests {
             Template::new("Haskell".to_string(), "Monad".to_string()),
         ]
         .to_vec();
-        assert_eq!(templates, cache.update_templates(templates.clone()));
+        assert_eq!(templates, cache.update_templates(templates.to_owned()));
         // names only
         assert_eq!(["Java", "Haskell"].to_vec(), cache.template_names());
-        // filtered name and content
+        // filtered templates
         assert_eq!(
             templates[1],
             cache.filter_templates(["Haskell".to_string()].to_vec())[0]

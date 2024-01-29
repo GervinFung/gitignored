@@ -40,16 +40,24 @@ pub struct LatestCommittedTimeDto {
 }
 
 pub struct TimeCache {
-    commit_time_file_path: String,
+    latest_committed_time_file_path: String,
     last_remind_time_file_path: String,
 }
 
 impl TimeCache {
     pub fn new(cache: String) -> Self {
         TimeCache {
-            commit_time_file_path: format!("{}/{}", cache, "latestCommittedTime.json"),
-            last_remind_time_file_path: format!("{}/{}", cache, "remindUpdate.json"),
+            latest_committed_time_file_path: format!("{}/{}", cache, "latest-committed-time.json"),
+            last_remind_time_file_path: format!("{}/{}", cache, "remind-update.json"),
         }
+    }
+
+    fn latest_committed_time_file_path(&self) -> &String {
+        &self.latest_committed_time_file_path
+    }
+
+    fn last_remind_time_file_path(&self) -> &String {
+        &self.last_remind_time_file_path
     }
 
     pub fn should_update(&self, latest_committed_time: Date) -> bool {
@@ -57,11 +65,11 @@ impl TimeCache {
     }
 
     pub fn should_remind(&self, current_time: Date) -> bool {
-        (current_time - self.last_remind_time()).num_seconds() > 86400
+        (current_time - self.last_remind_time()).num_seconds() > 24 * 60 * 60
     }
 
     fn last_remind_time(&self) -> Date {
-        let file_path = self.last_remind_time_file_path.clone();
+        let file_path = self.last_remind_time_file_path();
 
         let latest_committed_time_json = read_to_string(file_path.clone())
             .unwrap_or_else(|_| panic!("Unable to read from {}", file_path));
@@ -85,7 +93,7 @@ impl TimeCache {
     }
 
     pub fn update_last_remind_time(&self, last_remind_time: Date) -> Date {
-        let file_path = self.last_remind_time_file_path.clone();
+        let file_path = self.last_remind_time_file_path();
 
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(
@@ -110,7 +118,7 @@ impl TimeCache {
     }
 
     pub fn latest_committed_time(&self) -> Date {
-        let file_path = self.commit_time_file_path.clone();
+        let file_path = self.latest_committed_time_file_path();
 
         let latest_committed_time_json = read_to_string(file_path.clone())
             .unwrap_or_else(|_| panic!("Unable to read from {}", file_path));
@@ -127,7 +135,7 @@ impl TimeCache {
     }
 
     pub fn update_latest_committed_time(&self, commit_time: Date) -> Date {
-        let file_path = self.commit_time_file_path.clone();
+        let file_path = self.latest_committed_time_file_path();
 
         let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
             panic!(

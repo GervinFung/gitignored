@@ -37,22 +37,6 @@ impl ValueAndInvalidArguments {
     }
 }
 
-#[derive(Clone, Debug)]
-struct ValueAndArguments {
-    value: Option<String>,
-    arguments: Vec<String>,
-}
-
-impl ValueAndArguments {
-    fn value(&self) -> Option<String> {
-        self.value.clone()
-    }
-
-    fn arguments(&self) -> Vec<String> {
-        self.arguments.clone()
-    }
-}
-
 #[derive(Clone, Debug, PartialEq)]
 pub struct OptionPair {
     key: String,
@@ -108,12 +92,6 @@ impl OptionPair {
             value,
             invalid_arguments,
         }
-    }
-
-    fn to_value_and_arguments(&self) -> ValueAndArguments {
-        let (value, arguments) = self.split_first_and_rest();
-
-        ValueAndArguments { value, arguments }
     }
 }
 
@@ -237,7 +215,7 @@ impl Template {
         let append = self.options().append().description(length);
 
         format!(
-            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}",
+            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
             "Usage".bright_yellow(),
             update,
             show,
@@ -711,7 +689,7 @@ mod update_tests {
             TemplateResult::IsValid { option_pairs } => {
                 assert_eq!(
                     template.options().show().parse(option_pairs),
-                    ShowTemplateResult::IsValid(ValidShowTemplateResult::new(8, None))
+                    ShowTemplateResult::IsValid(ValidShowTemplateResult::new(4, None))
                 );
             }
         };
@@ -726,7 +704,7 @@ mod update_tests {
                 assert_eq!(
                     template.options().show().parse(option_pairs),
                     ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
-                        8,
+                        4,
                         Some(vec![
                             "this".to_string(),
                             "is".to_string(),
@@ -743,7 +721,7 @@ mod update_tests {
         assign.symbols().into_iter().for_each(|delimiter| {
             let result = template.parse(
                 format!(
-                    "template --show{}9 java rust purescript reasonml",
+                    "template --show --column{}9 java rust purescript reasonml",
                     delimiter
                 )
                 .to_string(),
@@ -1028,7 +1006,8 @@ mod update_tests {
             ])))
         );
 
-        let result = template.parse_to_result("template --show 9 purescript haskell".to_string());
+        let result =
+            template.parse_to_result("template --show purescript haskell --column 9".to_string());
 
         assert_eq!(
             result,

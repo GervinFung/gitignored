@@ -23,7 +23,7 @@ impl Cli {
 
     pub fn pre_basic_info(&self) -> String {
         format!(
-            "{} {}\n\n{}\n\n{}\n\n",
+            "\n{} {}\n\n{}\n\n{}\n\n",
             Env::NAME.blue().bold(),
             Env::VERSION,
             Env::AUTHOR.white().bold(),
