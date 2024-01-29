@@ -27,10 +27,10 @@ version: pre-dev
 	cargo run -- --version
 
 show: pre-dev
-	cargo run -- template --show
+	cargo run -- template --list
 
 show-column: pre-dev
-	cargo run -- template --show --column $(c)
+	cargo run -- template --list --column $(column)
 
 preview: pre-dev
 	cargo run -- template --preview rust node java vscode jetbrain
@@ -39,22 +39,22 @@ search: pre-dev
 	cargo run -- template --search rust node java vscode jetbrain whatever
 
 generate: pre-dev
-	cargo run -- template --generate rust node java vscode jetbrain whatever ${arg}
+	cargo run -- template --generate rust node java vscode jetbrain whatever ${argument}
 
 force-generate: pre-dev
-	make generate arg=-f
+	make generate argument=--force
 
 generate-outdir: pre-dev
-	rm -rf ${outdir} && cargo run -- template --generate rust node java vscode jetbrain whatever -o ${outdir}
+	rm -rf ${outdir} && cargo run -- template --generate rust node java vscode jetbrain whatever --outdir ${outdir}
 
 append: pre-dev
 	cargo run -- template --append rust node java vscode jetbrain whatever
 
 append-absent-outdir: pre-dev
-	rm -rf ${outdir} && cargo run -- template --append rust node java vscode jetbrain whatever -o ${outdir}
+	rm -rf ${outdir} && cargo run -- template --append rust node java vscode jetbrain whatever --outdir ${outdir}
 
 append-existing-outdir: pre-dev
-	cargo run -- template --append rust node java vscode jetbrain whatever -o ${outdir}
+	cargo run -- template --append rust node java vscode jetbrain whatever --outdir ${outdir}
 
 update: pre-dev
 	cargo run -- template --update

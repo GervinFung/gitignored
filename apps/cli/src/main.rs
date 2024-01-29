@@ -21,6 +21,10 @@ use output::Output;
 use std::env as stdenv;
 
 fn main() {
+    if cfg!(debug_assertions) {
+        stdenv::set_var("RUST_BACKTRACE", "1");
+    }
+
     let cli = Cli::new();
 
     let argument: Vec<String> = stdenv::args().collect();
@@ -28,6 +32,44 @@ fn main() {
     let argument = argument.into_iter().skip(1).collect::<Vec<_>>().join(" ");
 
     let output = Output::new();
+
+    let api = GitignoredApi::new(Env::API);
+
+    let cache = ProjectDirs::from("", ".gitignored", Env::CACHE)
+        .unwrap_or_else(|| panic!("Unable to create cache directory"));
+
+    let name = String::from(
+        cache
+            .cache_dir()
+            .to_str()
+            .unwrap_or_else(|| panic!("Unable to create cache directory")),
+    );
+
+    let cache = Cache::new(name, Env::API);
+
+    let templates = || api.templates().templates().unwrap().data().to_owned();
+
+    let current_time = DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
+
+    let latest_committed_time = api
+        .latest_committed_time()
+        .latest_committed_time()
+        .unwrap()
+        .data()
+        .to_owned();
+
+    if !cache.has_been_created() {
+        output.generating_cache();
+
+        cache.generate(current_time, latest_committed_time, templates());
+
+        output.generated_cache();
+    }
+
+    if cache.should_update(latest_committed_time) && cache.should_remind(current_time) {
+        output.update_available();
+        cache.update_last_remind_time(current_time);
+    }
 
     match cli.keywords().options().parse_to_result(
         argument.clone(),
@@ -48,50 +90,6 @@ fn main() {
             output.invalid_arguments(result.invalid_arguments());
         }
         OptionsResultKind::Never => {
-            let api = GitignoredApi::new(Env::API);
-
-            let cache = ProjectDirs::from("", ".gitignored", Env::CACHE)
-                .unwrap_or_else(|| panic!("Unable to create cache directory"));
-
-            let name = String::from(
-                cache
-                    .cache_dir()
-                    .to_str()
-                    .unwrap_or_else(|| panic!("Unable to create cache directory")),
-            );
-
-            let cache = Cache::new(name, Env::API);
-
-            let templates = || api.templates().templates().unwrap().data().to_owned();
-
-            let latest_committed_time = || {
-                api.latest_committed_time()
-                    .latest_committed_time()
-                    .unwrap()
-                    .data()
-                    .to_owned()
-            };
-
-            if !cache.has_been_created() {
-                output.generating_cache();
-
-                cache.generate(latest_committed_time(), templates());
-
-                output.generated_cache();
-            }
-
-            let latest_committed_time = latest_committed_time();
-
-            let should_update_cache = cache.should_update(latest_committed_time);
-
-            let current_time =
-                DateTime::parse_from_rfc3339(Utc::now().to_rfc3339().as_str()).unwrap();
-
-            if should_update_cache && cache.should_remind(current_time) {
-                output.update_available();
-                cache.update_last_remind_time(current_time);
-            }
-
             let get_outdir = |provided_outdir: Option<String>| {
                 let current_dir = stdenv::current_dir()
                     .unwrap_or_else(|_| panic!("Unable to get current directory"));
@@ -116,18 +114,24 @@ fn main() {
             {
                 TemplateResultKind::Never => output.invalid_argument(argument),
                 TemplateResultKind::Update(result) => {
-                    match cache.latest_committed_time() == latest_committed_time {
+                    match cache.has_been_created()
+                        && cache.latest_committed_time() == latest_committed_time
+                    {
                         true => output.already_up_to_date(),
                         false => {
+                            output.show_commit_time_differences(
+                                cache.latest_committed_time(),
+                                latest_committed_time,
+                            );
                             output.updating();
-                            cache.generate(latest_committed_time, templates());
+                            cache.generate(current_time, latest_committed_time, templates());
                             output.updated();
                         }
                     };
 
                     output.invalid_arguments(result.invalid_arguments());
                 }
-                TemplateResultKind::Show(result) => {
+                TemplateResultKind::List(result) => {
                     output.all_names_separated_by_first_character(
                         cache.template_names(),
                         result.column(),
@@ -215,7 +219,9 @@ fn main() {
                                     .chain(exact.clone())
                                     .collect::<Vec<_>>();
 
-                                match closest.len() + exact.len() == names.len() {
+                                match closest.len() + exact.len() == names.len()
+                                    || input.confirm_to_proceed()
+                                {
                                     false => output.terminated("Generate"),
                                     true => {
                                         match already_has_destination_file {

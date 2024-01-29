@@ -116,7 +116,7 @@ impl Generate {
             "Subcommands".bold().italic(),
             empty,
             "--outdir".bold(),
-            "Output folder to store the generated gitignore file in".italic(),
+            "Output folder to store the generated gitignore file in specified directory".italic(),
             empty,
             "--force".bold(),
             "Forcefully override any current gitignore".italic()
@@ -143,8 +143,6 @@ impl Generate {
     }
 
     pub fn parse(&self, option_pairs: OptionPairs) -> GenerateTemplateResult {
-        let option = self.options();
-
         let result = option_pairs
             .clone()
             .into_iter()
@@ -155,7 +153,7 @@ impl Generate {
                     .clone()
                     .into_iter()
                     .find(|pair| {
-                        self.keyword_same_as_argument(pair.key(), option.outdir().keyword())
+                        self.keyword_same_as_argument(pair.key(), self.options().outdir().keyword())
                     })
                     .map(|pair| pair.to_value_and_invalid_arguments());
 
@@ -163,7 +161,7 @@ impl Generate {
             })
             .map(|(templates, outdir)| {
                 let force = option_pairs.clone().into_iter().find(|pair| {
-                    self.keyword_same_as_argument(pair.key(), option.force().keyword())
+                    self.keyword_same_as_argument(pair.key(), self.options().force().keyword())
                 });
 
                 let force = match force {

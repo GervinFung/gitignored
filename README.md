@@ -118,6 +118,16 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default or Help
 
+```sh
+gitignored-cli
+```
+
+OR
+
+```sh
+gitignored-cli --help
+```
+
 ![Default or Help](apps/cli/docs/default-or-help.png)
 
 #### Update Available
@@ -126,46 +136,106 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 #### Default Listing
 
+```sh
+gitignored-cli template --list
+```
+
 ![Default Listing](apps/cli/docs/list-default.png)
 
 #### Listing with column number specified
+
+```sh
+gitignored-cli template --list --column 8
+```
 
 ![Column Listing](apps/cli/docs/list-column.png)
 
 #### Search
 
+```sh
+gitignored-cli template --search rust node java vscode jetbrain whatever
+```
+
 ![Search](apps/cli/docs/search.png)
 
 #### Preview
+
+```sh
+gitignored-cli template --preview rust node java vscode jetbrain
+```
 
 ![Preview](apps/cli/docs/preview.png)
 
 #### Default Generate
 
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever
+```
+
 ![Default Generate](apps/cli/docs/generate.png)
 ![Error Default Generate](apps/cli/docs/error-generate.png)
 
+#### Abort Generate
+
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever
+```
+
+![Abort Generate](apps/cli/docs/abort-generate.png)
+
 #### Force Generate
+
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever --force
+```
 
 ![Force Generate](apps/cli/docs/force-generate.png)
 
 #### Generate with outdir specified
 
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
+```
+
 ![Outdir generate](apps/cli/docs/generate-outdir.png)
 
 #### Default Append
 
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever
+```
+
 ![Default Append](apps/cli/docs/append.png)
 
+#### Abort Append
+
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever
+```
+
+![Abort Append](apps/cli/docs/abort-append.png)
+
 #### Append with outdir specified
+
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
+```
 
 ![Outdir Append](apps/cli/docs/append-outdir.png)
 
 #### Updated Cache
 
+```sh
+gitignored-cli template --update
+```
+
 ![Updated](apps/cli/docs/updated.png)
 
 #### Updating Cache
+
+```sh
+gitignored-cli template --update
+```
 
 ![Updating](apps/cli/docs/updating.png)
 

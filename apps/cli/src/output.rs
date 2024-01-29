@@ -4,7 +4,7 @@ use prettytable::{Cell, Row, Table};
 use crate::{
     api::response::{TemplateNames, Templates},
     cache::templates::Matches,
-    types::OptionalVecString,
+    types::{Date, OptionalVecString},
 };
 
 pub struct Output;
@@ -115,13 +115,21 @@ impl Output {
         println!(
             "{}{}{}",
             "Pass in ".cyan().bold(),
-            "'-u'".blue().purple().italic(),
+            "'--update'".blue().purple().italic(),
             " argument to update the cache".cyan().bold(),
         );
     }
 
     pub fn already_up_to_date(&self) {
         println!("{}", "Already up to date".green().bold());
+    }
+
+    pub fn show_commit_time_differences(&self, cached_commit_time: Date, latest_commit_time: Date) {
+        println!(
+            "The previous commit time was {}\nThe latest commit time is {}",
+            cached_commit_time.to_string().purple().bold().italic(),
+            latest_commit_time.to_string().cyan().bold().italic()
+        );
     }
 
     pub fn updating(&self) {

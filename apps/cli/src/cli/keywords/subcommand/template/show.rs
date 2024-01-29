@@ -2,27 +2,45 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::{assignment::Assignment, options::KeywordKind},
-    types::OptionalVecString,
+    types::{OptionalVecString, Str},
 };
 
 use super::OptionPairs;
 
 #[derive(Debug, Clone)]
-pub struct Show {
+struct Options {
+    column: KeywordKind,
+}
+
+impl Options {
+    fn new() -> Self {
+        Options {
+            column: KeywordKind::new("column"),
+        }
+    }
+
+    fn column(&self) -> &KeywordKind {
+        &self.column
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct List {
     keyword_kind: KeywordKind,
     default_value: u8,
     assignment: Assignment,
+    options: Options,
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct ValidShowTemplateResult {
+pub struct ValidListTemplateResult {
     column: u8,
     invalid_arguments: OptionalVecString,
 }
 
-impl ValidShowTemplateResult {
+impl ValidListTemplateResult {
     pub fn new(column: u8, invalid_arguments: OptionalVecString) -> Self {
-        ValidShowTemplateResult {
+        ValidListTemplateResult {
             column,
             invalid_arguments,
         }
@@ -38,23 +56,24 @@ impl ValidShowTemplateResult {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum ShowTemplateResult {
+pub enum ListTemplateResult {
     IsNotValid,
-    IsValid(ValidShowTemplateResult),
+    IsValid(ValidListTemplateResult),
 }
 
-impl Show {
+impl List {
     pub fn new() -> Self {
-        Show {
+        List {
             keyword_kind: KeywordKind::new("show"),
-            default_value: 8,
+            default_value: 4,
             assignment: Assignment::new(),
+            options: Options::new(),
         }
     }
 
     pub fn description(&self, length: u8) -> String {
         let description =
-            "Show all the name of the available Frameworks or Languages or IDEs or Tech".italic();
+            "List all the name of the available Frameworks or Languages or IDEs or Tech".italic();
 
         let empty_by_keyword = (0..(length - self.keyword_kind().keyword().len() as u8))
             .map(|_| " ")
@@ -65,7 +84,7 @@ impl Show {
 
         format!(
             "{}{}- {}\n{}- {}\n{}    1. {} - {}",
-            "--show".bold(),
+            "--list".bold(),
             empty_by_keyword,
             description,
             empty,
@@ -84,56 +103,87 @@ impl Show {
         self.default_value
     }
 
+    fn options(&self) -> &Options {
+        &self.options
+    }
+
     fn assignment(&self) -> &Assignment {
         &self.assignment
     }
 
-    fn keyword_same_as_argument(&self, argument: &str) -> bool {
+    fn keyword_same_as_argument(&self, argument: &str, keyword: Str) -> bool {
         let assign = self.assignment().option().declaration();
-        let command = assign.to_string().clone() + self.keyword_kind().keyword();
+        let command = assign.to_string().clone() + keyword;
 
         argument == command
     }
 
-    pub fn parse(&self, option_pairs: OptionPairs) -> ShowTemplateResult {
-        let option_pair = option_pairs
+    pub fn parse(&self, option_pairs: OptionPairs) -> ListTemplateResult {
+        let result = option_pairs
+            .clone()
             .into_iter()
-            .find(|pair| return self.keyword_same_as_argument(pair.key()))
-            .map(|pair| pair.to_value_and_arguments());
+            .find(|pair| self.keyword_same_as_argument(pair.key(), self.keyword_kind().keyword()))
+            .map(|show| show.clone().value().clone())
+            .map(|show| {
+                let column = option_pairs
+                    .into_iter()
+                    .find(|pair| {
+                        self.keyword_same_as_argument(pair.key(), self.options().column().keyword())
+                    })
+                    .map(|pair| pair.to_value_and_invalid_arguments());
 
-        match option_pair {
-            None => ShowTemplateResult::IsNotValid,
-            Some(option_pair) => {
-                let value = option_pair.value();
+                (show, column)
+            })
+            .map(|(show_invalid_arguments, column)| {
+                let invalid_arguments = show_invalid_arguments.unwrap_or(vec![]);
 
-                match value {
-                    None => ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
+                match column {
+                    None => ListTemplateResult::IsValid(ValidListTemplateResult::new(
                         self.input(),
-                        None,
+                        match invalid_arguments.is_empty() {
+                            true => None,
+                            false => Some(invalid_arguments),
+                        },
                     )),
-                    Some(value) => {
-                        let column = value.parse::<u8>();
+                    Some(column_pair) => {
+                        let invalid_arguments = column_pair
+                            .invalid_arguments()
+                            .into_iter()
+                            .chain(invalid_arguments)
+                            .collect::<Vec<_>>();
 
-                        let arguments = match column.is_ok() {
-                            true => option_pair.arguments(),
-                            false => [value]
-                                .into_iter()
-                                .chain(option_pair.arguments())
-                                .collect::<Vec<_>>(),
-                        };
+                        match column_pair.value() {
+                            None => ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                                self.input(),
+                                match invalid_arguments.is_empty() {
+                                    true => None,
+                                    false => Some(invalid_arguments),
+                                },
+                            )),
+                            Some(value) => {
+                                let column = value.parse::<u8>();
 
-                        let column = column.unwrap_or(self.input());
+                                let invalid_arguments = match column.is_ok() {
+                                    true => invalid_arguments,
+                                    false => [value]
+                                        .into_iter()
+                                        .chain(invalid_arguments)
+                                        .collect::<Vec<_>>(),
+                                };
 
-                        ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
-                            column,
-                            match arguments.is_empty() {
-                                true => None,
-                                false => Some(arguments),
-                            },
-                        ))
+                                ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                                    column.unwrap_or(self.input()),
+                                    match invalid_arguments.is_empty() {
+                                        true => None,
+                                        false => Some(invalid_arguments),
+                                    },
+                                ))
+                            }
+                        }
                     }
                 }
-            }
-        }
+            });
+
+        result.unwrap_or(ListTemplateResult::IsNotValid)
     }
 }

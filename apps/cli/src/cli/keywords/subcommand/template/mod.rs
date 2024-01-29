@@ -17,7 +17,7 @@ use self::{
     generate::{Generate, GenerateTemplateResult, ValidGenerateTemplateResult},
     preview::{Preview, PreviewTemplateResult, ValidPreviewTemplateResult},
     search::{Search, SearchTemplateResult, ValidSearchTemplateResult},
-    show::{Show, ShowTemplateResult, ValidShowTemplateResult},
+    show::{List, ListTemplateResult, ValidListTemplateResult},
     update::{Update, UpdateTemplateResult, ValidUpdateTemplateResult},
 };
 
@@ -34,22 +34,6 @@ impl ValueAndInvalidArguments {
 
     fn invalid_arguments(&self) -> Vec<String> {
         self.invalid_arguments.clone()
-    }
-}
-
-#[derive(Clone, Debug)]
-struct ValueAndArguments {
-    value: Option<String>,
-    arguments: Vec<String>,
-}
-
-impl ValueAndArguments {
-    fn value(&self) -> Option<String> {
-        self.value.clone()
-    }
-
-    fn arguments(&self) -> Vec<String> {
-        self.arguments.clone()
     }
 }
 
@@ -109,12 +93,6 @@ impl OptionPair {
             invalid_arguments,
         }
     }
-
-    fn to_value_and_arguments(&self) -> ValueAndArguments {
-        let (value, arguments) = self.split_first_and_rest();
-
-        ValueAndArguments { value, arguments }
-    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -123,7 +101,7 @@ pub enum TemplateResultKind {
     Generate(ValidGenerateTemplateResult),
     Preview(ValidPreviewTemplateResult),
     Search(ValidSearchTemplateResult),
-    Show(ValidShowTemplateResult),
+    List(ValidListTemplateResult),
     Update(ValidUpdateTemplateResult),
     Never,
 }
@@ -137,7 +115,7 @@ pub enum TemplateResult {
 #[derive(Debug, Clone)]
 pub struct Options {
     update: Update,
-    show: Show,
+    show: List,
     search: Search,
     generate: Generate,
     preview: Preview,
@@ -148,7 +126,7 @@ impl Options {
     pub fn new() -> Self {
         Options {
             update: Update::new(),
-            show: Show::new(),
+            show: List::new(),
             search: Search::new(),
             generate: Generate::new(),
             preview: Preview::new(),
@@ -160,7 +138,7 @@ impl Options {
         &self.update
     }
 
-    pub fn show(&self) -> &Show {
+    pub fn show(&self) -> &List {
         &self.show
     }
 
@@ -237,7 +215,7 @@ impl Template {
         let append = self.options().append().description(length);
 
         format!(
-            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}",
+            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
             "Usage".bright_yellow(),
             update,
             show,
@@ -342,8 +320,8 @@ impl Template {
                 let show = self.options().show().parse(option_pairs.clone());
 
                 let show = match show {
-                    ShowTemplateResult::IsValid(result) => TemplateResultKind::Show(result),
-                    ShowTemplateResult::IsNotValid => {
+                    ListTemplateResult::IsValid(result) => TemplateResultKind::List(result),
+                    ListTemplateResult::IsNotValid => {
                         let search = self.options().search().parse(option_pairs.clone());
 
                         let search = match search {
@@ -411,7 +389,7 @@ mod update_tests {
                 generate::{GenerateTemplateResult, ValidGenerateTemplateResult},
                 preview::ValidPreviewTemplateResult,
                 search::{SearchTemplateResult, ValidSearchTemplateResult},
-                show::ValidShowTemplateResult,
+                show::ValidListTemplateResult,
                 update::ValidUpdateTemplateResult,
                 TemplateResultKind,
             },
@@ -420,7 +398,7 @@ mod update_tests {
     };
 
     use super::{
-        append::AppendTemplateResult, preview::PreviewTemplateResult, show::ShowTemplateResult,
+        append::AppendTemplateResult, preview::PreviewTemplateResult, show::ListTemplateResult,
         update::UpdateTemplateResult, TemplateResult,
     };
 
@@ -702,7 +680,7 @@ mod update_tests {
     fn it_should_parse_show() {
         let template = super::Template::new();
 
-        let result = template.parse("template --show".to_string());
+        let result = template.parse("template --list".to_string());
 
         match result {
             TemplateResult::IsNotValid { arguments } => {
@@ -711,12 +689,12 @@ mod update_tests {
             TemplateResult::IsValid { option_pairs } => {
                 assert_eq!(
                     template.options().show().parse(option_pairs),
-                    ShowTemplateResult::IsValid(ValidShowTemplateResult::new(8, None))
+                    ListTemplateResult::IsValid(ValidListTemplateResult::new(4, None))
                 );
             }
         };
 
-        let result = template.parse("template --show this is all invalid".to_string());
+        let result = template.parse("template --list this is all invalid".to_string());
 
         match result {
             TemplateResult::IsNotValid { arguments } => {
@@ -725,8 +703,8 @@ mod update_tests {
             TemplateResult::IsValid { option_pairs } => {
                 assert_eq!(
                     template.options().show().parse(option_pairs),
-                    ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
-                        8,
+                    ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                        4,
                         Some(vec![
                             "this".to_string(),
                             "is".to_string(),
@@ -743,7 +721,7 @@ mod update_tests {
         assign.symbols().into_iter().for_each(|delimiter| {
             let result = template.parse(
                 format!(
-                    "template --show{}9 java rust purescript reasonml",
+                    "template --list --column{}9 java rust purescript reasonml",
                     delimiter
                 )
                 .to_string(),
@@ -756,7 +734,7 @@ mod update_tests {
                 TemplateResult::IsValid { option_pairs } => {
                     assert_eq!(
                         template.options().show().parse(option_pairs),
-                        ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
+                        ListTemplateResult::IsValid(ValidListTemplateResult::new(
                             9,
                             Some(vec![
                                 "java".to_string(),
@@ -770,7 +748,7 @@ mod update_tests {
             };
         });
 
-        let result = template.parse("this is also invalid template --show".to_string());
+        let result = template.parse("this is also invalid template --list".to_string());
 
         assert_eq!(
             result,
@@ -781,7 +759,7 @@ mod update_tests {
                     "also".to_string(),
                     "invalid".to_string(),
                     "template".to_string(),
-                    "--show".to_string(),
+                    "--list".to_string(),
                 ])
             }
         );
@@ -1028,11 +1006,12 @@ mod update_tests {
             ])))
         );
 
-        let result = template.parse_to_result("template --show 9 purescript haskell".to_string());
+        let result =
+            template.parse_to_result("template --list purescript haskell --column 9".to_string());
 
         assert_eq!(
             result,
-            TemplateResultKind::Show(ValidShowTemplateResult::new(
+            TemplateResultKind::List(ValidListTemplateResult::new(
                 9,
                 Some(vec!["purescript".to_string(), "haskell".to_string(),]),
             ))

@@ -84,7 +84,7 @@ pub struct TemplatesCache {
 impl TemplatesCache {
     pub fn new(cache: String) -> Self {
         TemplatesCache {
-            templates_file_path: format!("{}/{}", cache, "gitIgnoreNamesAndContents.json"),
+            templates_file_path: format!("{}/{}", cache, "templates.json"),
         }
     }
 
@@ -103,25 +103,16 @@ impl TemplatesCache {
     pub fn update_templates(&self, templates: Templates) -> Templates {
         let file_path = self.templates_file_path.clone();
 
-        let mut file = File::create(file_path.clone()).unwrap_or_else(|_| {
-            panic!(
-                "Unable to create name and content list cache file from {}",
-                file_path
-            )
-        });
+        let mut file = File::create(file_path.clone())
+            .unwrap_or_else(|_| panic!("Unable to create templates cache file from {}", file_path));
 
         let stringified = serde_json::to_string_pretty(&TemplaesDto {
             templates: templates.clone(),
         })
-        .unwrap_or_else(|_| {
-            panic!(
-                "Unable to stringify name and content list of {:?}",
-                templates
-            )
-        });
+        .unwrap_or_else(|_| panic!("Unable to stringify templates of {:?}", templates));
 
         file.write_all(stringified.as_bytes())
-            .unwrap_or_else(|_| panic!("Unable to write name and content list of {}", stringified));
+            .unwrap_or_else(|_| panic!("Unable to write templates of {}", stringified));
 
         self.templates()
     }

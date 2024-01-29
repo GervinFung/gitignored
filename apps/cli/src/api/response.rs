@@ -46,12 +46,11 @@ impl<T> ApiResult<T> {
     }
 }
 
+#[allow(non_camel_case_types)]
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "status")]
 pub enum ApiResponse<T> {
-    #[allow(non_camel_case_types)]
     failed { reason: String },
-    #[allow(non_camel_case_types)]
     succeed { data: T },
 }
 
