@@ -1,7 +1,7 @@
 # **Gitignored**
 
 <p align="center">
-    <img src="apps/web/public/images/icons/icon-256x256.png" />
+    <img src="apps/web/public/images/icons/icon-144x144.png" />
 </p>
 
 ## Web App
