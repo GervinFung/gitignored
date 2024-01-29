@@ -1,0 +1,9 @@
+target
+temp-dev
+temp-test
+.cache-test
+.gitignore-temp
+.gitignore-original
+.env
+script/node_modules
+src/env.rs
