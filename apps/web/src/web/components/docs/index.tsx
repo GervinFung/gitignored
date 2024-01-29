@@ -23,7 +23,7 @@ const docs = {
 	},
 	api: {
 		title: 'API',
-		items: ['Introduction', 'Commit Time', 'Templates', 'Templates Name'],
+		items: ['Introduction', 'Commit Time', 'Templates'],
 	},
 } as const;
 
