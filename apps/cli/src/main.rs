@@ -21,7 +21,9 @@ use output::Output;
 use std::env as stdenv;
 
 fn main() {
-    stdenv::set_var("RUST_BACKTRACE", "1");
+    if cfg!(debug_assertions) {
+        stdenv::set_var("RUST_BACKTRACE", "1");
+    }
 
     let cli = Cli::new();
 
