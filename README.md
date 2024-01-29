@@ -2,7 +2,7 @@
 
 ## Web App
 
-A web application that let the developer generate various `.gitignore` templates
+A web application that let the developer generate various `.gitignore` templates, available [here](https://gitignored.vercel.app)
 
 The templates are taken from the repo [gitignore](https://github.com/github/gitignore) of GitHub. Hence the templates generated are reliable
 
@@ -49,7 +49,7 @@ Here's what the developers can do with it
 
 ![404](apps/web/test/snapshot/snapshot-images/error.png)
 
-## Tech Used
+### Tech Used
 
 | Aspect                                                                 | Name           |
 | ---------------------------------------------------------------------- | -------------- |
@@ -80,7 +80,7 @@ _*Below are the non-exhaustive listed commands that you can use to build/develop
 | make start-development-database                              | Start development database                        |
 | make start-testing-database                                  | Start test database                               |
 
-## Environment Variables
+### Environment Variables
 
 #### Development and Testing
 
@@ -88,16 +88,7 @@ Run the following command
 
 `make copy-env-[development/testing]`
 
-## Contribution
-
-**Make sure you can run `make`, otherwise you need to run commands listed in `Makefile` separately**
-
-1. Open an issue
-1. Fork this repo
-1. Use TypeScript
-1. Write test
-
-## Test
+### Test
 
 It's necessary to UI snapshot test, it's also a must to write test for logical processing functions
 
@@ -105,7 +96,7 @@ It's necessary to UI snapshot test, it's also a must to write test for logical p
 
 An Offline-first CLI application that let the developer generate various `.gitignore` templates
 
-The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application, check out the [repository](https://github.com/Gitignored-App/web) if you are interested
+The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application. The TUI application is available [here](https://crates.io/crates/gitignored-cli)
 
 **Side note**:
 The GUI application takes the templates from [gitignore](https://github.com/github/gitignore) of Github
@@ -182,7 +173,7 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 ![Input Validation](apps/cli/docs/input-validation.png)
 
-## How To Use
+### How To Use
 
 Install it
 
@@ -196,7 +187,7 @@ Run it
 gitignored-cli (commands)
 ```
 
-## Tech Used
+### Tech Used
 
 | Aspect                                                                 | Name           |
 | ---------------------------------------------------------------------- | -------------- |
@@ -208,7 +199,7 @@ gitignored-cli (commands)
 | Package Manager                                                        | Cargo          |
 | Continuous Integration, Continuous Delivery, and Continuous Deployment | GitHub Actions |
 
-## Make Commands
+### Make Commands
 
 _*Below are the listed commands that you can use to build/develop/test this app*_
 
@@ -221,14 +212,14 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 | make lint      | Run linter for code                             |
 | make format    | Run formatter to format the code                |
 
-## Contribution
+### Contribution
 
 **Make sure you can run `make`, otherwise you need to run commands listed in `Makefile` separately**
 
 1. Open an issue
-2. Fork this repo and this [repo](https://github.com/Gitignored-App/cli)
+2. Fork this repo
 3. Write test
 
-## Changes
+### Changes
 
-Refer to [here](https://github.com/Gitignored-App/cli/blob/main/CHANGELOG.md)
+Refer to [here](apps/cli/CHANGELOG.md)

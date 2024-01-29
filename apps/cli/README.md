@@ -135,4 +135,4 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 
 ## Changes
 
-Refer to [here](https://github.com/Gitignored-App/cli/blob/main/CHANGELOG.md)
+Refer to [here](https://github.com/GervinFung/gitignored/blob/update-docs/apps/cli/CHANGELOG.md)
