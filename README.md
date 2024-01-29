@@ -137,7 +137,7 @@ gitignored-cli --help
 #### Default Listing
 
 ```sh
-gitignored-cli template --show
+gitignored-cli template --list
 ```
 
 ![Default Listing](apps/cli/docs/list-default.png)
@@ -145,7 +145,7 @@ gitignored-cli template --show
 #### Listing with column number specified
 
 ```sh
-gitignored-cli template --show --column 8
+gitignored-cli template --list --column 8
 ```
 
 ![Column Listing](apps/cli/docs/list-column.png)

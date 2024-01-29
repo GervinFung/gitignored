@@ -27,10 +27,10 @@ version: pre-dev
 	cargo run -- --version
 
 show: pre-dev
-	cargo run -- template --show
+	cargo run -- template --list
 
 show-column: pre-dev
-	cargo run -- template --show --column $(column)
+	cargo run -- template --list --column $(column)
 
 preview: pre-dev
 	cargo run -- template --preview rust node java vscode jetbrain
