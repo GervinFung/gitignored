@@ -1,0 +1,5 @@
+node_modules
+packages/**/node_modules
+packages/**/build
+packages/prettier-config-generator/src/prettier-config.ts
+pnpm-lock.yaml

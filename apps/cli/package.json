@@ -1,0 +1,13 @@
+{
+    "name": "@gitignored/cli",
+    "author": "PoolOfDeath20",
+    "private": true,
+    "scripts": {
+        "typecheck": "make typecheck",
+        "format-check": "make format-check",
+        "format-write": "make format-write",
+        "lint": "make lint",
+        "generate-type-for-ci": "make generate-type-for-ci",
+        "test": "make test-dev"
+    }
+}

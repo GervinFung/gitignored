@@ -3,15 +3,12 @@ MAKEFLAGS += --silent
 
 outdir=temp-dev/temp-two
 
-all:
-	make lint &&\
-		make check &&\
-		make format-check &&\
-		make test-dev &&\
-		make build
+generate-type-for-ci:
+	make install-node-packages &&\
+		make pre-dev
 
 code-gen:
-	node script/code-gen.js && make format
+	node script/code-gen.js && make format-write
 
 pre-dev:
 	cp config/.env.development .env && make code-gen
@@ -63,7 +60,7 @@ update: pre-dev
 	cargo run -- template --update
 
 # non cli-executable
-check:
+typecheck:
 	cargo check
 
 build: pre-prod
@@ -75,11 +72,14 @@ pre-test:
 test:
 	cargo test --no-fail-fast
 
-test-dev: pre-dev pre-test test
+mid-test-dev: pre-dev pre-test test
+
+test-dev:
+	node script/test-dev.js
 
 test-prod: pre-prod pre-test test
 
-format:
+format-write:
 	cargo fmt
 
 format-check:
@@ -98,10 +98,10 @@ install-node-packages:
 	cd script && pnpm install --frozen-lockfile
 
 pre-publish:
-	node script/publish pre-publish
+	node script/publish.js pre-publish
 
 post-publish:
-	node script/publish post-publish
+	node script/publish.js post-publish
 
 publish: pre-publish
 	cargo publish $(argv) && make post-publish

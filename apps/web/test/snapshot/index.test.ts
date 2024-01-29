@@ -18,7 +18,8 @@ const testSnapshot = () => {
 			return puppeteer.launch({
 				headless: 'new',
 				defaultViewport: null,
-				args: ['--start-maximized'],
+				args: ['--start-maximized', '--no-sandbox'],
+				executablePath: process.env.CHROMIUM_PATH,
 			});
 		});
 	});

@@ -9,7 +9,7 @@ const config: KnipConfig = {
 		'script/**/*.ts',
 	],
 	ignore: ['next-sitemap.config.js', 'public/**.js'],
-	ignoreBinaries: ['make'],
+	ignoreBinaries: ['make', 'puppeteer/install.mjs'],
 	ignoreDependencies: [
 		'vite-node',
 		'next-sitemap',

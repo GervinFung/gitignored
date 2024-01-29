@@ -7,15 +7,15 @@ export default class Server {
 		return new this(port);
 	};
 
-	getPort = () => {
+	readonly getPort = () => {
 		return this.port;
 	};
 
-	kill = () => {
-		child.exec(`kill $(lsof -t -i:${this.port})`);
+	readonly kill = () => {
+		child.execSync(`kill $(lsof -t -i:${this.port})`);
 	};
 
-	start = async () => {
+	readonly start = async () => {
 		const server = child
 			.exec(`make start arguments="-p ${this.port}"`)
 			.on('spawn', () => {

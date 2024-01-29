@@ -12,6 +12,13 @@ install:
 generate-local-database-type:
 	pnpm supabase gen types typescript --local > src/api/database/supabase/type.ts
 
+generate-type-for-ci:
+	make copy-env-testing &&\
+		make start-testing-database &&\
+		make migrate-up &&\
+		make generate-typesafe-environment &&\
+		make generate-local-database-type
+
 ## telemetry
 opt-out-telemetry:
 	pnpm next telemetry disable
@@ -133,4 +140,4 @@ test-integration:
 test-snapshot:
 	make test-type path="snapshot" arguments="$(arguments)"
 
-test: build-testing test-unit test-integration test-snapshot
+test: test-unit test-integration test-snapshot

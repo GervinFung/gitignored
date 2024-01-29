@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs from 'fs';
 
 const post = (original, forPublish) => {
     const content = fs.readFileSync(forPublish).toString();

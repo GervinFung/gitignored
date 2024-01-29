@@ -1,11 +1,15 @@
 {
-	"name": "gitignored-webapp",
-	"version": "0.0.0",
+	"name": "@gitignored/web",
 	"author": "PoolOfDeath20",
 	"private": true,
-	"description": "",
 	"scripts": {
-		"postinstall": "make opt-out-telemetry && pnpm prettier-config-generate"
+		"postinstall": "make opt-out-telemetry && pnpm prettier-config-generate && node_modules/puppeteer/install.mjs",
+		"typecheck": "make typecheck",
+		"format-check": "make format-check",
+		"format-write": "make format-write",
+		"lint": "make lint",
+		"generate-type-for-ci": "make generate-type-for-ci",
+		"test": "make test"
 	},
 	"dependencies": {
 		"@chakra-ui/react": "^2.8.2",
