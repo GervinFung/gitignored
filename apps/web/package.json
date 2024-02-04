@@ -45,6 +45,7 @@
 		"@ducanh2912/next-pwa": "^10.2.2",
 		"@poolofdeath20/eslint-config": "^0.3.2",
 		"@poolofdeath20/prettier-config-generator": "^0.0.1",
+		"@poolofdeath20/tsconfig": "^0.0.0",
 		"@types/cors": "^2.8.17",
 		"@types/file-saver": "^2.0.7",
 		"@types/jest-image-snapshot": "^6.4.0",
