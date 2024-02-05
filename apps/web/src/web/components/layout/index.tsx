@@ -7,7 +7,7 @@ import styled from '@emotion/styled';
 import theme from '../../theme';
 
 import Header from '../header';
-import Footer from '../footer/ndex';
+import Footer from '../footer';
 
 const Layout = ({
 	title,

@@ -19,7 +19,7 @@ import {
 	SiChakraui,
 	SiTypescript,
 	SiNextdotjs,
-	SiMongodb,
+	SiSupabase,
 } from 'react-icons/si';
 
 import { constants, title } from '../../util/const';
@@ -28,9 +28,10 @@ import InternalLink from '../common/link';
 import { Defined } from '@poolofdeath20/util';
 
 const Footer = () => {
-	const originYear = 2022;
-
-	const year = new Date().getFullYear();
+	const year = {
+		origin: 2022,
+		current: new Date().getFullYear(),
+	};
 
 	return (
 		<Flex
@@ -120,14 +121,13 @@ const Footer = () => {
 				<Divider width="100%" />
 				<Stack
 					width="100%"
-					pb={4}
+					py={8}
 					justify="space-between"
 					flexDirection="row"
 					align="center"
 				>
 					<Text fontSize="1em" color="subtle">
-						Copyright &copy;{' '}
-						{year === originYear ? year : `${originYear} - ${year}`}
+						Copyright &copy; {`${year.origin} - ${year.current}`}
 					</Text>
 					<ButtonGroup variant="ghost">
 						{[
@@ -140,8 +140,8 @@ const Footer = () => {
 								Component: SiTypescript,
 							},
 							{
-								link: 'https://www.mongodb.com',
-								Component: SiMongodb,
+								link: 'https://www.supabase.com',
+								Component: SiSupabase,
 							},
 							{
 								link: 'https://chakra-ui.com',
