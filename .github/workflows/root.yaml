@@ -47,7 +47,7 @@ jobs:
             # cli
             - name: Run Cli Test
               working-directory: apps/cli
-              run: make test-developement
+              run: make test-development
 
             - name: Run Cli Build
               working-directory: apps/cli
