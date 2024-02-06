@@ -16,17 +16,5 @@ format-check:
 generate-type-for-ci:
 	pnpm --stream -r generate-type-for-ci
 
-pretest:
-	cd apps/web && make build-testing
-
-test:
-	make pretest && pnpm --stream -r test
-
-test-cli:
-	pnpm --stream -r test --filter=cli
-
-test-web:
-	pnpm --stream -r test --filter=web
-
 deploy-web:
 	cd apps/web && make pre-deploy-production && cd ../../ && vercel --prod 

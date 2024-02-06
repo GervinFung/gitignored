@@ -8,8 +8,7 @@
 		"format-check": "make format-check",
 		"format-write": "make format-write",
 		"lint": "make lint",
-		"generate-type-for-ci": "make generate-type-for-ci",
-		"test": "make test"
+		"generate-type-for-ci": "make generate-type-for-ci"
 	},
 	"dependencies": {
 		"@chakra-ui/react": "^2.8.2",

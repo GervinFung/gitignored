@@ -7,7 +7,6 @@
         "format-check": "make format-check",
         "format-write": "make format-write",
         "lint": "make lint",
-        "generate-type-for-ci": "make generate-type-for-ci",
-        "test": "make test-dev"
+        "generate-type-for-ci": "make generate-type-for-ci"
     }
 }

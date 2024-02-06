@@ -129,4 +129,4 @@ test-integration:
 test-snapshot:
 	make test-type path="snapshot" arguments="$(arguments)"
 
-test: test-unit test-integration test-snapshot
+test: build-testing test-unit test-integration test-snapshot

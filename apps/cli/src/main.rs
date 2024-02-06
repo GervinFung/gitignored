@@ -131,7 +131,7 @@ fn main() {
 
                     output.invalid_arguments(result.invalid_arguments());
                 }
-                TemplateResultKind::List(result) => {
+                TemplateResultKind::Show(result) => {
                     output.all_names_separated_by_first_character(
                         cache.template_names(),
                         result.column(),
