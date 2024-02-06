@@ -36,9 +36,6 @@ copy-env-development:
 copy-env-testing:
 	make copy-env environment="testing" && cp supabase/config/test.toml supabase/config.toml
 
-copy-env-staging:
-	make copy-env environment="staging"
-
 copy-env-production:
 	make copy-env environment="production"
 
@@ -55,7 +52,7 @@ generate-sitemap:
 migrate-up:
 	pnpm supabase migration up
 
-db-push:
+database-push:
 	pnpm supabase db-push
 
 reset-database:
@@ -71,11 +68,7 @@ start-development-database:
 	pnpm supabase stop && make copy-env-development && pnpm supabase start
 
 ## deployment
-deploy-staging: copy-env-staging build-staging
-	vercel
-
-deploy-production: copy-env-production build-production
-	vercel --prod
+pre-deploy-production: copy-env-production build-production
 
 clear-cache:
 	rm -rf .next
@@ -85,16 +78,12 @@ start-development: clear-cache dev
 
 start-testing: clear-cache dev
 
-start-staging: clear-cache dev
-
 start-production: clear-cache dev
 
 ## build
 build-development: clear-cache build
 
 build-production: clear-cache build generate
-
-build-staging: clear-cache build
 
 build-testing: clear-cache build
 

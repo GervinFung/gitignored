@@ -1,5 +1,3 @@
 node_modules
-packages/**/node_modules
-packages/**/build
-packages/prettier-config-generator/src/prettier-config.ts
+.vercel
 pnpm-lock.yaml

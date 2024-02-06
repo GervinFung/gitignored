@@ -29,19 +29,19 @@ jobs:
 
             # root
             - name: Generate Types
-              run: pnpm generate-type-for-ci
+              run: make generate-type-for-ci
 
             - name: Run Format Check
-              run: pnpm format-check
+              run: make format-check
 
             - name: Run Linter
-              run: pnpm lint
+              run: make lint
 
             - name: Run Type Check
-              run: pnpm typecheck
+              run: make typecheck
 
             - name: Run Test
-              run: pnpm test
+              run: make test
 
             # cli
             - name: Run Cli Build
