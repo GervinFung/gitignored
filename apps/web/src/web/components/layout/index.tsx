@@ -137,6 +137,9 @@ const Layout = ({
 const Container = styled.div`
 	height: 100vh;
 	font-family: ${theme.fontFamily};
+	.Toastify__toast-body {
+		font-family: ${theme.fontFamily};
+	}
 	input {
 		font-family: ${theme.fontFamily};
 	}
