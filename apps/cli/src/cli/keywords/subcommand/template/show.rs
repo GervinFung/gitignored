@@ -25,7 +25,7 @@ impl Options {
 }
 
 #[derive(Debug, Clone)]
-pub struct List {
+pub struct Show {
     keyword_kind: KeywordKind,
     default_value: u8,
     assignment: Assignment,
@@ -33,14 +33,14 @@ pub struct List {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct ValidListTemplateResult {
+pub struct ValidShowTemplateResult {
     column: u8,
     invalid_arguments: OptionalVecString,
 }
 
-impl ValidListTemplateResult {
+impl ValidShowTemplateResult {
     pub fn new(column: u8, invalid_arguments: OptionalVecString) -> Self {
-        ValidListTemplateResult {
+        ValidShowTemplateResult {
             column,
             invalid_arguments,
         }
@@ -56,14 +56,14 @@ impl ValidListTemplateResult {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum ListTemplateResult {
+pub enum ShowTemplateResult {
     IsNotValid,
-    IsValid(ValidListTemplateResult),
+    IsValid(ValidShowTemplateResult),
 }
 
-impl List {
+impl Show {
     pub fn new() -> Self {
-        List {
+        Show {
             keyword_kind: KeywordKind::new("show"),
             default_value: 4,
             assignment: Assignment::new(),
@@ -84,7 +84,7 @@ impl List {
 
         format!(
             "{}{}- {}\n{}- {}\n{}    1. {} - {}",
-            "--list".bold(),
+            "--show".bold(),
             empty_by_keyword,
             description,
             empty,
@@ -118,7 +118,7 @@ impl List {
         argument == command
     }
 
-    pub fn parse(&self, option_pairs: OptionPairs) -> ListTemplateResult {
+    pub fn parse(&self, option_pairs: OptionPairs) -> ShowTemplateResult {
         let result = option_pairs
             .clone()
             .into_iter()
@@ -138,7 +138,7 @@ impl List {
                 let invalid_arguments = show_invalid_arguments.unwrap_or(vec![]);
 
                 match column {
-                    None => ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                    None => ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
                         self.input(),
                         match invalid_arguments.is_empty() {
                             true => None,
@@ -153,7 +153,7 @@ impl List {
                             .collect::<Vec<_>>();
 
                         match column_pair.value() {
-                            None => ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                            None => ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
                                 self.input(),
                                 match invalid_arguments.is_empty() {
                                     true => None,
@@ -171,7 +171,7 @@ impl List {
                                         .collect::<Vec<_>>(),
                                 };
 
-                                ListTemplateResult::IsValid(ValidListTemplateResult::new(
+                                ShowTemplateResult::IsValid(ValidShowTemplateResult::new(
                                     column.unwrap_or(self.input()),
                                     match invalid_arguments.is_empty() {
                                         true => None,
@@ -184,6 +184,6 @@ impl List {
                 }
             });
 
-        result.unwrap_or(ListTemplateResult::IsNotValid)
+        result.unwrap_or(ShowTemplateResult::IsNotValid)
     }
 }

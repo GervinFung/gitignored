@@ -30,13 +30,13 @@ You don't need to have an internet connection to use it, unless you want to upda
 
 ![Update Available](https://github.com/GervinFung/gitignored/blob/main/apps/cli/main/docs/update-available.png)
 
-#### Default Listing
+#### Default Showing
 
-![Default Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-default.png)
+![Default Showing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-default.png)
 
-#### Listing with column number specified
+#### Showing with column number specified
 
-![Column Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-column.png)
+![Column Showing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-column.png)
 
 #### Search
 
