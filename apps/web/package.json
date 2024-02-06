@@ -38,6 +38,7 @@
 		"react-icons": "^5.0.1",
 		"react-select": "^5.8.0",
 		"react-syntax-highlighter": "^15.5.0",
+		"react-toastify": "^10.0.4",
 		"superjson": "^2.2.1",
 		"valibot": "^0.27.0"
 	},

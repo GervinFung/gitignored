@@ -37,6 +37,10 @@ import {
 	Defined,
 } from '@poolofdeath20/util';
 
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.min.css';
+
 import Layout from '../../src/web/components/layout';
 
 import trpcClient from '../../src/web/proxy/client';
@@ -46,8 +50,6 @@ import {
 	generateContrastingColor,
 } from '../../src/web/util/generator';
 import { singleFlowParser } from '../../src/common/parser';
-
-const arrayDelimiter = ',';
 
 type Template = Templates[number];
 
@@ -101,39 +103,35 @@ const useCopyToClipboard = () => {
 		};
 	}, [copied]);
 
-	const copyToClipboard = (text: string) => {
-		if (navigator?.clipboard?.writeText) {
-			setCopied(true);
-
-			return navigator.clipboard.writeText(text);
-		}
-
-		const element = document.createElement('textarea');
-
-		element.value = text;
-
-		element.setAttribute('readonly', '');
-
-		element.style.position = 'absolute';
-
-		element.style.left = '-9999px';
-
-		document.body.appendChild(element);
-
-		element.select();
-
-		document.execCommand('copy');
-
-		document.body.removeChild(element);
-
-		setCopied(true);
-
-		return;
-	};
-
 	return {
 		copied,
-		copyToClipboard,
+		copy: (text: string) => {
+			if (navigator?.clipboard?.writeText) {
+				setCopied(true);
+
+				navigator.clipboard.writeText(text);
+			} else {
+				const element = document.createElement('textarea');
+
+				element.value = text;
+
+				element.setAttribute('readonly', '');
+
+				element.style.position = 'absolute';
+
+				element.style.left = '-9999px';
+
+				document.body.appendChild(element);
+
+				element.select();
+
+				document.execCommand('copy');
+
+				document.body.removeChild(element);
+
+				setCopied(true);
+			}
+		},
 	};
 };
 
@@ -150,7 +148,7 @@ const TemplatePreview = (
 		)
 	>
 ) => {
-	const { copied, copyToClipboard } = useCopyToClipboard();
+	const clipboard = useCopyToClipboard();
 
 	return (
 		<Box
@@ -203,10 +201,10 @@ const TemplatePreview = (
 							throw new Error(`Cannot click when it's loading`);
 						}
 
-						copyToClipboard(props.template.content);
+						clipboard.copy(props.template.content);
 					}}
 				>
-					{!copied ? 'Copy' : '🎉 Copied'}
+					{!clipboard.copied ? 'Copy' : '🎉 Copied'}
 				</Button>
 			</Box>
 			<Box>
@@ -289,38 +287,26 @@ const TemplatesPreview = (
 };
 
 class TemplatesCache {
-	private constructor(
+	constructor(
 		private readonly keys: Readonly<{
 			templates: string;
 		}>
 	) {}
 
-	private static cache: TemplatesCache | undefined = undefined;
-
-	static readonly instance = () => {
-		switch (typeof this.cache) {
-			case 'undefined': {
-				this.cache = new this({
-					templates: 'templates',
-				});
-			}
-		}
-
-		return this.cache;
-	};
-
-	readonly updateTemplates = async () => {
+	readonly updateTemplates = async (
+		props: ReturnType<typeof useNotification>['updateState']
+	) => {
 		const templates = await this.getOptionalTemplates();
 
 		return templates.match({
-			none: this.setAndGetTemplates,
+			none: this.setAndGetTemplates(props),
 			some: async () => {
 				return trpcClient.templateBatch.shouldUpdate
 					.query()
 					.then(async (result) => {
 						const func =
 							result.hadSucceed && result.data
-								? this.setAndGetTemplates
+								? this.setAndGetTemplates(props)
 								: this.getTemplates;
 
 						return func();
@@ -329,14 +315,25 @@ class TemplatesCache {
 		});
 	};
 
-	private readonly setAndGetTemplates = async () => {
-		return trpcClient.template.findAllTemplates.query().then((result) => {
-			if (result.hadSucceed) {
-				this.setTemplates(result.data);
-			}
+	private readonly setAndGetTemplates = (
+		props: ReturnType<typeof useNotification>['updateState']
+	) => {
+		return async () => {
+			props.loading();
 
-			return result;
-		});
+			return trpcClient.template.findAllTemplates
+				.query()
+				.then((result) => {
+					if (!result.hadSucceed) {
+						props.failed();
+					} else {
+						props.succeed();
+						this.setTemplates(result.data);
+					}
+
+					return result;
+				});
+		};
 	};
 
 	private readonly setTemplates = async (templates: Templates) => {
@@ -371,19 +368,24 @@ class TemplatesCache {
 const QuerySection = (
 	props: DeepReadonly<{
 		templates: {
-			all: Templates;
-			selected: Templates;
+			all: Optional<Templates>;
+			selected: Optional<Templates>;
 			updateSelected: (templates: Templates) => void;
 		};
 	}>
 ) => {
+	const templates = {
+		all: props.templates.all.unwrapOrGet([]),
+		selected: props.templates.selected.unwrapOrGet([]),
+	};
+
 	const updateDependency =
-		props.templates.selected
+		templates.selected
 			.map(({ name }) => {
 				return name;
 			})
 			.join() ||
-		props.templates.all
+		templates.all
 			.map(({ name }) => {
 				return name;
 			})
@@ -392,6 +394,7 @@ const QuerySection = (
 	return React.useMemo(() => {
 		return (
 			<StyledSelect
+				isDisabled={props.templates.all.isNone()}
 				isMulti={true}
 				maxMenuHeight={200}
 				placeholder="Search by Techs"
@@ -408,7 +411,7 @@ const QuerySection = (
 					}
 
 					if (
-						props.templates.all.find(({ name }) => {
+						templates.all.find(({ name }) => {
 							return name.toLowerCase() === input.toLowerCase();
 						})
 					) {
@@ -423,7 +426,7 @@ const QuerySection = (
 							.at(0)?.score ?? 1) <= 0.5
 					);
 				}}
-				options={props.templates.all
+				options={templates.all
 					.toSorted((previous, current) => {
 						return previous.name.localeCompare(
 							current.name,
@@ -448,12 +451,12 @@ const QuerySection = (
 					});
 
 					props.templates.updateSelected(
-						props.templates.all.filter(({ name }) => {
+						templates.all.filter(({ name }) => {
 							return names.includes(name);
 						})
 					);
 				}}
-				value={props.templates.selected.map(({ name }) => {
+				value={templates.selected.map(({ name }) => {
 					return {
 						value: name,
 						label: name,
@@ -464,26 +467,95 @@ const QuerySection = (
 	}, [updateDependency]);
 };
 
+const useNotification = () => {
+	const [type, setType] = React.useState(
+		'none' as 'loading' | 'succeed' | 'none' | 'failed'
+	);
+
+	React.useEffect(() => {
+		toast.dismiss();
+
+		switch (type) {
+			case 'none': {
+				break;
+			}
+			case 'loading': {
+				toast.loading('Updating and retrieving templates...');
+				break;
+			}
+			case 'succeed': {
+				toast.success('All templates are updated and retrieved');
+				break;
+			}
+			case 'failed': {
+				toast.error('Failed to update and retrieve templates');
+				break;
+			}
+		}
+	}, [type]);
+
+	return {
+		updateState: {
+			failed: () => {
+				setType('failed');
+			},
+			succeed: () => {
+				setType('succeed');
+			},
+			loading: () => {
+				setType('loading');
+			},
+		},
+	};
+};
+
 const Templates = () => {
+	const delimiter = ',';
+
 	const router = useRouter();
 
-	const cache = TemplatesCache.instance();
+	const cache = new TemplatesCache({
+		templates: 'templates',
+	});
 
 	const names = decodeURIComponent(
 		parse(schemas.names, router.query.names ?? '')
 	)
-		.split(arrayDelimiter)
+		.split(delimiter)
 		.filter(Boolean);
 
-	const { copied, copyToClipboard } = useCopyToClipboard();
+	const clipboard = useCopyToClipboard();
 
-	const [template, setTemplate] = React.useState(Optional.none<Templates>());
+	const notification = useNotification();
 
-	const [selected, setSelected] = React.useState(Optional.none<Templates>());
+	const [{ all, selected }, setTemplate] = React.useState({
+		all: Optional.none<Templates>(),
+		selected: Optional.none<Templates>(),
+	});
+
+	const setSelected = (selected: Templates | Optional<Templates>) => {
+		setTemplate((template) => {
+			return {
+				...template,
+				selected: Array.isArray(selected)
+					? Optional.some(selected)
+					: selected,
+			};
+		});
+	};
+
+	const setAll = (all: Templates | Optional<Templates>) => {
+		setTemplate((template) => {
+			return {
+				...template,
+				all: Array.isArray(all) ? Optional.some(all) : all,
+			};
+		});
+	};
 
 	React.useEffect(() => {
 		cache
-			.updateTemplates()
+			.updateTemplates(notification.updateState)
 			.then((templates) => {
 				if (templates.hadSucceed) {
 					return templates.data;
@@ -491,24 +563,20 @@ const Templates = () => {
 
 				throw templates.reason;
 			})
-			.then(Optional.some)
-			.then(setTemplate);
-	}, [template.isSome()]);
+			.then(setAll);
+	}, [all.isSome()]);
 
 	React.useEffect(() => {
-		template
-			.map((template) => {
-				return template.filter((props) => {
-					return names.includes(props.name);
-				});
-			})
-			.map(Optional.some)
-			.map((template) => {
-				setSelected(template);
-
-				return template;
+		all.map((template) => {
+			return template.filter((props) => {
+				return names.includes(props.name);
 			});
-	}, [template.isSome(), names.join()]);
+		}).map((template) => {
+			setSelected(template);
+
+			return template;
+		});
+	}, [all.isSome(), names.join()]);
 
 	React.useEffect(() => {
 		selected.map((selected) => {
@@ -517,7 +585,7 @@ const Templates = () => {
 					.map(({ name }) => {
 						return name;
 					})
-					.join(arrayDelimiter),
+					.join(delimiter),
 			});
 
 			return router.push(
@@ -545,6 +613,7 @@ const Templates = () => {
 
 	return (
 		<Layout title="Templates">
+			<ToastContainer position="top-center" autoClose={2500} stacked />
 			<Container maxWidth="100%" display="grid" placeItems="center">
 				<Box
 					pt={16}
@@ -561,26 +630,26 @@ const Templates = () => {
 					<Box display="flex" justifyContent="space-between">
 						<QuerySection
 							templates={{
-								all: template.unwrapOrGet([]),
-								selected: selected.unwrapOrGet([]),
-								updateSelected: (selected) => {
-									setSelected(Optional.some(selected));
-								},
+								all,
+								selected,
+								updateSelected: setSelected,
 							}}
 						/>
-						<ButtonGroup gap={4}>
+						<ButtonGroup gap={4} isDisabled={all.isNone()}>
 							<Button
 								colorScheme="messenger"
 								disabled={selected.isNone()}
 								onClick={() => {
-									copyToClipboard(
+									clipboard.copy(
 										combineTemplates(
 											selected.unwrapOrGet([])
 										)
 									);
 								}}
 							>
-								{!copied ? 'Copy All' : '🎉 Copied All'}
+								{!clipboard.copied
+									? 'Copy All'
+									: '🎉 Copied All'}
 							</Button>
 							<Divider orientation="vertical" />
 							<Button
