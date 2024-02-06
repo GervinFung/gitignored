@@ -16,12 +16,6 @@ format-check:
 generate-type-for-ci:
 	pnpm --stream -r generate-type-for-ci
 
-pretest:
-	cd apps/web && make build-testing
-
-test:
-	make pretest && pnpm --stream -r test
-
 test-cli:
 	pnpm --stream -r test --filter=cli
 
