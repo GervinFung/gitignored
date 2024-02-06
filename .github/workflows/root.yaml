@@ -40,10 +40,15 @@ jobs:
             - name: Run Type Check
               run: make typecheck
 
-            - name: Run Test
+            - name: Run Web Test
+              working-directory: apps/web
               run: make test
 
             # cli
+            - name: Run Cli Test
+              working-directory: apps/cli
+              run: make test-developement
+
             - name: Run Cli Build
               working-directory: apps/cli
               run: make build
