@@ -215,8 +215,9 @@ impl Template {
         let append = self.options().append().description(length);
 
         format!(
-            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
-            "Usage".bright_yellow(),
+            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
+            "Subcommand Usage".bright_yellow(),
+            "1. gitignored template (arguments)".bold(),
             update,
             show,
             search,

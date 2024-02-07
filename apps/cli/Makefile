@@ -26,6 +26,9 @@ help: pre-development
 version: pre-development
 	cargo run -- --version
 
+open-link: pre-development
+	cargo run -- --open-link
+
 show: pre-development
 	cargo run -- template --show
 

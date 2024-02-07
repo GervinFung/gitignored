@@ -74,8 +74,9 @@ fn main() {
     match cli.keywords().options().parse_to_result(
         argument.clone(),
         format!(
-            "{}{}",
+            "{}{}{}",
             cli.pre_basic_info(),
+            cli.keywords().options().description(),
             cli.keywords().subcommand().template().description()
         ),
     ) {
@@ -88,6 +89,13 @@ fn main() {
             output.normal(result.value());
 
             output.invalid_arguments(result.invalid_arguments());
+        }
+        OptionsResultKind::OpenLink(result) => {
+            output.normal(result.value());
+
+            output.invalid_arguments(result.invalid_arguments());
+
+            webbrowser::open(result.value().as_str()).unwrap();
         }
         OptionsResultKind::Never => {
             let get_outdir = |provided_outdir: Option<String>| {

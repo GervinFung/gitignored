@@ -7,73 +7,136 @@ The templates are taken from the web application [Gitignored](https://gitignored
 **Side note**:
 The GUI application takes the templates from [gitignore](https://github.com/github/gitignore) of Github
 
-Here's what the developers can do with this application
-
-1. View the name of all available templates
-2. Search to find out whether a name of a template exists
-3. Preview each template(s) searched, it will include the closest template if there's typo in the name searched, i.e JetBrains for jetbrain
-4. Generate template(s) to a `.gitignore` file, will not override current `.gitignore`, pass `-f` to forcefully override
-5. Generate template(s) to a specified directory, i.e `temp/temp1`, it will auto generate at as `temp/temp1/.gitignore`
-6. Append template(s) to an existing `.gitignore` file, it will create one if it does not exist
-7. Append template(s) to an existing `.gitignore` file of a specified directory, again it will create one if it does not exist
-8. Update the cache to receive latest templates
-
 You don't need to have an internet connection to use it, unless you want to update the cache
 
 **_Note: gitignored-cli is a work-in-progress library, so expect breaking changes in its API_**
 
 #### Default or Help
 
+```sh
+gitignored-cli
+```
+
+OR
+
+```sh
+gitignored-cli --help
+```
+
 ![Default or Help](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/default-or-help.png)
 
 #### Update Available
 
-![Update Available](https://github.com/GervinFung/gitignored/blob/main/apps/cli/main/docs/update-available.png)
+![Update Available](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/update-available.png)
 
-#### Default Showing
+#### Default Listing
 
-![Default Showing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-default.png)
+```sh
+gitignored-cli template --list
+```
 
-#### Showing with column number specified
+![Default Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-default.png)
 
-![Column Showing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-column.png)
+#### Listing with column number specified
+
+```sh
+gitignored-cli template --list --column 8
+```
+
+![Column Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-column.png)
 
 #### Search
+
+```sh
+gitignored-cli template --search rust node java vscode jetbrain whatever
+```
 
 ![Search](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/search.png)
 
 #### Preview
 
+```sh
+gitignored-cli template --preview rust node java vscode jetbrain
+```
+
 ![Preview](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/preview.png)
 
 #### Default Generate
 
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever
+```
+
 ![Default Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/generate.png)
 ![Error Default Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/error-generate.png)
 
+#### Abort Generate
+
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever
+```
+
+![Abort Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/abort-generate.png)
+
 #### Force Generate
+
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever --force
+```
 
 ![Force Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/force-generate.png)
 
 #### Generate with outdir specified
 
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
+```
+
 ![Outdir generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/generate-outdir.png)
 
 #### Default Append
 
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever
+```
+
 ![Default Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/append.png)
 
-#### Append with outdir specified
+#### Abort Append
+
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever
+```
+
+![Abort Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/abort-append.png)
+
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
+```
 
 ![Outdir Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/append-outdir.png)
 
 #### Updated Cache
 
+```sh
+gitignored-cli template --update
+```
+
 ![Updated](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/updated.png)
 
 #### Updating Cache
 
+```sh
+gitignored-cli template --update
+```
+
 ![Updating](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/updating.png)
+
+```sh
+gitignored-cli template --update
+```
+
+![Open Link](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/open-link.png)
 
 #### Of course, input validation
 

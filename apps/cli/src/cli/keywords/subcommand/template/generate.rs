@@ -108,12 +108,12 @@ impl Generate {
         let empty = (0..(length + 2)).map(|_| " ").collect::<Vec<_>>().join("");
 
         format!(
-            "{}{}- {}\n{}- {}\n{}    1. {} - {}\n{}    2. {} - {}",
-            "--generate".bold(),
+            "{}{}- {}\n{}- {}\n{}\t1. {} - {}\n{}\t2. {} - {}",
+            format!("--{}", self.keyword_kind().keyword()).bold(),
             empty_by_keyword,
             description,
             empty,
-            "Subcommands".bold().italic(),
+            "Arguments Usage".bold().italic(),
             empty,
             "--outdir".bold(),
             "Output folder to store the generated gitignore file in specified directory".italic(),

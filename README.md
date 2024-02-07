@@ -239,6 +239,14 @@ gitignored-cli template --update
 
 ![Updating](apps/cli/docs/updating.png)
 
+#### Open home page in browser
+
+```sh
+gitignored-cli template --update
+```
+
+![Open Link](apps/cli/docs/open-link.png)
+
 #### Of course, input validation
 
 ![Input Validation](apps/cli/docs/input-validation.png)
