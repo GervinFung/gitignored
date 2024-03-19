@@ -8,11 +8,7 @@ const InternalLink = (
 			param: Readonly<Parameters<typeof Link>[number]>;
 		}>
 ) => {
-	return (
-		<Link {...props.param} href={props.param.href.toString()}>
-			{props.children}
-		</Link>
-	);
+	return <Link {...props.param}>{props.children}</Link>;
 };
 
 export default InternalLink;

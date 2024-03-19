@@ -1,6 +1,6 @@
 {
 	"author": "PoolOfDeath20",
 	"name": "gitignored",
-	"description": "gitignored",
+	"description": "A UI/UX friendly application to search/generated .gitignore files",
 	"license": "MIT"
 }

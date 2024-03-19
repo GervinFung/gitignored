@@ -74,18 +74,18 @@ clear-cache:
 	rm -rf .next
 
 # development
-start-development: clear-cache dev
+start-development: copy-env-development clear-cache dev
 
-start-testing: clear-cache dev
+start-testing: copy-env-testing clear-cache dev
 
-start-production: clear-cache dev
+start-production: copy-env-production clear-cache dev
 
 ## build
-build-development: clear-cache build
+build-development: copy-env-development clear-cache build
 
-build-production: clear-cache build generate
+build-production: copy-env-production clear-cache build generate
 
-build-testing: clear-cache build
+build-testing: copy-env-testing clear-cache build
 
 build:
 	pnpm next build

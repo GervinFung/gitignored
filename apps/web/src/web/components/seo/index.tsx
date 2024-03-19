@@ -53,7 +53,7 @@ const Seo = (
 						const squareDimension = `${dimension}x${dimension}`;
 
 						return {
-							alt: `website icon as dimension of $${squareDimension}`,
+							alt: `website icon as dimension of ${squareDimension}`,
 							width: dimension,
 							height: dimension,
 							url: `${iconPath}/icon-${squareDimension}.png`,
@@ -88,18 +88,6 @@ const Seo = (
 					{
 						name: 'application-mobile-web-app-title',
 						content: name,
-					},
-					{
-						name: 'theme-color',
-						content: '#121212',
-					},
-					{
-						name: 'msapplication-navbutton-color',
-						content: '#121212',
-					},
-					{
-						name: 'apple-mobile-web-app-status-bar-style',
-						content: '#121212',
 					},
 					{
 						name: 'msapplication-starturl',

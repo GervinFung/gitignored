@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type PropsWithChildren } from 'react';
 
 import { DefaultSeo } from 'next-seo';
 
@@ -9,20 +9,21 @@ import theme from '../../theme';
 import Header from '../header';
 import Footer from '../footer';
 
-const Layout = ({
-	title,
-	children,
-}: Readonly<{
-	title: string;
-	children: React.ReactNode;
-}>) => {
+const Layout = (
+	props: Readonly<
+		PropsWithChildren<{
+			title: string;
+		}>
+	>
+) => {
 	const dimensions = [48, 72, 96, 144, 192, 256, 384, 512] as const;
 
-	const url = process.env.ORIGIN;
+	const url = process.env.NEXT_PUBLIC_ORIGIN;
+
 	const description =
 		'The Web Application of Gitignored. A more UI/UX Friendly Web Application that generates useful .gitignore files for your project from by choosing different collection of templates stored by Github. Preview/Copy/Download Single or Multiple .gitignore File(s)';
 
-	const gitignoredTitle = `Gitignored | ${title}`;
+	const gitignoredTitle = `Gitignored | ${props.title}`;
 
 	const iconPath = '/images/icons';
 
@@ -128,7 +129,7 @@ const Layout = ({
 				]}
 			/>
 			<Header />
-			{children}
+			{props.children}
 			<Footer />
 		</Container>
 	);

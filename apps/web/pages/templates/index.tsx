@@ -35,6 +35,8 @@ import {
 	Optional,
 	formQueryParamStringFromRecord,
 	Defined,
+	equalTo,
+	isFalsy,
 } from '@poolofdeath20/util';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -368,24 +370,19 @@ class TemplatesCache {
 const QuerySection = (
 	props: DeepReadonly<{
 		templates: {
-			all: Optional<Templates>;
-			selected: Optional<Templates>;
+			all: Templates;
+			selected: Templates;
 			updateSelected: (templates: Templates) => void;
 		};
 	}>
 ) => {
-	const templates = {
-		all: props.templates.all.unwrapOrGet([]),
-		selected: props.templates.selected.unwrapOrGet([]),
-	};
-
 	const updateDependency =
-		templates.selected
+		props.templates.selected
 			.map(({ name }) => {
 				return name;
 			})
 			.join() ||
-		templates.all
+		props.templates.all
 			.map(({ name }) => {
 				return name;
 			})
@@ -394,7 +391,7 @@ const QuerySection = (
 	return React.useMemo(() => {
 		return (
 			<StyledSelect
-				isDisabled={props.templates.all.isNone()}
+				isDisabled={isFalsy(props.templates.all.length)}
 				isMulti={true}
 				maxMenuHeight={200}
 				placeholder="Search by Techs"
@@ -411,9 +408,11 @@ const QuerySection = (
 					}
 
 					if (
-						templates.all.find(({ name }) => {
-							return name.toLowerCase() === input.toLowerCase();
-						})
+						props.templates.all
+							.map(({ name }) => {
+								return name.toLowerCase();
+							})
+							.find(equalTo(input.toLowerCase()))
 					) {
 						return label.toLowerCase() === input.toLowerCase();
 					}
@@ -426,7 +425,7 @@ const QuerySection = (
 							.at(0)?.score ?? 1) <= 0.5
 					);
 				}}
-				options={templates.all
+				options={props.templates.all
 					.toSorted((previous, current) => {
 						return previous.name.localeCompare(
 							current.name,
@@ -451,12 +450,12 @@ const QuerySection = (
 					});
 
 					props.templates.updateSelected(
-						templates.all.filter(({ name }) => {
+						props.templates.all.filter(({ name }) => {
 							return names.includes(name);
 						})
 					);
 				}}
-				value={templates.selected.map(({ name }) => {
+				value={props.templates.selected.map(({ name }) => {
 					return {
 						value: name,
 						label: name,
@@ -528,30 +527,11 @@ const Templates = () => {
 
 	const notification = useNotification();
 
-	const [{ all, selected }, setTemplate] = React.useState({
-		all: Optional.none<Templates>(),
-		selected: Optional.none<Templates>(),
+	const [templates, setTemplate] = React.useState([] as Templates);
+
+	const selected = templates.filter((props) => {
+		return names.includes(props.name);
 	});
-
-	const setSelected = (selected: Templates | Optional<Templates>) => {
-		setTemplate((template) => {
-			return {
-				...template,
-				selected: Array.isArray(selected)
-					? Optional.some(selected)
-					: selected,
-			};
-		});
-	};
-
-	const setAll = (all: Templates | Optional<Templates>) => {
-		setTemplate((template) => {
-			return {
-				...template,
-				all: Array.isArray(all) ? Optional.some(all) : all,
-			};
-		});
-	};
 
 	React.useEffect(() => {
 		cache
@@ -563,53 +543,8 @@ const Templates = () => {
 
 				throw templates.reason;
 			})
-			.then(setAll);
-	}, [all.isSome()]);
-
-	React.useEffect(() => {
-		all.map((template) => {
-			return template.filter((props) => {
-				return names.includes(props.name);
-			});
-		}).map((template) => {
-			setSelected(template);
-
-			return template;
-		});
-	}, [all.isSome(), names.join()]);
-
-	React.useEffect(() => {
-		selected.map((selected) => {
-			const params = formQueryParamStringFromRecord({
-				names: selected
-					.map(({ name }) => {
-						return name;
-					})
-					.join(delimiter),
-			});
-
-			return router.push(
-				`/templates${!params ? '' : '?'}${params}`,
-				undefined,
-				{
-					shallow: true,
-				}
-			);
-		});
-	}, [
-		selected.match({
-			none: () => {
-				return undefined;
-			},
-			some: (templates) => {
-				return templates
-					.map(({ name }) => {
-						return name;
-					})
-					.join();
-			},
-		}),
-	]);
+			.then(setTemplate);
+	}, [templates.length]);
 
 	return (
 		<Layout title="Templates">
@@ -630,21 +565,37 @@ const Templates = () => {
 					<Box display="flex" justifyContent="space-between">
 						<QuerySection
 							templates={{
-								all,
+								all: templates,
 								selected,
-								updateSelected: setSelected,
+								updateSelected: (selected) => {
+									const params =
+										formQueryParamStringFromRecord({
+											names: selected
+												.map(({ name }) => {
+													return name;
+												})
+												.join(delimiter),
+										});
+
+									router.push(
+										{
+											pathname: '/templates',
+											query: params,
+										},
+										undefined,
+										{
+											shallow: true,
+										}
+									);
+								},
 							}}
 						/>
-						<ButtonGroup gap={4} isDisabled={all.isNone()}>
+						<ButtonGroup gap={4}>
 							<Button
 								colorScheme="messenger"
-								disabled={selected.isNone()}
+								isDisabled={isFalsy(selected.length)}
 								onClick={() => {
-									clipboard.copy(
-										combineTemplates(
-											selected.unwrapOrGet([])
-										)
-									);
+									clipboard.copy(combineTemplates(selected));
 								}}
 							>
 								{!clipboard.copied
@@ -655,16 +606,17 @@ const Templates = () => {
 							<Button
 								colorScheme="messenger"
 								variant="outline"
-								disabled={selected.isNone()}
+								isDisabled={isFalsy(selected.length)}
 								onClick={() => {
-									const zip = selected
-										.unwrapOrGet([])
-										.reduce((zip, template) => {
+									const zip = selected.reduce(
+										(zip, template) => {
 											return zip.file(
 												`${template.name}/.gitignore`,
 												template.content
 											);
-										}, new JSZip());
+										},
+										new JSZip()
+									);
 
 									zip.generateAsync({
 										type: 'blob',
@@ -682,9 +634,9 @@ const Templates = () => {
 					</Box>
 					<Box display="flex" justifyContent="space-between">
 						<TemplatesPreview
-							type={selected.isSome() ? 'done' : 'loading'}
+							type={selected.length ? 'done' : 'loading'}
 							templatesName={names}
-							templates={selected.unwrapOrGet([])}
+							templates={selected}
 						/>
 					</Box>
 				</Box>
