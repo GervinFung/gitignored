@@ -3,14 +3,15 @@ import fs from 'fs';
 import pkg from '../../../../package.json';
 
 const main = () => {
-	const dimensions = [72, 96, 128, 152, 192, 384, 512] as const;
+	const dimensions = [48, 72, 96, 144, 192, 384, 512] as const;
 
 	const webmanifest = {
 		name: pkg.name,
 		short_name: pkg.name,
 		description: pkg.description,
-		theme_color: 'site_color_unknown',
-		background_color: 'site_color_unknown',
+		start_url: '/',
+		theme_color: '#FFF',
+		background_color: '#FFF',
 		display: 'standalone',
 		categories: ['development', 'tools'],
 		icons: dimensions.map((dimension) => {
@@ -24,7 +25,7 @@ const main = () => {
 				? commonProperties
 				: {
 						...commonProperties,
-						purpose: 'maskable',
+						purpose: 'any',
 					};
 		}),
 	};

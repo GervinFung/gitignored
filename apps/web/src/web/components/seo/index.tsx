@@ -17,7 +17,7 @@ const Seo = (
 
 	const iconPath = '/images/icons';
 
-	const dimensions = [72, 96, 128, 152, 192, 384, 512] as const;
+	const dimensions = [48, 72, 96, 144, 192, 384, 512] as const;
 
 	const name = 'Gitignored';
 
@@ -30,6 +30,8 @@ const Seo = (
 	const description = `The Web Application of Gitignored. A more UI/UX Friendly Web Application that generates useful .gitignore files for your project from by choosing different collection of templates stored by Github. Templates can be copied individually or copy all into one template. Templates can also be cownloaded into one zip folder. ${props.description.unwrapOrGet(
 		''
 	)}`;
+
+	const content = '#FFF';
 
 	return (
 		<React.Fragment>
@@ -88,6 +90,18 @@ const Seo = (
 					{
 						name: 'application-mobile-web-app-title',
 						content: name,
+					},
+					{
+						name: 'theme-color',
+						content,
+					},
+					{
+						name: 'msapplication-navbutton-color',
+						content,
+					},
+					{
+						name: 'apple-mobile-web-app-status-bar-style',
+						content,
 					},
 					{
 						name: 'msapplication-starturl',

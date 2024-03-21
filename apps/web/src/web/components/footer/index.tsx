@@ -152,6 +152,8 @@ const Footer = () => {
 									key={props.link}
 									as="a"
 									href={`https://${props.link}`}
+									target="_blank"
+									rel="external nofollow noopener noreferrer"
 									aria-label={props.link
 										.replace('www', '')
 										.replace('.com', '')
