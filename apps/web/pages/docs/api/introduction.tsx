@@ -29,6 +29,7 @@ const Introduction = () => {
 	return (
 		<Documentation title="API Introduction">
 			<Seo
+				url="/docs/api/introduction"
 				title={Optional.some('API Docs | Introduction')}
 				description={Optional.some(
 					'This section briefly introduces the all of the APIs of Gitignored along with its usage and public API design philosophy, which is inspired by Result API of Rust'

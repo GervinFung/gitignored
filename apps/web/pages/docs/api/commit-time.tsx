@@ -24,6 +24,7 @@ const CommitTime = () => {
 	return (
 		<Documentation title="API Commit Time">
 			<Seo
+				url="/docs/api/commit-time"
 				title={Optional.some('API Docs | Commit Time')}
 				description={Optional.some(
 					'This section explains the API endpoint for retrieving the latest updated time of the templates, and its response structure with an example'

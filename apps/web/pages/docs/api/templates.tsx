@@ -24,6 +24,7 @@ const GenerateTemplates = () => {
 	return (
 		<Documentation title="API Generate Templates">
 			<Seo
+				url="/docs/api/templates"
 				title={Optional.some('API Docs | Generate Templates')}
 				description={Optional.some(
 					'This section explains the API endpoint for generating .gitignore templates, and its response structure with an example'

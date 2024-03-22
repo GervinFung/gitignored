@@ -19,6 +19,7 @@ const Introduction = () => {
 	return (
 		<Documentation title="Introduction">
 			<Seo
+				url="/docs/content/introduction"
 				title={Optional.some('Docs Introduction')}
 				description={Optional.some(
 					'This section briefly introduces Gitignored and its advantages and disadvantages'

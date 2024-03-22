@@ -44,6 +44,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import Layout from '../../src/web/components/layout';
+import Seo from '../../src/web/components/seo';
 
 import trpcClient from '../../src/web/proxy/client';
 import { type Templates } from '../../src/api/database/persistence/template';
@@ -548,6 +549,12 @@ const Templates = () => {
 
 	return (
 		<Layout title="Templates">
+			<Seo
+				url="/templates"
+				title={Optional.some('Templates')}
+				description={Optional.some('List of .gitignore templates')}
+				keywords={['templates', '.gitignore', 'gitignore', 'git']}
+			/>
 			<ToastContainer position="top-center" autoClose={2500} stacked />
 			<Container maxWidth="100%" display="grid" placeItems="center">
 				<Box
