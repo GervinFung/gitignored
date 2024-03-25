@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      '@poolofdeath20/prettier-config-generator':
+        specifier: ^0.0.1
+        version: 0.0.1(prettier@3.2.4)
 
   apps/cli: {}
 
@@ -112,9 +116,6 @@ importers:
       '@poolofdeath20/eslint-config':
         specifier: ^0.3.2
         version: 0.3.2(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-config-next@13.5.6)(eslint-plugin-import@2.29.1)(eslint-plugin-jsx-a11y@6.8.0)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react-refresh@0.4.5)(eslint-plugin-react@7.33.2)
-      '@poolofdeath20/prettier-config-generator':
-        specifier: ^0.0.1
-        version: 0.0.1(prettier@3.2.4)
       '@poolofdeath20/tsconfig':
         specifier: ^0.0.0
         version: 0.0.0
