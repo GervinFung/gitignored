@@ -1,17 +1,30 @@
-# **Git-Ignored**
+# Gitignored
 
 An Offline-first CLI application that let the developer generate various `.gitignore` templates
 
-The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application, check out the [repository](https://github.com/GervinFung/gitignored) if you are interested
+The templates are taken from the web application [Gitignored](https://gitignored.vercel.app), which is the GUI application of this application. The TUI application is available [here](https://crates.io/crates/gitignored-cli)
 
 **Side note**:
 The GUI application takes the templates from [gitignore](https://github.com/github/gitignore) of Github
+
+Here's what the developers can do with this application
+
+1. View the name of all available templates
+2. Search to find out whether a name of a template exists
+3. Preview each template(s) searched, it will include the closest template if there's typo in the name searched, i.e JetBrains for jetbrain
+4. Generate template(s) to a `.gitignore` file, will not override current `.gitignore`, pass `--force` to forcefully override
+5. Generate template(s) to a specified directory, i.e `temp/temp1`, it will auto generate at as `temp/temp1/.gitignore`
+6. Append template(s) to an existing `.gitignore` file, it will create one if it does not exist
+7. Append template(s) to an existing `.gitignore` file of a specified directory, again it will create one if it does not exist
+8. Update the cache to receive latest templates
+9. Uninstall and remove every cache
+10. Open home page/website of this application
 
 You don't need to have an internet connection to use it, unless you want to update the cache
 
 **_Note: gitignored-cli is a work-in-progress library, so expect breaking changes in its API_**
 
-#### Default or Help
+# Default or Help
 
 ```sh
 gitignored-cli
@@ -23,126 +36,138 @@ OR
 gitignored-cli --help
 ```
 
-![Default or Help](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/default-or-help.png)
+![Default or Help](apps/cli/docs/default-or-help.png)
 
-#### Update Available
+# Update Available
 
-![Update Available](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/update-available.png)
+![Update Available](apps/cli/docs/update-available.png)
 
-#### Default Listing
+# Default Listing
 
 ```sh
 gitignored-cli template --list
 ```
 
-![Default Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-default.png)
+![Default Listing](apps/cli/docs/list-default.png)
 
-#### Listing with column number specified
+# Listing with column number specified
 
 ```sh
 gitignored-cli template --list --column 8
 ```
 
-![Column Listing](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/list-column.png)
+![Column Listing](apps/cli/docs/list-column.png)
 
-#### Search
+# Search
 
 ```sh
 gitignored-cli template --search rust node java vscode jetbrain whatever
 ```
 
-![Search](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/search.png)
+![Search](apps/cli/docs/search.png)
 
-#### Preview
+# Preview
 
 ```sh
 gitignored-cli template --preview rust node java vscode jetbrain
 ```
 
-![Preview](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/preview.png)
+![Preview](apps/cli/docs/preview.png)
 
-#### Default Generate
-
-```sh
-gitignored-cli template --generate rust node java vscode jetbrain whatever
-```
-
-![Default Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/generate.png)
-![Error Default Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/error-generate.png)
-
-#### Abort Generate
+# Default Generate
 
 ```sh
 gitignored-cli template --generate rust node java vscode jetbrain whatever
 ```
 
-![Abort Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/abort-generate.png)
+![Default Generate](apps/cli/docs/generate.png)
+![Error Default Generate](apps/cli/docs/error-generate.png)
 
-#### Force Generate
+# Abort Generate
+
+```sh
+gitignored-cli template --generate rust node java vscode jetbrain whatever
+```
+
+![Abort Generate](apps/cli/docs/abort-generate.png)
+
+# Force Generate
 
 ```sh
 gitignored-cli template --generate rust node java vscode jetbrain whatever --force
 ```
 
-![Force Generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/force-generate.png)
+![Force Generate](apps/cli/docs/force-generate.png)
 
-#### Generate with outdir specified
+# Generate with outdir specified
 
 ```sh
 gitignored-cli template --generate rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
 ```
 
-![Outdir generate](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/generate-outdir.png)
+![Outdir generate](apps/cli/docs/generate-outdir.png)
 
-#### Default Append
-
-```sh
-gitignored-cli template --append rust node java vscode jetbrain whatever
-```
-
-![Default Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/append.png)
-
-#### Abort Append
+# Default Append
 
 ```sh
 gitignored-cli template --append rust node java vscode jetbrain whatever
 ```
 
-![Abort Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/abort-append.png)
+![Default Append](apps/cli/docs/append.png)
+
+# Abort Append
+
+```sh
+gitignored-cli template --append rust node java vscode jetbrain whatever
+```
+
+![Abort Append](apps/cli/docs/abort-append.png)
+
+# Append with outdir specified
 
 ```sh
 gitignored-cli template --append rust node java vscode jetbrain whatever --outdir temp-dev/temp-two
 ```
 
-![Outdir Append](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/append-outdir.png)
+![Outdir Append](apps/cli/docs/append-outdir.png)
 
-#### Updated Cache
-
-```sh
-gitignored-cli template --update
-```
-
-![Updated](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/updated.png)
-
-#### Updating Cache
+# Updated Cache
 
 ```sh
 gitignored-cli template --update
 ```
 
-![Updating](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/updating.png)
+![Updated](apps/cli/docs/updated.png)
+
+# Updating Cache
 
 ```sh
 gitignored-cli template --update
 ```
 
-![Open Link](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/open-link.png)
+![Updating](apps/cli/docs/updating.png)
 
-#### Of course, input validation
+# Open home page in browser
 
-![Input Validation](https://github.com/GervinFung/gitignored/blob/main/apps/cli/docs/input-validation.png)
+```sh
+gitignored-cli open-link
+```
 
-## How To Use
+![Open Link](apps/cli/docs/open-link.png)
+
+# Uninstall
+
+```sh
+gitignored-cli uninstall
+```
+
+![Open Link](apps/cli/docs/open-link.png)
+
+# Of course, input validation
+
+![Input Validation](apps/cli/docs/input-validation.png)
+
+# How To Use
 
 Install it
 
@@ -156,19 +181,18 @@ Run it
 gitignored-cli (commands)
 ```
 
-## Tech Used
+### Tech Used
 
-| Aspect                                                                 | Name           |
-| ---------------------------------------------------------------------- | -------------- |
-| Language                                                               | Rust           |
-| Linting                                                                | Clippy         |
-| Format                                                                 | Rustfmt        |
-| Build Automation Tool                                                  | Make           |
-| Text Editor                                                            | NeoVim         |
-| Package Manager                                                        | Cargo          |
-| Continuous Integration, Continuous Delivery, and Continuous Deployment | GitHub Actions |
+| Aspect                 | Name           |
+| ---------------------- | -------------- |
+| Language               | Rust           |
+| Linting                | Clippy         |
+| Format                 | Rustfmt        |
+| Build Automation Tool  | Make           |
+| Package Manager        | Cargo          |
+| Continuous Integration | GitHub Actions |
 
-## Make Commands
+### Make Commands
 
 _*Below are the listed commands that you can use to build/develop/test this app*_
 
@@ -181,7 +205,7 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 | make lint      | Run linter for code                             |
 | make format    | Run formatter to format the code                |
 
-## Contribution
+### Contribution
 
 **Make sure you can run `make`, otherwise you need to run commands listed in `Makefile` separately**
 
@@ -189,6 +213,6 @@ _*Below are the listed commands that you can use to build/develop/test this app*
 2. Fork this repo
 3. Write test
 
-## Changes
+### Changes
 
-Refer to [here](https://github.com/GervinFung/gitignored/blob/update-docs/apps/cli/CHANGELOG.md)
+Refer to [here](apps/cli/CHANGELOG.md)
