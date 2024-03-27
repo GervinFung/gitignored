@@ -161,7 +161,7 @@ gitignored-cli open-link
 gitignored-cli uninstall
 ```
 
-![Open Link](apps/cli/docs/open-link.png)
+![Uninstall](apps/cli/docs/uninstall.png)
 
 # Of course, input validation
 
