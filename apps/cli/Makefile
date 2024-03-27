@@ -27,7 +27,10 @@ version: pre-development
 	cargo run -- --version
 
 open-link: pre-development
-	cargo run -- --open-link
+	cargo run -- open-link
+
+uninstall: pre-development
+	cargo run -- uninstall
 
 show: pre-development
 	cargo run -- template --show

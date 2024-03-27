@@ -77,6 +77,7 @@ impl SearchResult {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct TemplatesCache {
     templates_file_path: String,
 }
@@ -84,12 +85,16 @@ pub struct TemplatesCache {
 impl TemplatesCache {
     pub fn new(cache: String) -> Self {
         TemplatesCache {
-            templates_file_path: format!("{}/{}", cache, "templates.json"),
+            templates_file_path: format!("{}/templates.json", cache),
         }
     }
 
+    fn templates_file_path(&self) -> &String {
+        &self.templates_file_path
+    }
+
     pub fn templates(&self) -> Templates {
-        let file_path = self.templates_file_path.clone();
+        let file_path = self.templates_file_path();
 
         let stringified_templates = read_to_string(file_path.clone())
             .unwrap_or_else(|_| panic!("Unable to read from {}", file_path));
@@ -101,7 +106,7 @@ impl TemplatesCache {
     }
 
     pub fn update_templates(&self, templates: Templates) -> Templates {
-        let file_path = self.templates_file_path.clone();
+        let file_path = self.templates_file_path();
 
         let mut file = File::create(file_path.clone())
             .unwrap_or_else(|_| panic!("Unable to create templates cache file from {}", file_path));

@@ -39,6 +39,7 @@ pub struct LatestCommittedTimeDto {
     latestCommittedTime: Date,
 }
 
+#[derive(Debug, Clone)]
 pub struct TimeCache {
     latest_committed_time_file_path: String,
     last_remind_time_file_path: String,
@@ -47,8 +48,8 @@ pub struct TimeCache {
 impl TimeCache {
     pub fn new(cache: String) -> Self {
         TimeCache {
-            latest_committed_time_file_path: format!("{}/{}", cache, "latest-committed-time.json"),
-            last_remind_time_file_path: format!("{}/{}", cache, "remind-update.json"),
+            latest_committed_time_file_path: format!("{}/latest-committed-time.json", cache),
+            last_remind_time_file_path: format!("{}/remind-update.json", cache),
         }
     }
 

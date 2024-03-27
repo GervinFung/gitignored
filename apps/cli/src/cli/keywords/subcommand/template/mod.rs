@@ -9,6 +9,7 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::assignment::Assignment,
+    stringutil::StringUtil,
     types::{OptionalVecString, Str, VecString},
 };
 
@@ -187,25 +188,16 @@ impl Template {
         &self.options
     }
 
-    fn length_of_longest_keyword(&self) -> u8 {
-        [
-            self.options().update().keyword_kind(),
-            self.options().show().keyword_kind(),
-            self.options().search().keyword_kind(),
-            self.options().generate().keyword_kind(),
-            self.options().preview().keyword_kind(),
-            self.options().append().keyword_kind(),
-        ]
-        .into_iter()
-        .map(|kind| kind.keyword())
-        .map(|keyword| keyword.len() as u8)
-        .max()
-        .map(|length| length + 1)
-        .unwrap()
-    }
-
     pub fn description(&self) -> String {
-        let length = self.length_of_longest_keyword();
+        let length = StringUtil::new(vec![
+            self.options().update().keyword_kind().clone(),
+            self.options().show().keyword_kind().clone(),
+            self.options().search().keyword_kind().clone(),
+            self.options().generate().keyword_kind().clone(),
+            self.options().preview().keyword_kind().clone(),
+            self.options().append().keyword_kind().clone(),
+        ])
+        .length_of_longest_keyword();
 
         let update = self.options().update().description(length);
         let show = self.options().show().description(length);
