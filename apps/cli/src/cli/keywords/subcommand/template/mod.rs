@@ -9,8 +9,8 @@ use colored::Colorize;
 
 use crate::{
     cli::keywords::assignment::Assignment,
-    stringutil::StringUtil,
     types::{OptionalVecString, Str, VecString},
+    util::Util,
 };
 
 use self::{
@@ -189,15 +189,14 @@ impl Template {
     }
 
     pub fn description(&self) -> String {
-        let length = StringUtil::new(vec![
+        let length = Util::new().string().length_of_longest_keyword(vec![
             self.options().update().keyword_kind().clone(),
             self.options().show().keyword_kind().clone(),
             self.options().search().keyword_kind().clone(),
             self.options().generate().keyword_kind().clone(),
             self.options().preview().keyword_kind().clone(),
             self.options().append().keyword_kind().clone(),
-        ])
-        .length_of_longest_keyword();
+        ]);
 
         let update = self.options().update().description(length);
         let show = self.options().show().description(length);

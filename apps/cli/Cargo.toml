@@ -1,6 +1,6 @@
 [package]
 name = "gitignored-cli"
-version = "0.0.7"
+version = "0.0.8"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
 description ="The CLI Application of Gitignored. Provide A Faster Way to Generate .gitignore File via Caching"

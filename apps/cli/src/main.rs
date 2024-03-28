@@ -4,9 +4,9 @@ mod cli;
 mod env;
 mod input;
 mod output;
-mod stringutil;
 mod types;
 mod uninstaller;
+mod util;
 
 use api::GitignoredApi;
 use cache::Cache;
@@ -84,9 +84,9 @@ fn main() {
         format!(
             "{}{}{}{}",
             cli.pre_basic_info(),
+            cli.keywords().command().description(),
             cli.keywords().options().description(),
             cli.keywords().subcommand().template().description(),
-            cli.keywords().command().description()
         ),
     ) {
         OptionsResultKind::Help(result) => {

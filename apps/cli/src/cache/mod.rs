@@ -114,9 +114,8 @@ impl Cache {
     }
 
     pub fn remove(&self) {
-        fs::remove_dir_all(self.cache()).unwrap_or_else(|error| {
-            panic!("Failed to remove cache directory: {}", error.to_string())
-        });
+        fs::remove_dir_all(self.cache())
+            .unwrap_or_else(|error| panic!("Failed to remove cache directory: {}", error));
     }
 }
 

@@ -2,8 +2,8 @@ use colored::Colorize;
 
 use crate::{
     env::Env,
-    stringutil::StringUtil,
     types::{OptionalVecString, Str},
+    util::Util,
 };
 
 use super::assignment::Assignment;
@@ -158,11 +158,10 @@ impl Options {
     }
 
     pub fn description(&self) -> String {
-        let length = StringUtil::new(vec![
+        let length = Util::new().string().length_of_longest_keyword(vec![
             self.version().keyword_kind().clone(),
             self.help().keyword_kind().clone(),
-        ])
-        .length_of_longest_keyword();
+        ]);
 
         let version = self.version().description(length);
         let help = self.help().description(length);

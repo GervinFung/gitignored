@@ -11,9 +11,7 @@ impl Uninstaller {
         Command::new("cargo")
             .arg("uninstall")
             .arg("gitignored-cli")
-            .spawn()
-            .unwrap_or_else(|error| {
-                panic!("Failed to uninstall gitignored-cli: {}", error.to_string())
-            });
+            .output()
+            .unwrap_or_else(|error| panic!("Failed to uninstall gitignored-cli: {}", error));
     }
 }

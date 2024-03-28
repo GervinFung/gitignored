@@ -2,8 +2,8 @@ use colored::Colorize;
 
 use crate::{
     env::Env,
-    stringutil::StringUtil,
     types::{OptionalVecString, Str},
+    util::Util,
 };
 
 use self::{openlink::OpenLink, uninstall::Uninstall};
@@ -157,19 +157,18 @@ impl Command {
     }
 
     pub fn description(&self) -> String {
-        let length = StringUtil::new(vec![
+        let length = Util::new().string().length_of_longest_keyword(vec![
             self.open_link().keyword_kind().clone(),
             self.uninstall().keyword_kind().clone(),
-        ])
-        .length_of_longest_keyword();
+        ]);
 
         let open_link = self.open_link().description(length);
         let uninstall = self.uninstall().description(length);
 
         format!(
             "{}\n\n{}\n\n{}\n\n{}\n",
-            "Subcommand Usage".bright_yellow(),
-            "1. gitignored template (arguments)".bold(),
+            "Command Usage".bright_yellow(),
+            "1. gitignored (arguments)".bold(),
             open_link,
             uninstall,
         )
