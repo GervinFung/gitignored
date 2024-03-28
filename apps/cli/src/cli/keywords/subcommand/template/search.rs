@@ -52,7 +52,7 @@ impl Search {
 
         format!(
             "{}{}- {}",
-            "--search".bold(),
+            format!("--{}", self.keyword_kind().keyword()).bold(),
             (0..(length - self.keyword_kind().keyword().len() as u8))
                 .map(|_| " ")
                 .collect::<Vec<_>>()

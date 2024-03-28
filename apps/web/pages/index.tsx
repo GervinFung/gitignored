@@ -22,6 +22,7 @@ const Index = () => {
 	return (
 		<Layout title="Home">
 			<Seo
+				url={undefined}
 				title={Optional.none()}
 				description={Optional.none()}
 				keywords={['introduction']}

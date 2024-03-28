@@ -25,7 +25,6 @@ import {
 import { constants, title } from '../../util/const';
 
 import InternalLink from '../common/link';
-import { Defined } from '@poolofdeath20/util';
 
 const Footer = () => {
 	const year = {
@@ -132,19 +131,19 @@ const Footer = () => {
 					<ButtonGroup variant="ghost">
 						{[
 							{
-								link: 'https://nextjs.org',
+								link: 'nextjs.org',
 								Component: SiNextdotjs,
 							},
 							{
-								link: 'https://www.typescriptlang.org',
+								link: 'www.typescriptlang.org',
 								Component: SiTypescript,
 							},
 							{
-								link: 'https://www.supabase.com',
+								link: 'www.supabase.com',
 								Component: SiSupabase,
 							},
 							{
-								link: 'https://chakra-ui.com',
+								link: 'chakra-ui.com',
 								Component: SiChakraui,
 							},
 						].map((props) => {
@@ -152,19 +151,12 @@ const Footer = () => {
 								<IconButton
 									key={props.link}
 									as="a"
-									href={props.link}
-									aria-label={Defined.parse(
-										props.link
-											.replace('www', '')
-											.replace('.com', '')
-											.split('//')
-											.at(1)
-									)
-										.orThrow(
-											new Error(
-												'There is nothing to show for a name'
-											)
-										)
+									href={`https://${props.link}`}
+									target="_blank"
+									rel="external nofollow noopener noreferrer"
+									aria-label={props.link
+										.replace('www', '')
+										.replace('.com', '')
 										.replace('.', '')}
 									icon={<props.Component fontSize="1.5em" />}
 								/>

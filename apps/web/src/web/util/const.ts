@@ -5,7 +5,7 @@ const api = {
 } as const;
 
 const constants = {
-	repo: 'https://github.com/Gitignored-App/web',
+	repo: 'https://github.com/GervinFung/web',
 	cargo: 'https://crates.io/crates/gitignored-cli',
 } as const;
 

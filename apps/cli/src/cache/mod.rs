@@ -11,6 +11,7 @@ use self::{
     time::TimeCache,
 };
 
+#[derive(Debug, Clone)]
 pub struct Cache {
     api: Str,
     cache: String,
@@ -41,6 +42,10 @@ impl Cache {
     #[cfg(test)]
     fn generate_gitignore_outdir(&self, file_name: String) {
         self.templates.generate_gitignore_outdir(file_name);
+    }
+
+    pub fn cache(&self) -> &String {
+        &self.cache
     }
 
     pub fn has_been_created(&self) -> bool {
@@ -106,6 +111,11 @@ impl Cache {
 
     pub fn search_template_names(&self, template_names: Vec<String>) -> SearchResult {
         self.templates.search_template_names(template_names)
+    }
+
+    pub fn remove(&self) {
+        fs::remove_dir_all(self.cache())
+            .unwrap_or_else(|error| panic!("Failed to remove cache directory: {}", error));
     }
 }
 

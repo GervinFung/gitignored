@@ -1,6 +1,12 @@
 {
 	"author": "PoolOfDeath20",
 	"name": "gitignored",
-	"description": "gitignored",
-	"license": "MIT"
+	"description": "A UI/UX friendly application to search/generated .gitignore files",
+	"license": "MIT",
+	"scripts": {
+		"postinstall": "prettier-config-generate"
+	},
+	"devDependencies": {
+		"@poolofdeath20/prettier-config-generator": "^0.0.1"
+	}
 }

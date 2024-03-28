@@ -1,10 +1,10 @@
 [package]
-name = "gitignored"
-version = "0.0.7"
+name = "gitignored-cli"
+version = "0.0.8"
 edition = "2021"
 authors = ["PoolOfDeath20 <gervinfungdaxuen@gmail.com>"]
 description ="The CLI Application of Gitignored. Provide A Faster Way to Generate .gitignore File via Caching"
-repository = "https://github.com/Gitignored-App/cli"
+repository = "https://github.com/gervinfung/gitignored"
 readme = "README.md"
 homepage = "https://gitignored.vercel.app"
 license-file = "LICENSE"
@@ -25,3 +25,4 @@ reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 strsim = "0.10.0"
+webbrowser = "0.8.12"

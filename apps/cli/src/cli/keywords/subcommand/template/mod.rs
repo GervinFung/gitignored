@@ -10,6 +10,7 @@ use colored::Colorize;
 use crate::{
     cli::keywords::assignment::Assignment,
     types::{OptionalVecString, Str, VecString},
+    util::Util,
 };
 
 use self::{
@@ -187,25 +188,15 @@ impl Template {
         &self.options
     }
 
-    fn length_of_longest_keyword(&self) -> u8 {
-        [
-            self.options().update().keyword_kind(),
-            self.options().show().keyword_kind(),
-            self.options().search().keyword_kind(),
-            self.options().generate().keyword_kind(),
-            self.options().preview().keyword_kind(),
-            self.options().append().keyword_kind(),
-        ]
-        .into_iter()
-        .map(|kind| kind.keyword())
-        .map(|keyword| keyword.len() as u8)
-        .max()
-        .map(|length| length + 1)
-        .unwrap()
-    }
-
     pub fn description(&self) -> String {
-        let length = self.length_of_longest_keyword();
+        let length = Util::new().string().length_of_longest_keyword(vec![
+            self.options().update().keyword_kind().clone(),
+            self.options().show().keyword_kind().clone(),
+            self.options().search().keyword_kind().clone(),
+            self.options().generate().keyword_kind().clone(),
+            self.options().preview().keyword_kind().clone(),
+            self.options().append().keyword_kind().clone(),
+        ]);
 
         let update = self.options().update().description(length);
         let show = self.options().show().description(length);
@@ -215,8 +206,9 @@ impl Template {
         let append = self.options().append().description(length);
 
         format!(
-            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
-            "Usage".bright_yellow(),
+            "{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n\n{}\n",
+            "Subcommand Usage".bright_yellow(),
+            "1. gitignored template (arguments)".bold(),
             update,
             show,
             search,

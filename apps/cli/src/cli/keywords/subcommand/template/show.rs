@@ -83,14 +83,14 @@ impl Show {
         let empty = (0..(length + 2)).map(|_| " ").collect::<Vec<_>>().join("");
 
         format!(
-            "{}{}- {}\n{}- {}\n{}    1. {} - {}",
+            "{}{}- {}\n{}- {}\n{}\t1. {} - {}",
             "--show".bold(),
             empty_by_keyword,
             description,
             empty,
-            "Subcommands".bold().italic(),
+            "Arguments Usage".bold().italic(),
             empty,
-            "--column".bold(),
+            format!("--{}", self.keyword_kind().keyword()).bold(),
             "Set the the number of columns for the tabular output".italic(),
         )
     }

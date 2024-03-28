@@ -6,7 +6,11 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    devDependencies:
+      '@poolofdeath20/prettier-config-generator':
+        specifier: ^0.0.1
+        version: 0.0.1(prettier@3.2.4)
 
   apps/cli: {}
 
@@ -28,8 +32,8 @@ importers:
         specifier: ^11.11.0
         version: 11.11.0(@emotion/react@11.11.3)(@types/react@18.2.48)(react@18.2.0)
       '@poolofdeath20/util':
-        specifier: ^0.6.12
-        version: 0.6.12
+        specifier: ^0.7.1
+        version: 0.7.1
       '@supabase/supabase-js':
         specifier: ^2.39.3
         version: 2.39.3
@@ -112,9 +116,6 @@ importers:
       '@poolofdeath20/eslint-config':
         specifier: ^0.3.2
         version: 0.3.2(@typescript-eslint/eslint-plugin@6.19.1)(@typescript-eslint/parser@6.19.1)(eslint-config-next@13.5.6)(eslint-plugin-import@2.29.1)(eslint-plugin-jsx-a11y@6.8.0)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react-refresh@0.4.5)(eslint-plugin-react@7.33.2)
-      '@poolofdeath20/prettier-config-generator':
-        specifier: ^0.0.1
-        version: 0.0.1(prettier@3.2.4)
       '@poolofdeath20/tsconfig':
         specifier: ^0.0.0
         version: 0.0.0
@@ -3322,8 +3323,8 @@ packages:
     resolution: {integrity: sha512-uCx/BjCjqU/ctWjWBtsB/nA0mX2/OWK2PU1PplOR5m4paRzvqMjhsSzuxjxhoZrAVES4l+Tx4vCoFa/K/vcuxQ==}
     dev: true
 
-  /@poolofdeath20/util@0.6.12:
-    resolution: {integrity: sha512-u/enJ7vHYuLT9hUVKAoPaxzXVXJJHoUt+NCi8qSGDNjsLd7Qi3V+jjX64g+iU+oTsbf/1Zsc12kA9h+W8603Jg==}
+  /@poolofdeath20/util@0.7.1:
+    resolution: {integrity: sha512-fcpogpWxXXiskf+vIl+SnNQ7LMpoY3Hlxa73/ltPhaBYnlcYdCdJrk/1JOVFAyl9XowL+fDLbJHSqHg5Ps+BHQ==}
     dev: false
 
   /@popperjs/core@2.11.8:

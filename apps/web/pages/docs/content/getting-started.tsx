@@ -25,6 +25,7 @@ const GettingStarted = () => {
 	return (
 		<Documentation title="Getting Started">
 			<Seo
+				url="/docs/client/getting-started"
 				title={Optional.some('Docs Getting Started')}
 				description={Optional.some(
 					'This section briefly explains usage of Gitignored, via web browser, PWA, and terminal'

@@ -11,13 +11,16 @@ const Seo = (
 		title: Optional<string>;
 		description: Optional<string>;
 		keywords: string[];
+		url: undefined | string;
 	}>
 ) => {
-	const url = process.env.NEXT_PUBLIC_ORIGIN;
+	const origin = process.env.NEXT_PUBLIC_ORIGIN;
+
+	const url = props.url ? `${origin}/${props.url}` : origin;
 
 	const iconPath = '/images/icons';
 
-	const dimensions = [72, 96, 128, 152, 192, 384, 512] as const;
+	const dimensions = [48, 72, 96, 144, 192, 384, 512] as const;
 
 	const name = 'Gitignored';
 
@@ -30,6 +33,8 @@ const Seo = (
 	const description = `The Web Application of Gitignored. A more UI/UX Friendly Web Application that generates useful .gitignore files for your project from by choosing different collection of templates stored by Github. Templates can be copied individually or copy all into one template. Templates can also be cownloaded into one zip folder. ${props.description.unwrapOrGet(
 		''
 	)}`;
+
+	const content = '#FFF';
 
 	return (
 		<React.Fragment>
@@ -53,7 +58,7 @@ const Seo = (
 						const squareDimension = `${dimension}x${dimension}`;
 
 						return {
-							alt: `website icon as dimension of $${squareDimension}`,
+							alt: `website icon as dimension of ${squareDimension}`,
 							width: dimension,
 							height: dimension,
 							url: `${iconPath}/icon-${squareDimension}.png`,
@@ -91,15 +96,15 @@ const Seo = (
 					},
 					{
 						name: 'theme-color',
-						content: '#121212',
+						content,
 					},
 					{
 						name: 'msapplication-navbutton-color',
-						content: '#121212',
+						content,
 					},
 					{
 						name: 'apple-mobile-web-app-status-bar-style',
-						content: '#121212',
+						content,
 					},
 					{
 						name: 'msapplication-starturl',

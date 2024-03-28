@@ -282,4 +282,20 @@ impl Output {
             }
         }
     }
+
+    pub fn removing_cache(&self) {
+        println!("{}", "Removing cache...".yellow().bold());
+    }
+
+    pub fn removed_cache(&self) {
+        println!("{}", "Cache removed!".green().bold());
+    }
+
+    pub fn uninstalling(&self) {
+        println!("{}", "Uninstalling...".yellow().bold());
+    }
+
+    pub fn uninstalled(&self) {
+        println!("{}", "Uninstalled!".green().bold());
+    }
 }

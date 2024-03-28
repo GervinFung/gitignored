@@ -1,6 +1,9 @@
+use colored::Colorize;
+
 use crate::{
     env::Env,
     types::{OptionalVecString, Str},
+    util::Util,
 };
 
 use super::assignment::Assignment;
@@ -76,6 +79,18 @@ impl Help {
     pub fn keyword_kind(&self) -> &KeywordKind {
         &self.keyword_kind
     }
+
+    pub fn description(&self, length: u8) -> String {
+        format!(
+            "{}{}- {}",
+            format!("--{}", self.keyword_kind().keyword()).bold(),
+            (0..(length - self.keyword_kind().keyword().len() as u8))
+                .map(|_| " ")
+                .collect::<Vec<_>>()
+                .join(""),
+            "Display current guides".italic()
+        )
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -92,6 +107,18 @@ impl Version {
 
     pub fn keyword_kind(&self) -> &KeywordKind {
         &self.keyword_kind
+    }
+
+    pub fn description(&self, length: u8) -> String {
+        format!(
+            "{}{}- {}",
+            format!("--{}", self.keyword_kind().keyword()).bold(),
+            (0..(length - self.keyword_kind().keyword().len() as u8))
+                .map(|_| " ")
+                .collect::<Vec<_>>()
+                .join(""),
+            "Display the current version of gitignored-cli installed".italic()
+        )
     }
 }
 
@@ -130,7 +157,25 @@ impl Options {
         &self.version
     }
 
-    fn keyword_diff_from_argument(&self, argument: &str, keyword: Str) -> bool {
+    pub fn description(&self) -> String {
+        let length = Util::new().string().length_of_longest_keyword(vec![
+            self.version().keyword_kind().clone(),
+            self.help().keyword_kind().clone(),
+        ]);
+
+        let version = self.version().description(length);
+        let help = self.help().description(length);
+
+        format!(
+            "{}\n\n{}\n\n{}\n\n{}\n\n",
+            "Arguments Usage".bright_yellow(),
+            "1. gitignored (arguments)".bold(),
+            version,
+            help,
+        )
+    }
+
+    fn keyword_same_as_argument(&self, argument: &str, keyword: Str) -> bool {
         let assign = self.assignment().option().declaration();
         let command = assign.to_string().clone() + keyword;
 
@@ -144,24 +189,23 @@ impl Options {
             OptionsResult::IsNotValid,
             |result, (index, argument)| match index {
                 0 => {
-                    let both_diff = self.keyword_diff_from_argument(argument, keyword);
+                    let both_diff = self.keyword_same_as_argument(argument, keyword);
 
                     match both_diff {
                         false => OptionsResult::IsNotValid,
-                        true => OptionsResult::IsValid(ValidOptionsResult::new(
-                            value.to_owned(),
-                            Option::None,
-                        )),
+                        true => {
+                            OptionsResult::IsValid(ValidOptionsResult::new(value.to_owned(), None))
+                        }
                     }
                 }
                 _ => result.map(|result| match result.invalid_arguments() {
                     None => OptionsResult::IsValid(ValidOptionsResult::new(
                         value.to_owned(),
-                        Option::Some(vec![argument.to_string()]),
+                        Some(vec![argument.to_string()]),
                     )),
                     Some(invalid_arguments) => OptionsResult::IsValid(ValidOptionsResult::new(
                         value.to_owned(),
-                        Option::Some(
+                        Some(
                             invalid_arguments
                                 .into_iter()
                                 .chain(vec![argument.to_string()])

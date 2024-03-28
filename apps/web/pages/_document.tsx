@@ -32,7 +32,9 @@ export default class Doc extends Document {
 	render = () => {
 		return (
 			<Html lang="en">
-				<Head />
+				<Head>
+					<link rel="manifest" href="/manifest.json" />
+				</Head>
 				<body
 					style={{
 						padding: 0,
