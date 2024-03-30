@@ -16,7 +16,7 @@ const testSnapshot = () => {
 	beforeAll(async () => {
 		browser = await server.start().then(() => {
 			return puppeteer.launch({
-				headless: 'new',
+				headless: true,
 				defaultViewport: null,
 				args: ['--start-maximized', '--no-sandbox'],
 				executablePath: process.env.CHROMIUM_PATH,

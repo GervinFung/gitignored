@@ -18,13 +18,13 @@ const result = <T>(operation: () => Promise<AsyncResult<T>>) => {
 		const result = await operation();
 
 		return result.match({
-			onFailed: (error) => {
+			failed: (error) => {
 				return {
 					status: 'failed',
 					reason: error.message,
 				};
 			},
-			onSucceed: (data) => {
+			succeed: (data) => {
 				return {
 					status: 'succeed',
 					data,
