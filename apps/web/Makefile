@@ -129,4 +129,7 @@ test-integration:
 test-snapshot:
 	make test-type path="snapshot" arguments="$(arguments)"
 
+pretest-ci:
+	node node_modules/puppeteer/install.mjs
+
 test: build-testing test-unit test-integration test-snapshot

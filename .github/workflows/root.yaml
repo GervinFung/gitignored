@@ -42,7 +42,7 @@ jobs:
 
             - name: Run Web Test
               working-directory: apps/web
-              run: make test
+              run: make pretest-ci && make test
 
             # cli
             - name: Run Cli Test
