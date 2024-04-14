@@ -101,7 +101,7 @@ clean:
 	rm -rf target
 
 install-rust:
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs -y | sh
+	curl https://sh.rustup.rs -sSf | sh -s -- -y
 	
 install-node-packages:
 	cd script && pnpm install --frozen-lockfile
