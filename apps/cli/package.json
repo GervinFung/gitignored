@@ -3,6 +3,7 @@
     "author": "PoolOfDeath20",
     "private": true,
     "scripts": {
+		"postinstall": "make install-rust"
         "typecheck": "make typecheck",
         "format-check": "make format-check",
         "format-write": "make format-write",
