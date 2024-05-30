@@ -18,7 +18,7 @@
 		"@emotion/styled": "^11.11.5",
 		"@poolofdeath20/util": "^0.8.0",
 		"@supabase/supabase-js": "^2.43.4",
-		"@tanstack/react-query": "^4.36.1",
+		"@tanstack/react-query": "^5.40.0",
 		"@trpc/client": "^10.45.2",
 		"@trpc/next": "^10.45.2",
 		"@trpc/react-query": "^10.45.2",
@@ -41,7 +41,7 @@
 		"react-syntax-highlighter": "^15.5.0",
 		"react-toastify": "^10.0.5",
 		"superjson": "^2.2.1",
-		"valibot": "^0.30.0"
+		"valibot": "0.31.0-rc.6"
 	},
 	"devDependencies": {
 		"@ducanh2912/next-pwa": "^10.2.7",
@@ -65,7 +65,7 @@
 		"next-sitemap": "^4.2.3",
 		"prettier": "^3.2.5",
 		"puppeteer": "^22.10.0",
-		"sql-formatter": "15.3.0",
+		"sql-formatter": "15.3.1",
 		"supabase": "^1.169.8",
 		"typescript": "^5.4.5",
 		"vite-node": "^1.6.0",
