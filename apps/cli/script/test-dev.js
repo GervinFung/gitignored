@@ -20,9 +20,11 @@ const main = async () => {
 
         child.execSync('make mid-test-dev', { stdio: 'inherit' });
 
-        child.execSync(`kill $(lsof -t -i:${port})`);
-    } catch (_) {
-        child.execSync(`kill $(lsof -t -i:${port})`);
+        child.execSync('cd ../../apps/web && make kill-server', {
+            stdio: 'inherit',
+        });
+    } catch (error) {
+        console.error(error);
     }
 };
 

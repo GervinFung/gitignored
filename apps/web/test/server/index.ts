@@ -12,7 +12,9 @@ export default class Server {
 	};
 
 	readonly kill = () => {
-		child.execSync(`kill $(lsof -t -i:${this.port})`);
+		child.execSync('make kill-server', {
+			encoding: 'utf-8',
+		});
 	};
 
 	readonly start = async () => {
@@ -23,9 +25,7 @@ export default class Server {
 			})
 			.on('message', console.log)
 			.on('error', console.error)
-			.on('kill', () => {
-				this.kill();
-			});
+			.on('kill', this.kill);
 
 		server.stdout?.setEncoding('utf-8');
 		server.stderr?.setEncoding('utf-8');

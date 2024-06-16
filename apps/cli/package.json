@@ -2,6 +2,7 @@
     "name": "@gitignored/cli",
     "author": "PoolOfDeath20",
     "private": true,
+    "type": "module",
     "scripts": {
         "postinstall": "make install-rust",
         "typecheck": "make typecheck",
@@ -9,5 +10,9 @@
         "format-write": "make format-write",
         "lint": "make lint",
         "generate-type-for-ci": "make generate-type-for-ci"
+    },
+    "devDependencies": {
+        "toml": "^3.0.0",
+        "tree-kill": "^1.2.2"
     }
 }

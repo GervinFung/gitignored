@@ -132,4 +132,7 @@ test-snapshot:
 pretest-ci:
 	node node_modules/puppeteer/install.mjs
 
+kill-server:
+	pnpm vite-node script/test/kill-server.ts
+
 test: build-testing test-unit test-integration test-snapshot
