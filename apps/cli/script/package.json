@@ -1,6 +1,0 @@
-{
-    "type": "module",
-    "devDependencies": {
-        "toml": "^3.0.0"
-    }
-}

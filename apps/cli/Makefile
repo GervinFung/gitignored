@@ -3,9 +3,7 @@ MAKEFLAGS += --silent
 
 outdir=temp-dev/temp-two
 
-generate-type-for-ci:
-	make install-node-packages &&\
-		make pre-development
+generate-type-for-ci: pre-development
 
 code-gen:
 	node script/code-gen.js && make format-write
@@ -103,9 +101,6 @@ clean:
 install-rust:
 	curl https://sh.rustup.rs -sSf | sh -s -- -y
 	
-install-node-packages:
-	cd script && pnpm install --frozen-lockfile
-
 pre-publish:
 	node script/publish.js pre-publish
 
