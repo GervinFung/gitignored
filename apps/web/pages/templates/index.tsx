@@ -468,7 +468,7 @@ const Templates = () => {
 				throw templates.reason;
 			})
 			.then(setTemplate);
-	}, [templates.length]);
+	}, []);
 
 	return (
 		<Layout title="Templates">
