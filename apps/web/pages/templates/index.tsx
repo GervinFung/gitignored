@@ -26,8 +26,6 @@ import styled from '@emotion/styled';
 
 import { parse, object, array, string, transform, nullable } from 'valibot';
 
-import localForage from 'localforage';
-
 import Fuse from 'fuse.js';
 
 import {
@@ -52,7 +50,6 @@ import {
 	combineTemplates,
 	generateContrastingColor,
 } from '../../src/web/util/generator';
-import { singleFlowParser } from '../../src/common/parser';
 
 type Template = Templates[number];
 
@@ -289,85 +286,6 @@ const TemplatesPreview = (
 	);
 };
 
-class TemplatesCache {
-	constructor(
-		private readonly keys: Readonly<{
-			templates: string;
-		}>
-	) {}
-
-	readonly updateTemplates = async (
-		props: ReturnType<typeof useNotification>['updateState']
-	) => {
-		const templates = await this.getOptionalTemplates();
-
-		return templates.match({
-			none: this.setAndGetTemplates(props),
-			some: async () => {
-				return trpcClient.templateBatch.shouldUpdate
-					.query()
-					.then(async (result) => {
-						const func =
-							result.hadSucceed && result.data
-								? this.setAndGetTemplates(props)
-								: this.getTemplates;
-
-						return func();
-					});
-			},
-		});
-	};
-
-	private readonly setAndGetTemplates = (
-		props: ReturnType<typeof useNotification>['updateState']
-	) => {
-		return async () => {
-			props.loading();
-
-			return trpcClient.template.findAllTemplates
-				.query()
-				.then((result) => {
-					if (!result.hadSucceed) {
-						props.failed();
-					} else {
-						props.succeed();
-						this.setTemplates(result.data);
-					}
-
-					return result;
-				});
-		};
-	};
-
-	private readonly setTemplates = async (templates: Templates) => {
-		return localForage.setItem(this.keys.templates, templates);
-	};
-
-	private readonly getTemplates = async () => {
-		return this.getOptionalTemplates().then((templates) => {
-			return templates
-				.map((templates) => {
-					return {
-						hadSucceed: true,
-						data: templates,
-					} as const;
-				})
-				.unwrapOrElse(() => {
-					return {
-						hadSucceed: false,
-						reason: new Error(`Templates should be defined`),
-					} as const;
-				});
-		});
-	};
-
-	private readonly getOptionalTemplates = async () => {
-		return localForage
-			.getItem(this.keys.templates)
-			.then(singleFlowParser(schemas.cacheOrdinaryTemplates));
-	};
-}
-
 const QuerySection = (
 	props: DeepReadonly<{
 		templates: {
@@ -495,16 +413,14 @@ const useNotification = () => {
 	}, [type]);
 
 	return {
-		updateState: {
-			failed: () => {
-				setType('failed');
-			},
-			succeed: () => {
-				setType('succeed');
-			},
-			loading: () => {
-				setType('loading');
-			},
+		failed: () => {
+			setType('failed');
+		},
+		succeed: () => {
+			setType('succeed');
+		},
+		loading: () => {
+			setType('loading');
 		},
 	};
 };
@@ -513,10 +429,6 @@ const Templates = () => {
 	const delimiter = ',';
 
 	const router = useRouter();
-
-	const cache = new TemplatesCache({
-		templates: 'templates',
-	});
 
 	const names = decodeURIComponent(
 		parse(schemas.names, router.query.names ?? '')
@@ -535,8 +447,19 @@ const Templates = () => {
 	});
 
 	React.useEffect(() => {
-		cache
-			.updateTemplates(notification.updateState)
+		notification.loading();
+
+		trpcClient.template.findAllTemplates
+			.query()
+			.then((result) => {
+				if (!result.hadSucceed) {
+					notification.failed();
+				} else {
+					notification.succeed();
+				}
+
+				return result;
+			})
 			.then((templates) => {
 				if (templates.hadSucceed) {
 					return templates.data;
