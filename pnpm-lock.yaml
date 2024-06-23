@@ -83,9 +83,6 @@ importers:
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
-      localforage:
-        specifier: ^1.10.0
-        version: 1.10.0
       next:
         specifier: ^14.2.3
         version: 14.2.3(@babel/core@7.24.6)(react-dom@18.3.1)(react@18.3.1)
@@ -6824,12 +6821,6 @@ packages:
       type-check: 0.4.0
     dev: true
 
-  /lie@3.1.1:
-    resolution: {integrity: sha512-RiNhHysUjhrDQntfYSfY4MU24coXXdEOgw9WGcKHNeEwffDYbF//u87M1EWaMGzuFoSbqW0C9C6lEEhDOAswfw==}
-    dependencies:
-      immediate: 3.0.6
-    dev: false
-
   /lie@3.3.0:
     resolution: {integrity: sha512-UaiMJzeWRlEujzAuw5LokY1L5ecNQYZKfmyZ9L7wDHb/p5etKaxXhohBcrw0EYby+G/NA52vRSN4N39dxHAIwQ==}
     dependencies:
@@ -6851,12 +6842,6 @@ packages:
       mlly: 1.7.0
       pkg-types: 1.1.1
     dev: true
-
-  /localforage@1.10.0:
-    resolution: {integrity: sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==}
-    dependencies:
-      lie: 3.1.1
-    dev: false
 
   /locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
