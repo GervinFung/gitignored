@@ -1,7 +1,6 @@
 import { isFalse, type DeepReadonly } from '@poolofdeath20/util';
 
 import type { Persistence } from '..';
-import type { AsyncTemplates } from '../../../scrapper';
 import DatabaseOperation from '../util';
 
 type Templates = DeepReadonly<
@@ -112,13 +111,13 @@ class TemplatePersistence {
 			});
 	};
 
-	readonly findAll = async (): Promise<AsyncTemplates> => {
+	readonly findAll = async () => {
 		return this.templateBatch()
 			.shouldUpdate()
 			.then((result) => {
 				return result.flatMap(async (shouldUpdate) => {
 					if (isFalse(shouldUpdate)) {
-						return this.findAll();
+						return this.findMany();
 					}
 
 					return this.insertionsThenFindMany();

@@ -1,7 +1,7 @@
 import { Defined, Optional, isFalse } from '@poolofdeath20/util';
 
 import type { Persistence } from '..';
-import { isMoreThanOrEqualOneWeek } from '../../../logic/util';
+import { isMoreThanOrEqualOneWeek, isTimeEqual } from '../../../logic/util';
 import DatabaseOperation from '../util';
 
 class TemplateBatchPersistence {
@@ -44,19 +44,66 @@ class TemplateBatchPersistence {
 	};
 
 	readonly shouldUpdate = async () => {
-		return this.findOptionalLatestTimeCommitted()
+		return this.findLastUpdatedTime()
 			.then((result) => {
 				return result.match({
-					some: isMoreThanOrEqualOneWeek,
 					none: () => {
 						return true;
+					},
+					some: async (lastUpdatedTime) => {
+						if (!isMoreThanOrEqualOneWeek(lastUpdatedTime)) {
+							return false;
+						}
+
+						const result =
+							await this.scrapper().latestTimeCommitted();
+
+						const failed = () => {
+							return false;
+						};
+
+						return result.match({
+							failed,
+							succeed: async (latestTimeCommitted) => {
+								console.log({
+									latestTimeCommitted,
+								});
+								return this.findLatestTimeCommitted().then(
+									(result) => {
+										return result.match({
+											failed,
+											succeed: async (latestTime) => {
+												return isTimeEqual(
+													latestTimeCommitted,
+													latestTime.latestCommittedTime
+												);
+											},
+										});
+									}
+								);
+							},
+						});
 					},
 				});
 			})
 			.then(DatabaseOperation.succeed);
 	};
 
-	private readonly findOptionalLatestTimeCommitted = async () => {
+	private readonly findLastUpdatedTime = async () => {
+		return this.templateBatch()
+			.select('created_at')
+			.order('id', {
+				ascending: false,
+			})
+			.limit(1)
+			.then((result) => {
+				return Optional.from(result.data?.at(0)).map((result) => {
+					return new Date(result.created_at);
+				});
+			});
+	};
+
+	private readonly findLatestTimeCommitted = async () => {
 		return this.templateBatch()
 			.select('latest_committed_time')
 			.order('id', {
@@ -64,22 +111,14 @@ class TemplateBatchPersistence {
 			})
 			.limit(1)
 			.then((result) => {
-				return Optional.from(result.data?.at(0)).map((result) => {
-					return new Date(result.latest_committed_time);
-				});
-			});
-	};
-
-	private readonly findLatestTimeCommitted = async () => {
-		return this.findOptionalLatestTimeCommitted().then(
-			async (latestTimeCommitted) => {
-				const latestCommittedTime = latestTimeCommitted.unwrapOrThrow(
-					new Error('latestTimeCommitted must be defined')
-				);
+				const latestCommittedTime = Defined.parse(result.data?.at(0))
+					.map((result) => {
+						return new Date(result.latest_committed_time);
+					})
+					.orThrow(new Error('latestTimeCommitted must be defined'));
 
 				return DatabaseOperation.succeed({ latestCommittedTime });
-			}
-		);
+			});
 	};
 
 	readonly findLatestCommittedTime = async () => {

@@ -8,4 +8,8 @@ const isMoreThanOrEqualOneWeek = (time: Date) => {
 	return diff >= week;
 };
 
-export { isMoreThanOrEqualOneWeek };
+const isTimeEqual = (time1: Date, time2: Date) => {
+	return time1.getTime() === time2.getTime();
+};
+
+export { isMoreThanOrEqualOneWeek, isTimeEqual };
