@@ -1,4 +1,4 @@
-import { type DeepReadonly } from '@poolofdeath20/util';
+import { isFalse, type DeepReadonly } from '@poolofdeath20/util';
 
 import type { Persistence } from '..';
 import type { AsyncTemplates } from '../../../scrapper';
@@ -59,6 +59,24 @@ class TemplatePersistence {
 			});
 	};
 
+	private readonly insertionsThenFindMany = async () => {
+		return this.templateBatch()
+			.insertion()
+			.then((result) => {
+				return result.flatMap(async (batch) => {
+					return this.insertion({
+						batch,
+					}).then((result) => {
+						return result.flatMap(() => {
+							return this.findManyIn({
+								batch,
+							});
+						});
+					});
+				});
+			});
+	};
+
 	private readonly findManyIn = async (
 		props: DeepReadonly<{
 			batch: {
@@ -79,38 +97,37 @@ class TemplatePersistence {
 			});
 	};
 
-	readonly internalFindMany = async (): Promise<AsyncTemplates> => {
+	private readonly findMany = async () => {
 		return this.templateBatch()
 			.findLatestOne()
 			.then((result) => {
 				return result.flatMap((batch) => {
 					return batch.match({
+						none: this.insertionsThenFindMany,
 						some: (batch) => {
 							return this.findManyIn({ batch });
-						},
-						none: async () => {
-							const result =
-								await this.templateBatch().insertion();
-
-							return result.flatMap(async (batch) => {
-								return this.insertion({
-									batch,
-								}).then((result) => {
-									return result.flatMap(() => {
-										return this.findManyIn({
-											batch,
-										});
-									});
-								});
-							});
 						},
 					});
 				});
 			});
 	};
 
+	readonly findAll = async (): Promise<AsyncTemplates> => {
+		return this.templateBatch()
+			.shouldUpdate()
+			.then((result) => {
+				return result.flatMap(async (shouldUpdate) => {
+					if (isFalse(shouldUpdate)) {
+						return this.findAll();
+					}
+
+					return this.insertionsThenFindMany();
+				});
+			});
+	};
+
 	readonly externalFindMany = async () => {
-		return this.internalFindMany().then((result) => {
+		return this.findMany().then((result) => {
 			return result.map(async (templates) => {
 				return {
 					templates,
