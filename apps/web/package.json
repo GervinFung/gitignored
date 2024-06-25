@@ -31,7 +31,6 @@
 		"hex-rgb": "^5.0.0",
 		"iwanthue": "^2.0.0",
 		"jszip": "^3.10.1",
-		"localforage": "^1.10.0",
 		"next": "^14.2.3",
 		"next-seo": "^6.5.0",
 		"react": "^18.3.1",

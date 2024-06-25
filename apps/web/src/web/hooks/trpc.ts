@@ -6,33 +6,60 @@ import superjson from 'superjson';
 import type { AppRouter } from '../../api/routes/internal/_app';
 
 import { getBaseUrl } from '../proxy/client';
+import { isBrowser } from '@poolofdeath20/util';
 
 const trpc = createTRPCNext<AppRouter>({
-	config: () => {
+	/**
+	 * @link https://trpc.io/docs/ssr
+	 **/
+	ssr: true,
+	config: ({ ctx }) => {
+		if (!isBrowser()) {
+			return {
+				transformer: superjson,
+				links: [
+					httpBatchLink({
+						url: '/api/trpc',
+					}),
+				],
+			};
+		}
+
 		return {
 			transformer: superjson,
 			links: [
 				httpBatchLink({
-					/**
-					 * If you want to use SSR, you need to use the server's full URL
-					 * @link https://trpc.io/docs/ssr
-					 **/
 					url: `${getBaseUrl()}/api/trpc`,
+					headers() {
+						if (!ctx?.req?.headers) {
+							return {};
+						}
 
-					// You can pass any HTTP headers you wish here
-					headers: async () => {
 						return {
-							// authorization: getAuthCookie(),
+							cookie: ctx.req.headers.cookie,
 						};
 					},
 				}),
 			],
 		};
 	},
-	/**
-	 * @link https://trpc.io/docs/ssr
-	 **/
-	ssr: false,
+	responseMeta: (options) => {
+		if (options.clientErrors.length) {
+			// propagate http first error from API calls
+			return {
+				status: options.clientErrors.at(0)?.data?.httpStatus ?? 500,
+			};
+		}
+
+		const oneDay = 60 * 60 * 24;
+		const oneHour = 60 * 60;
+
+		return {
+			headers: {
+				'cache-control': `s-maxage=${oneDay}, stale-while-revalidate=${oneHour}`,
+			},
+		};
+	},
 });
 
 export default trpc;

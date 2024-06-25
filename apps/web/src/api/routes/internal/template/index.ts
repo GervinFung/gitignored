@@ -6,9 +6,7 @@ const templateRoutes = (trpc: Trpc) => {
 	const template = Persistence.instance().template();
 
 	return trpc.router({
-		findAllTemplates: trpc.procedure.query(
-			result(template.internalFindMany)
-		),
+		findAllTemplates: trpc.procedure.query(result(template.findAll)),
 	});
 };
 

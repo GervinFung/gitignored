@@ -7,6 +7,20 @@ import Routes, { createContext } from '../../../src/api/routes/instance';
 const context = createNextApiHandler({
 	createContext,
 	router: Routes.instance().internal(),
+	responseMeta: (options) => {
+		if (options.errors.length) {
+			return {};
+		}
+
+		const oneDay = 60 * 60 * 24;
+		const oneHour = 60 * 60;
+
+		return {
+			headers: {
+				'cache-control': `s-maxage=${oneDay}, stale-while-revalidate=${oneHour}`,
+			},
+		};
+	},
 });
 
 export { createContext };

@@ -123,7 +123,7 @@ test-type:
 test-unit:
 	pnpm vitest test/unit/**/**.test.ts $(arguments)
 
-test-integration:
+test-integration: copy-env-testing
 	make test-type path="integration" arguments="$(arguments)"
 
 test-snapshot:

@@ -5,8 +5,6 @@ import axios from 'axios';
 import { parse, object, array, string, transform } from 'valibot';
 import { singleFlowParser } from '../../common/parser';
 
-type AsyncTemplates = Awaited<ReturnType<Scrapper['templates']>>;
-
 const schemas = {
 	latestTimeCommitted: transform(string(), (value) => {
 		return new Date(value);
@@ -175,5 +173,4 @@ class Scrapper {
 	};
 }
 
-export type { AsyncTemplates };
 export { Scrapper };

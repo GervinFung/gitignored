@@ -1,7 +1,7 @@
 import { Defined, Optional, isFalse } from '@poolofdeath20/util';
 
 import type { Persistence } from '..';
-import { oneWeekComparison } from '../../../logic/util';
+import { isMoreThanOrEqualOneWeek, isTimeEqual } from '../../../logic/util';
 import DatabaseOperation from '../util';
 
 class TemplateBatchPersistence {
@@ -20,57 +20,84 @@ class TemplateBatchPersistence {
 	};
 
 	readonly insertion = async () => {
-		return this.shouldUpdate().then((result) => {
-			return result.flatMap(async (shouldUpdate) => {
-				if (isFalse(shouldUpdate)) {
-					return DatabaseOperation.failed(
-						new Error('No need to update')
+		const result = await this.scrapper().latestTimeCommitted();
+
+		return result.flatMap(async (latestTimeCommitted) => {
+			return this.templateBatch()
+				.insert({
+					created_at: new Date().toISOString(),
+					latest_committed_time: latestTimeCommitted.toISOString(),
+				})
+				.select('id')
+				.then((result) => {
+					if (result.error) {
+						return DatabaseOperation.failed(result.error);
+					}
+
+					return DatabaseOperation.succeed(
+						Defined.parse(result.data.at(0)).orThrow(
+							new Error('id must be returned after insertion')
+						)
 					);
-				}
-
-				const result = await this.scrapper().latestTimeCommitted();
-
-				return result.flatMap(async (latestTimeCommitted) => {
-					return this.templateBatch()
-						.insert({
-							created_at: new Date().toISOString(),
-							latest_committed_time:
-								latestTimeCommitted.toISOString(),
-						})
-						.select('id')
-						.then((result) => {
-							if (result.error) {
-								return DatabaseOperation.failed(result.error);
-							}
-
-							return DatabaseOperation.succeed(
-								Defined.parse(result.data.at(0)).orThrow(
-									new Error(
-										'id must be returned after insertion'
-									)
-								)
-							);
-						});
 				});
-			});
 		});
 	};
 
 	readonly shouldUpdate = async () => {
-		return this.findLatestTimeCommitted()
+		return this.findLastUpdatedTime()
 			.then((result) => {
 				return result.match({
 					none: () => {
 						return true;
 					},
-					some: (time) => {
-						return (
-							oneWeekComparison(time).status === 'larget-or-equal'
-						);
+					some: async (lastUpdatedTime) => {
+						if (!isMoreThanOrEqualOneWeek(lastUpdatedTime)) {
+							return false;
+						}
+
+						const result =
+							await this.scrapper().latestTimeCommitted();
+
+						const failed = () => {
+							return false;
+						};
+
+						return result.match({
+							failed,
+							succeed: async (latestTimeCommitted) => {
+								return this.findLatestTimeCommitted().then(
+									(result) => {
+										return result.match({
+											failed,
+											succeed: async (latestTime) => {
+												return !isTimeEqual(
+													latestTimeCommitted,
+													latestTime.latestCommittedTime
+												);
+											},
+										});
+									}
+								);
+							},
+						});
 					},
 				});
 			})
 			.then(DatabaseOperation.succeed);
+	};
+
+	private readonly findLastUpdatedTime = async () => {
+		return this.templateBatch()
+			.select('created_at')
+			.order('id', {
+				ascending: false,
+			})
+			.limit(1)
+			.then((result) => {
+				return Optional.from(result.data?.at(0)).map((result) => {
+					return new Date(result.created_at);
+				});
+			});
 	};
 
 	private readonly findLatestTimeCommitted = async () => {
@@ -81,39 +108,33 @@ class TemplateBatchPersistence {
 			})
 			.limit(1)
 			.then((result) => {
-				return Optional.from(result.data?.at(0)).map((result) => {
-					return new Date(result.latest_committed_time);
-				});
+				const latestCommittedTime = Defined.parse(result.data?.at(0))
+					.map((result) => {
+						return new Date(result.latest_committed_time);
+					})
+					.orThrow(new Error('latestTimeCommitted must be defined'));
+
+				return DatabaseOperation.succeed({ latestCommittedTime });
 			});
 	};
 
 	readonly findLatestCommittedTime = async () => {
-		return this.findLatestTimeCommitted().then(async (time) => {
-			const latestCommittedTime = await time.match({
-				some: (time) => {
-					return time;
-				},
-				none: async () => {
-					return await this.insertion()
-						.then((result) => {
-							return result.flatMap((batch) => {
-								return this.template().insertion({
-									batch,
-								});
-							});
-						})
-						.then(this.findLatestTimeCommitted)
-						.then((time) => {
-							return time.unwrapOrThrow(
-								new Error(
-									'time must be defined after insertion'
-								)
-							);
-						});
-				},
-			});
+		return this.shouldUpdate().then((result) => {
+			return result.flatMap(async (shouldUpdate) => {
+				if (isFalse(shouldUpdate)) {
+					return this.findLatestTimeCommitted();
+				}
 
-			return DatabaseOperation.succeed({ latestCommittedTime });
+				return await this.insertion()
+					.then((result) => {
+						return result.flatMap((batch) => {
+							return this.template().insertion({
+								batch,
+							});
+						});
+					})
+					.then(this.findLatestTimeCommitted);
+			});
 		});
 	};
 

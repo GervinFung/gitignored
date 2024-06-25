@@ -1,17 +1,15 @@
-const oneWeekComparison = (time: Date) => {
-	const oneWeek = new Date().getTime() + 1 * 24 * 60 * 60 * 1000 * 7;
+const isMoreThanOrEqualOneWeek = (time: Date) => {
+	const now = new Date();
 
-	const largerOrEqual = time.getTime() >= oneWeek;
+	const diff = now.getTime() - time.getTime();
 
-	if (largerOrEqual) {
-		return {
-			status: 'larget-or-equal',
-		} as const;
-	}
+	const week = 7 * 24 * 60 * 60 * 1000;
 
-	return {
-		status: 'smaller',
-	} as const;
+	return diff >= week;
 };
 
-export { oneWeekComparison };
+const isTimeEqual = (time1: Date, time2: Date) => {
+	return time1.getTime() === time2.getTime();
+};
+
+export { isMoreThanOrEqualOneWeek, isTimeEqual };
