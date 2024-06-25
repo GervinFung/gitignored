@@ -65,15 +65,12 @@ class TemplateBatchPersistence {
 						return result.match({
 							failed,
 							succeed: async (latestTimeCommitted) => {
-								console.log({
-									latestTimeCommitted,
-								});
 								return this.findLatestTimeCommitted().then(
 									(result) => {
 										return result.match({
 											failed,
 											succeed: async (latestTime) => {
-												return isTimeEqual(
+												return !isTimeEqual(
 													latestTimeCommitted,
 													latestTime.latestCommittedTime
 												);
@@ -125,9 +122,7 @@ class TemplateBatchPersistence {
 		return this.shouldUpdate().then((result) => {
 			return result.flatMap(async (shouldUpdate) => {
 				if (isFalse(shouldUpdate)) {
-					return DatabaseOperation.failed(
-						new Error('No need to update')
-					);
+					return this.findLatestTimeCommitted();
 				}
 
 				return await this.insertion()
