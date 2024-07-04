@@ -86,12 +86,16 @@ const StyledSelect = styled(Select)`
 	}
 `;
 
-const useCopyToClipboard = () => {
+const useCopyToClipboard = (timeout?: number) => {
 	const [copied, setCopied] = React.useState(false);
 
 	React.useEffect(() => {
 		if (!copied) {
 			return;
+		}
+
+		if (!timeout) {
+			return setCopied(false);
 		}
 
 		const timeOut = setTimeout(() => {
@@ -106,9 +110,7 @@ const useCopyToClipboard = () => {
 	return {
 		copied,
 		copy: (text: string) => {
-			if (navigator?.clipboard?.writeText) {
-				setCopied(true);
-
+			if (navigator?.clipboard.writeText) {
 				navigator.clipboard.writeText(text);
 			} else {
 				const element = document.createElement('textarea');
@@ -128,9 +130,9 @@ const useCopyToClipboard = () => {
 				document.execCommand('copy');
 
 				document.body.removeChild(element);
-
-				setCopied(true);
 			}
+
+			setCopied(true);
 		},
 	};
 };
@@ -148,7 +150,7 @@ const TemplatePreview = (
 		)
 	>
 ) => {
-	const clipboard = useCopyToClipboard();
+	const clipboard = useCopyToClipboard(2000);
 
 	return (
 		<Box
@@ -385,16 +387,16 @@ const QuerySection = (
 	}, [updateDependency]);
 };
 
-const useNotification = () => {
+const useTemplateNotification = () => {
 	const [type, setType] = React.useState(
-		'none' as 'loading' | 'succeed' | 'none' | 'failed'
+		undefined as 'loading' | 'succeed' | 'failed' | undefined
 	);
 
 	React.useEffect(() => {
 		toast.dismiss();
 
 		switch (type) {
-			case 'none': {
+			case undefined: {
 				break;
 			}
 			case 'loading': {
@@ -425,6 +427,33 @@ const useNotification = () => {
 	};
 };
 
+const useCopyNotification = () => {
+	const [type, setType] = React.useState(undefined as 'succeed' | undefined);
+
+	React.useEffect(() => {
+		toast.dismiss();
+
+		switch (type) {
+			case undefined: {
+				break;
+			}
+			case 'succeed': {
+				toast.success('🎉 Copied All');
+				break;
+			}
+		}
+	}, [type]);
+
+	return {
+		succeed: () => {
+			setType('succeed');
+		},
+		unset: () => {
+			setType(undefined);
+		},
+	};
+};
+
 const Templates = () => {
 	const delimiter = ',';
 
@@ -438,7 +467,9 @@ const Templates = () => {
 
 	const clipboard = useCopyToClipboard();
 
-	const notification = useNotification();
+	const templateNotification = useTemplateNotification();
+
+	const copyNotification = useCopyNotification();
 
 	const [templates, setTemplate] = React.useState([] as Templates);
 
@@ -447,15 +478,15 @@ const Templates = () => {
 	});
 
 	React.useEffect(() => {
-		notification.loading();
+		templateNotification.loading();
 
 		trpcClient.template.findAllTemplates
 			.query()
 			.then((result) => {
 				if (!result.hadSucceed) {
-					notification.failed();
+					templateNotification.failed();
 				} else {
-					notification.succeed();
+					templateNotification.succeed();
 				}
 
 				return result;
@@ -469,6 +500,12 @@ const Templates = () => {
 			})
 			.then(setTemplate);
 	}, []);
+
+	React.useEffect(() => {
+		if (clipboard.copied) {
+			copyNotification.succeed();
+		}
+	}, [clipboard.copied]);
 
 	return (
 		<Layout title="Templates">
@@ -492,13 +529,18 @@ const Templates = () => {
 					minHeight="30vh"
 					boxSizing="border-box"
 				>
-					<Box display="flex" justifyContent="space-between">
+					<Box
+						display="flex"
+						justifyContent="space-between"
+						alignItems="center"
+						gap={8}
+					>
 						<QuerySection
 							templates={{
 								all: templates,
 								selected,
 								updateSelected: (selected) => {
-									const params =
+									const query =
 										formQueryParamStringFromRecord({
 											names: selected
 												.map(({ name }) => {
@@ -510,7 +552,7 @@ const Templates = () => {
 									router.push(
 										{
 											pathname: '/templates',
-											query: params,
+											query,
 										},
 										undefined,
 										{
@@ -525,12 +567,11 @@ const Templates = () => {
 								colorScheme="messenger"
 								isDisabled={isFalsy(selected.length)}
 								onClick={() => {
+									copyNotification.unset();
 									clipboard.copy(combineTemplates(selected));
 								}}
 							>
-								{!clipboard.copied
-									? 'Copy All'
-									: '🎉 Copied All'}
+								Copy All
 							</Button>
 							<Divider orientation="vertical" />
 							<Button
