@@ -16,7 +16,7 @@ class ErrorBoundary extends React.Component<
 	}>,
 	State
 > {
-	state: State = {
+	override state: State = {
 		error: undefined,
 		closedAlert: false,
 	};
@@ -28,12 +28,12 @@ class ErrorBoundary extends React.Component<
 		};
 	};
 
-	componentDidCatch = (error: Error, errorInfo: React.ErrorInfo) => {
+	override componentDidCatch = (error: Error, errorInfo: React.ErrorInfo) => {
 		console.error({ error, errorInfo });
 		this.setState({ error });
 	};
 
-	render = () => {
+	override render = () => {
 		return !this.state.error ? (
 			this.props.children
 		) : (

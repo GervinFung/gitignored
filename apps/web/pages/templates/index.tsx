@@ -460,7 +460,7 @@ const Templates = () => {
 	const router = useRouter();
 
 	const names = decodeURIComponent(
-		parse(schemas.names, router.query.names ?? '')
+		parse(schemas.names, router.query['names'] ?? '')
 	)
 		.split(delimiter)
 		.filter(Boolean);

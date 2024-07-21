@@ -2,7 +2,7 @@ import { createTRPCProxyClient, httpLink } from '@trpc/client';
 
 import superjson from 'superjson';
 
-import { isBrowser } from '@poolofdeath20/util';
+import { Defined, isBrowser } from '@poolofdeath20/util';
 
 import type { AppRouter } from '../../api/routes/internal/_app';
 
@@ -11,13 +11,12 @@ const getBaseUrl = () => {
 		return '';
 	}
 
-	if (process.env.VERCEL_URL) {
-		// reference for vercel.com
-		return `https://${process.env.VERCEL_URL}`;
-	}
-
-	// assume localhost
-	return process.env.NEXT_PUBLIC_ORIGIN;
+	return Defined.parse(process.env['VERCEL_URL'])
+		.map((vercelUrl) => {
+			// reference for vercel.com
+			return `https://${vercelUrl}`;
+		})
+		.orGet(process.env.NEXT_PUBLIC_ORIGIN);
 };
 
 const trpcClient = createTRPCProxyClient<AppRouter>({
