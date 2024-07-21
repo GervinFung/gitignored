@@ -16,9 +16,7 @@ const getBaseUrl = () => {
 			// reference for vercel.com
 			return `https://${vercelUrl}`;
 		})
-		.orGet(() => {
-			return process.env.NEXT_PUBLIC_ORIGIN;
-		});
+		.orGet(process.env.NEXT_PUBLIC_ORIGIN);
 };
 
 const trpcClient = createTRPCProxyClient<AppRouter>({
