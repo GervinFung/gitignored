@@ -8,7 +8,7 @@ import Document, {
 } from 'next/document';
 
 export default class Doc extends Document {
-	static getInitialProps = async (context: DocumentContext) => {
+	static override getInitialProps = async (context: DocumentContext) => {
 		const { renderPage: originalRenderPage } = context;
 
 		// Run the React rendering logic synchronously
@@ -29,7 +29,7 @@ export default class Doc extends Document {
 		return await Document.getInitialProps(context);
 	};
 
-	render = () => {
+	override render = () => {
 		return (
 			<Html lang="en">
 				<Head>
