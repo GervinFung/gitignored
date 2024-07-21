@@ -2,25 +2,28 @@ import { AsyncOperation, Defined } from '@poolofdeath20/util';
 
 import axios from 'axios';
 
-import { parse, object, array, string, transform } from 'valibot';
+import { parse, object, array, string, transform, pipe } from 'valibot';
 import { singleFlowParser } from '../../common/parser';
 
 const schemas = {
-	latestTimeCommitted: transform(string(), (value) => {
-		return new Date(value);
-	}),
+	latestTimeCommitted: pipe(
+		string(),
+		transform((value) => {
+			return new Date(value);
+		})
+	),
 	template: {
 		properties: {
 			content: string(),
 		},
 		list: array(
-			transform(
+			pipe(
 				object({
 					path: string(),
 				}),
-				({ path }) => {
+				transform(({ path }) => {
 					return path;
-				}
+				})
 			)
 		),
 	},

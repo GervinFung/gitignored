@@ -24,7 +24,7 @@ import {
 
 import styled from '@emotion/styled';
 
-import { parse, object, array, string, transform, nullable } from 'valibot';
+import { parse, object, array, string } from 'valibot';
 
 import Fuse from 'fuse.js';
 
@@ -55,17 +55,6 @@ type Template = Templates[number];
 
 const schemas = {
 	names: string(),
-	cacheOrdinaryTemplates: transform(
-		nullable(
-			array(
-				object({
-					name: string(),
-					content: string(),
-				})
-			)
-		),
-		Optional.from
-	),
 	selectedOrdinaryTemplatesId: array(
 		object({
 			value: string(),
