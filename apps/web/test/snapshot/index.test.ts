@@ -7,7 +7,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import Server from '../server';
 
 import { getWebSnapshot } from './browser';
-import { Defined } from '@poolofdeath20/util';
 
 const testSnapshot = () => {
 	const server = Server.of(8080);
@@ -20,9 +19,6 @@ const testSnapshot = () => {
 				headless: true,
 				defaultViewport: null,
 				args: ['--start-maximized', '--no-sandbox'],
-				executablePath: Defined.parse(
-					process.env['CHROMIUM_PATH']
-				).orThrow(new Error('CHROMIUM_PATH is not found')),
 			});
 		});
 	});
