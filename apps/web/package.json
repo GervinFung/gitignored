@@ -40,7 +40,7 @@
 		"react-syntax-highlighter": "^15.5.0",
 		"react-toastify": "^10.0.5",
 		"superjson": "^2.2.1",
-		"valibot": "^0.36.0"
+		"valibot": "^0.37.0"
 	},
 	"devDependencies": {
 		"@ducanh2912/next-pwa": "^10.2.8",
