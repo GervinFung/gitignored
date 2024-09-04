@@ -5,7 +5,7 @@ const narrowToSucceed = <T>(data: Awaited<ResultOfAsync<T>>) => {
 		return data;
 	}
 
-	throw new Error(`Type narrowing failed: ${data.reason}`);
+	throw new Error(`Type narrowing failed: ${data.reason.message}`);
 };
 
 export { narrowToSucceed };

@@ -67,7 +67,7 @@ const testSnapshot = () => {
 
 	afterAll(() => {
 		server.kill();
-		browser?.close();
+		void browser?.close();
 	});
 };
 

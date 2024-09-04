@@ -30,7 +30,7 @@ const trpcClient = createTRPCProxyClient<AppRouter>({
 			url: `${getBaseUrl()}/api/trpc`,
 
 			// You can pass any HTTP headers you wish here
-			headers: async () => {
+			headers: () => {
 				return {
 					// authorization: getAuthCookie(),
 				};

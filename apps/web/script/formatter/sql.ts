@@ -28,7 +28,7 @@ const greify = (word: string) => {
 	return `\x1b[90m${word}\x1b[0m`;
 };
 
-const main = async (directory: string) => {
+const main = (directory: string) => {
 	const name = {
 		start: 'start',
 		end: 'end',

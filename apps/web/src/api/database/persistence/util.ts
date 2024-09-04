@@ -2,6 +2,7 @@ import { AsyncOperation } from '@poolofdeath20/util';
 
 import type { PostgrestError } from '@supabase/supabase-js';
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class DatabaseOperation {
 	static readonly succeed = AsyncOperation.succeed;
 

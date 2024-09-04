@@ -4,10 +4,10 @@ import type { Persistence } from '..';
 import DatabaseOperation from '../util';
 
 type Templates = DeepReadonly<
-	{
+	Array<{
 		content: string;
 		name: string;
-	}[]
+	}>
 >;
 
 class TemplatePersistence {
@@ -127,10 +127,10 @@ class TemplatePersistence {
 
 	readonly externalFindMany = async () => {
 		return this.findMany().then((result) => {
-			return result.map(async (templates) => {
-				return {
+			return result.map((templates) => {
+				return Promise.resolve({
 					templates,
-				};
+				});
 			});
 		});
 	};

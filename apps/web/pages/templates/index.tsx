@@ -100,7 +100,7 @@ const useCopyToClipboard = (timeout?: number) => {
 		copied,
 		copy: (text: string) => {
 			if (navigator?.clipboard.writeText) {
-				navigator.clipboard.writeText(text);
+				void navigator.clipboard.writeText(text);
 			} else {
 				const element = document.createElement('textarea');
 
@@ -224,7 +224,7 @@ const TemplatesPreview = (
 		  }
 		| {
 				type: 'loading';
-				templatesName: Templates[0]['name'][];
+				templatesName: Array<Templates[0]['name']>;
 		  }
 	>
 ) => {
@@ -469,7 +469,7 @@ const Templates = () => {
 	React.useEffect(() => {
 		templateNotification.loading();
 
-		trpcClient.template.findAllTemplates
+		void trpcClient.template.findAllTemplates
 			.query()
 			.then((result) => {
 				if (!result.hadSucceed) {
@@ -538,7 +538,7 @@ const Templates = () => {
 												.join(delimiter),
 										});
 
-									router.push(
+									void router.push(
 										{
 											pathname: '/templates',
 											query,
@@ -578,14 +578,16 @@ const Templates = () => {
 										new JSZip()
 									);
 
-									zip.generateAsync({
-										type: 'blob',
-									}).then((value) => {
-										saveAs(
-											value,
-											'gitignored-compressed.zip'
-										);
-									});
+									void zip
+										.generateAsync({
+											type: 'blob',
+										})
+										.then((value) => {
+											saveAs(
+												value,
+												'gitignored-compressed.zip'
+											);
+										});
 								}}
 							>
 								Zip All

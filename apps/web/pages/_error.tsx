@@ -72,7 +72,7 @@ const ErrorPage = () => {
 
 							if (isEnterKeyClicked) {
 								if (command === 'git reset --soft HEAD~1') {
-									router.replace('/');
+									void router.replace('/');
 								} else {
 									toast.promise(
 										new Promise((resolve) => {

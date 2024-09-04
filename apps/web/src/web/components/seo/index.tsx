@@ -10,7 +10,7 @@ const Seo = (
 	props: DeepReadonly<{
 		title: Optional<string>;
 		description: Optional<string>;
-		keywords: string[];
+		keywords: Array<string>;
 		url: undefined | string;
 	}>
 ) => {

@@ -69,7 +69,7 @@ class TemplateBatchPersistence {
 									(result) => {
 										return result.match({
 											failed,
-											succeed: async (latestTime) => {
+											succeed: (latestTime) => {
 												return !isTimeEqual(
 													latestTimeCommitted,
 													latestTime.latestCommittedTime
