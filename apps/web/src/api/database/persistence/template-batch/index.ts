@@ -1,6 +1,7 @@
+import type { Persistence } from '..';
+
 import { Defined, Optional, isFalse } from '@poolofdeath20/util';
 
-import type { Persistence } from '..';
 import { isMoreThanOrEqualOneWeek, isTimeEqual } from '../../../logic/util';
 import DatabaseOperation from '../util';
 

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
 	Box,
 	Button,
@@ -11,30 +9,26 @@ import {
 	Text,
 	UnorderedList,
 } from '@chakra-ui/react';
-
-import SyntaxHighlighter from 'react-syntax-highlighter';
-
-import * as Hljs from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-
 import { Optional } from '@poolofdeath20/util';
-
-import Documentation, { docs } from '../../../src/web/components/docs';
+import React from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
 import InternalLink from '../../../src/web/components/common/link';
-
-import { changeWordToUrl } from '../../../src/web/util/url';
+import Documentation, { docs } from '../../../src/web/components/docs';
 import Seo from '../../../src/web/components/seo';
+import { changeWordToUrl } from '../../../src/web/util/url';
 
 const Introduction = () => {
 	return (
 		<Documentation title="API Introduction">
 			<Seo
-				url="/docs/api/introduction"
-				title={Optional.some('API Docs | Introduction')}
 				description={Optional.some(
 					'This section briefly introduces the all of the APIs of Gitignored along with its usage and public API design philosophy, which is inspired by Result API of Rust'
 				)}
 				keywords={['documentation', 'api usage', 'api phyilosphy']}
+				title={Optional.some('API Docs | Introduction')}
+				url="/docs/api/introduction"
 			/>
 			<Flex flexDirection="column" gridGap={8}>
 				<Flex direction="column" gridGap={4}>
@@ -42,7 +36,7 @@ const Introduction = () => {
 						<Heading as="h1" size="4xl">
 							About
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Text>
 						The Gitignored API provides a platform for developers to
@@ -55,11 +49,11 @@ const Introduction = () => {
 						<Heading as="h2" size="lg">
 							Usage
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<Text>
-							The URL to access the Gitignroed API can be found at
+							The URL to access the Gitignored API can be found at
 						</Text>
 						<strong>gitignored.vercel.app/api/v0</strong>
 					</Box>
@@ -80,10 +74,10 @@ const Introduction = () => {
 						</Text>
 					</Box>
 					<Box
-						py={4}
-						px={4}
-						boxSizing="border-box"
 						backgroundColor="gray.200"
+						boxSizing="border-box"
+						px={4}
+						py={4}
 					>
 						<blockquote>
 							<strong>NOTE:</strong> Users who are currently
@@ -99,7 +93,7 @@ const Introduction = () => {
 						<Heading as="h2" size="lg">
 							Contents
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<UnorderedList width="max-content">
 						{docs.api.items.map((item) => {
@@ -113,9 +107,9 @@ const Introduction = () => {
 										}}
 									>
 										<Button
+											color="inherit"
 											p={0}
 											variant="link"
-											color="inherit"
 										>
 											{item}
 										</Button>
@@ -130,7 +124,7 @@ const Introduction = () => {
 						<Heading as="h2" size="lg">
 							Phyilosphy
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<Text>
@@ -139,9 +133,9 @@ const Introduction = () => {
 							information on Tagged/Discriminated Union, please
 							refer to{' '}
 							<Link
+								fontWeight="bold"
 								href="https://en.wikipedia.org/wiki/Tagged_union"
 								textDecoration="underline"
-								fontWeight="bold"
 							>
 								this
 							</Link>{' '}
@@ -156,9 +150,9 @@ const Introduction = () => {
 					</Box>
 					<Box>
 						<SyntaxHighlighter
-							language="typescript"
-							style={Hljs.nightOwl}
 							customStyle={{ padding: '16px' }}
+							language="typescript"
+							style={nightOwl}
 						>
 							{[
 								'type Response<T> = {',

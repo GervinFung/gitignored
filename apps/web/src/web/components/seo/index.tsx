@@ -1,8 +1,9 @@
-import React from 'react';
+import type { DeepReadonly, Optional } from '@poolofdeath20/util';
 
 import { DefaultSeo } from 'next-seo';
+import React from 'react';
 
-import type { DeepReadonly, Optional } from '@poolofdeath20/util';
+
 
 import Schema from './schema';
 
@@ -40,31 +41,36 @@ const Seo = (
 		<React.Fragment>
 			<Schema />
 			<DefaultSeo
-				title={title}
-				canonical={url}
-				defaultTitle={title}
-				titleTemplate={title}
-				description={description}
-				twitter={{
-					handle: `@${name}`,
-					site: `@${name}`,
-					cardType: 'summary_large_image',
-				}}
-				openGraph={{
-					url,
-					title,
-					description,
-					images: dimensions.map((dimension) => {
-						const squareDimension = `${dimension}x${dimension}`;
+				additionalLinkTags={[
+					{
+						rel: 'icon',
+						type: 'image/x-icon',
+						href: `${iconPath}/favicon.ico`,
+					},
+					{
+						rel: 'apple-touch-icon',
+						type: 'image/x-icon',
+						href: `${iconPath}/favicon.ico`,
+					},
+					...dimensions.flatMap((dimension) => {
+						const sizes = `${dimension}x${dimension}`;
 
-						return {
-							alt: `website icon as dimension of ${squareDimension}`,
-							width: dimension,
-							height: dimension,
-							url: `${iconPath}/icon-${squareDimension}.png`,
-						};
+						const href = `${iconPath}/icon-${sizes}.png`;
+
+						return [
+							{
+								href,
+								sizes,
+								rel: 'icon',
+							},
+							{
+								href,
+								sizes,
+								rel: 'apple-touch-icon',
+							},
+						];
 					}),
-				}}
+				]}
 				additionalMetaTags={[
 					{
 						name: 'keyword',
@@ -111,36 +117,31 @@ const Seo = (
 						content: 'index.html',
 					},
 				]}
-				additionalLinkTags={[
-					{
-						rel: 'icon',
-						type: 'image/x-icon',
-						href: `${iconPath}/favicon.ico`,
-					},
-					{
-						rel: 'apple-touch-icon',
-						type: 'image/x-icon',
-						href: `${iconPath}/favicon.ico`,
-					},
-					...dimensions.flatMap((dimension) => {
-						const sizes = `${dimension}x${dimension}`;
+				canonical={url}
+				defaultTitle={title}
+				description={description}
+				openGraph={{
+					url,
+					title,
+					description,
+					images: dimensions.map((dimension) => {
+						const squareDimension = `${dimension}x${dimension}`;
 
-						const href = `${iconPath}/icon-${sizes}.png`;
-
-						return [
-							{
-								href,
-								sizes,
-								rel: 'icon',
-							},
-							{
-								href,
-								sizes,
-								rel: 'apple-touch-icon',
-							},
-						];
+						return {
+							alt: `website icon as dimension of ${squareDimension}`,
+							width: dimension,
+							height: dimension,
+							url: `${iconPath}/icon-${squareDimension}.png`,
+						};
 					}),
-				]}
+				}}
+				title={title}
+				titleTemplate={title}
+				twitter={{
+					handle: `@${name}`,
+					site: `@${name}`,
+					cardType: 'summary_large_image',
+				}}
 			/>
 		</React.Fragment>
 	);

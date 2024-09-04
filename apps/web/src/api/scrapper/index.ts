@@ -1,7 +1,5 @@
 import { AsyncOperation, Defined } from '@poolofdeath20/util';
-
 import axios from 'axios';
-
 import { parse, object, array, string, transform, pipe } from 'valibot';
 
 const singleFlowParser = <T extends Parameters<typeof parse>[0]>(parser: T) => {

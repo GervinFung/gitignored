@@ -1,6 +1,8 @@
-import { isFalse, type DeepReadonly } from '@poolofdeath20/util';
-
 import type { Persistence } from '..';
+import type {DeepReadonly} from '@poolofdeath20/util';
+
+import { isFalse  } from '@poolofdeath20/util';
+
 import DatabaseOperation from '../util';
 
 type Templates = DeepReadonly<

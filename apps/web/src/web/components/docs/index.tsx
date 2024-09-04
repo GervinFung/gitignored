@@ -1,4 +1,5 @@
-import React, { type PropsWithChildren } from 'react';
+import type {DeepReadonly} from '@poolofdeath20/util';
+import type {PropsWithChildren} from 'react';
 
 import {
 	Box,
@@ -8,13 +9,14 @@ import {
 	Divider,
 	Text,
 } from '@chakra-ui/react';
-
 import { useRouter } from 'next/router';
+import React from 'react';
 
-import InternalLink from '../common/link';
-import { type DeepReadonly } from '@poolofdeath20/util';
-import Layout from '../layout';
+
+
 import { changeWordToUrl } from '../../util/url';
+import InternalLink from '../common/link';
+import Layout from '../layout';
 
 const docs = {
 	content: {
@@ -43,13 +45,13 @@ const Item = (
 			<Text as="b" color="GrayText">
 				{props.title}
 			</Text>
-			<Divider mt={1} mb={2} />
+			<Divider mb={2} mt={1} />
 			<Box>
 				<ButtonGroup
-					variant="ghost"
-					spacing={0}
 					display="grid"
 					gridGap={4}
+					spacing={0}
+					variant="ghost"
 				>
 					{props.items.map((item) => {
 						return (
@@ -64,7 +66,6 @@ const Item = (
 								<Button
 									//ref: https://github.com/chakra-ui/chakra-ui/issues/44#issuecomment-529222453
 									justifyContent="flex-start"
-									width="100%"
 									variant={
 										props.match.title ===
 											props.title.toLowerCase() &&
@@ -72,6 +73,7 @@ const Item = (
 											? 'solid'
 											: 'ghost'
 									}
+									width="100%"
 								>
 									{item}
 								</Button>
@@ -99,34 +101,34 @@ const Documentation = (
 
 	return (
 		<Layout title={!props ? 'Docs' : `Docs - ${props.title}`}>
-			<Container maxWidth="100%" display="grid" placeItems="center">
+			<Container display="grid" maxWidth="100%" placeItems="center">
 				<Box
+					boxSizing="border-box"
+					display="grid"
+					gridGap={8}
+					gridTemplateColumns="3fr 0.5fr 9.5fr"
 					pt={16}
 					width={{
 						xl: '80%',
 						base: '90%',
 					}}
-					display="grid"
-					gridTemplateColumns="3fr 0.5fr 9.5fr"
-					gridGap={8}
-					boxSizing="border-box"
 				>
 					<Box
 						maxHeight="85vh"
 						overflowX="auto"
-						pr={4}
 						pos="sticky"
+						pr={4}
 						top={0}
 					>
 						<Item
+							items={docs.content.items}
 							match={{ title, item }}
 							title={docs.content.title}
-							items={docs.content.items}
 						/>
 						<Item
+							items={docs.api.items}
 							match={{ title, item }}
 							title={docs.api.title}
-							items={docs.api.items}
 						/>
 					</Box>
 					<Divider orientation="vertical" />

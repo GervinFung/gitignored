@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
 	Box,
 	Divider,
@@ -10,27 +8,25 @@ import {
 	OrderedList,
 	Text,
 } from '@chakra-ui/react';
-
-import SyntaxHighlighter from 'react-syntax-highlighter';
-
-import * as Hljs from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-
 import { Optional } from '@poolofdeath20/util';
+import React from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
-import Documentation from '../../../src/web/components/docs';
 import InternalLink from '../../../src/web/components/common/link';
+import Documentation from '../../../src/web/components/docs';
 import Seo from '../../../src/web/components/seo';
 
 const GettingStarted = () => {
 	return (
 		<Documentation title="Getting Started">
 			<Seo
-				url="/docs/client/getting-started"
-				title={Optional.some('Docs Getting Started')}
 				description={Optional.some(
 					'This section briefly explains usage of Gitignored, via web browser, PWA, and terminal'
 				)}
 				keywords={['documentation', 'introduction']}
+				title={Optional.some('Docs Getting Started')}
+				url="/docs/client/getting-started"
 			/>
 			<Flex flexDirection="column" gridGap={8}>
 				<Flex direction="column" gridGap={4}>
@@ -38,7 +34,7 @@ const GettingStarted = () => {
 						<Heading as="h1" size="4xl">
 							Getting Started
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Text>
 						As previously mentioned in the{' '}
@@ -63,7 +59,7 @@ const GettingStarted = () => {
 						<Heading as="h2" size="lg">
 							Browser/PWA
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<OrderedList
@@ -72,10 +68,10 @@ const GettingStarted = () => {
 						>
 							<ListItem>
 								<Link
-									isExternal
-									textDecorationLine="underline"
 									href={process.env.NEXT_PUBLIC_ORIGIN}
+									isExternal
 									target="_blank"
+									textDecorationLine="underline"
 								>
 									<strong>This</strong>
 								</Link>
@@ -89,7 +85,7 @@ const GettingStarted = () => {
 						<Heading as="h2" size="lg">
 							Terminal
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Flex direction="column" gridGap={4}>
 						<Heading as="h3" size="md">
@@ -102,11 +98,11 @@ const GettingStarted = () => {
 							<ListItem>
 								Follow the instruction{' '}
 								<Link
-									isExternal
-									textDecorationLine="underline"
 									href="https://doc.rust-lang.org/cargo/getting-started/installation.html"
-									target="_blank"
+									isExternal
 									rel="external nofollow noopener noreferrer"
+									target="_blank"
+									textDecorationLine="underline"
 								>
 									<strong>here</strong>
 								</Link>
@@ -116,9 +112,9 @@ const GettingStarted = () => {
 								the command below
 								<Box my={4}>
 									<SyntaxHighlighter
-										language="rust"
-										style={Hljs.nightOwl}
 										customStyle={{ padding: '16px' }}
+										language="rust"
+										style={nightOwl}
 									>
 										cargo install gitignored-cli
 									</SyntaxHighlighter>
@@ -129,9 +125,9 @@ const GettingStarted = () => {
 								instructions/usage
 								<Box my={4}>
 									<SyntaxHighlighter
-										language="rust"
-										style={Hljs.nightOwl}
 										customStyle={{ padding: '16px' }}
+										language="rust"
+										style={nightOwl}
 									>
 										gitignored-cli --help
 									</SyntaxHighlighter>

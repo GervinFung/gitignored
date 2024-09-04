@@ -1,5 +1,6 @@
-import { Persistence } from '../../../database/persistence';
 import type { Trpc } from '../../instance';
+
+import { Persistence } from '../../../database/persistence';
 import { result } from '../util';
 
 const templateBatchRoutes = (trpc: Trpc) => {

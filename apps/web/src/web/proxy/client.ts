@@ -1,10 +1,10 @@
-import { createTRPCProxyClient, httpLink } from '@trpc/client';
-
-import superjson from 'superjson';
+import type { AppRouter } from '../../api/routes/internal/_app';
 
 import { Defined, isBrowser } from '@poolofdeath20/util';
+import { createTRPCProxyClient, httpLink } from '@trpc/client';
+import superjson from 'superjson';
 
-import type { AppRouter } from '../../api/routes/internal/_app';
+
 
 const getBaseUrl = () => {
 	if (!isBrowser()) {

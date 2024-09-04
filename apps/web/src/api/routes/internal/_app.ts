@@ -1,5 +1,6 @@
-import { templateRoutes } from './template';
 import type { Trpc } from '../instance';
+
+import { templateRoutes } from './template';
 
 const internalAppRouter = (trpc: Trpc) => {
 	return trpc.router({

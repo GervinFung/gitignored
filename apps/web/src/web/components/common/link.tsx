@@ -1,6 +1,8 @@
-import React, { type PropsWithChildren } from 'react';
+import type {PropsWithChildren} from 'react';
 
 import Link from 'next/link';
+import React from 'react';
+
 
 const InternalLink = (
 	props: PropsWithChildren &

@@ -1,4 +1,5 @@
 import fs from 'fs';
+
 import { format } from 'sql-formatter';
 
 const getAllFiles = (directory: string): ReadonlyArray<string> => {

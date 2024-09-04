@@ -1,6 +1,6 @@
+import Script from 'next/script';
 import React from 'react';
 
-import Script from 'next/script';
 
 const Schema = () => {
 	const docs = ['commit-time', 'introduction', 'templates-name', 'templates']
@@ -32,10 +32,10 @@ const Schema = () => {
 
 	return (
 		<Script
-			type="application/ld+json"
 			dangerouslySetInnerHTML={{
 				__html: JSON.stringify(structuredData, undefined, 4),
 			}}
+			type="application/ld+json"
 		/>
 	);
 };

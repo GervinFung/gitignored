@@ -1,4 +1,5 @@
 import type { Trpc } from '../instance';
+
 import { templateRoutes } from './template';
 import { templateBatchRoutes } from './template-batch';
 

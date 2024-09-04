@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
 	Box,
 	Divider,
@@ -9,27 +7,26 @@ import {
 	Text,
 	UnorderedList,
 } from '@chakra-ui/react';
-
-import SyntaxHighlighter from 'react-syntax-highlighter';
-
-import * as Hljs from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-
 import { Optional } from '@poolofdeath20/util';
+import React from 'react';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
-import Documentation from '../../../src/web/components/docs';
+
 import { ErrorNote } from '../../../src/web/components/doc/api';
+import Documentation from '../../../src/web/components/docs';
 import Seo from '../../../src/web/components/seo';
 
 const GenerateTemplates = () => {
 	return (
 		<Documentation title="API Generate Templates">
 			<Seo
-				url="/docs/api/templates"
-				title={Optional.some('API Docs | Generate Templates')}
 				description={Optional.some(
 					'This section explains the API endpoint for generating .gitignore templates, and its response structure with an example'
 				)}
 				keywords={['documentation', 'api', 'generate templates']}
+				title={Optional.some('API Docs | Generate Templates')}
+				url="/docs/api/templates"
 			/>
 			<Flex flexDirection="column" gridGap={8}>
 				<Flex direction="column" gridGap={4}>
@@ -37,7 +34,7 @@ const GenerateTemplates = () => {
 						<Heading as="h1" size="4xl">
 							Templates
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<Text mb={2}>
@@ -75,9 +72,9 @@ const GenerateTemplates = () => {
 								Successful Response
 								<Box my={4}>
 									<SyntaxHighlighter
-										language="javascript"
-										style={Hljs.nightOwl}
 										customStyle={{ padding: '16px' }}
+										language="javascript"
+										style={nightOwl}
 									>
 										{JSON.stringify(
 											{
@@ -105,10 +102,10 @@ const GenerateTemplates = () => {
 									</SyntaxHighlighter>
 								</Box>
 								<Box
-									py={4}
-									px={4}
-									boxSizing="border-box"
 									backgroundColor="gray.200"
+									boxSizing="border-box"
+									px={4}
+									py={4}
 								>
 									<blockquote>
 										<strong>NOTE:</strong> The above list is
@@ -127,7 +124,7 @@ const GenerateTemplates = () => {
 						<Heading as="h2" size="lg">
 							Queries
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<Text>
