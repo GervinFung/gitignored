@@ -3,8 +3,6 @@ import type { DeepReadonly, Optional } from '@poolofdeath20/util';
 import { DefaultSeo } from 'next-seo';
 import React from 'react';
 
-
-
 import Schema from './schema';
 
 const Seo = (

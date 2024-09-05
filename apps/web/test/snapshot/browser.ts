@@ -2,7 +2,6 @@ import type { Browser } from 'puppeteer';
 
 import { sleepInSeconds } from '@poolofdeath20/util';
 
-
 const getWebSnapshot = async (
 	param: Readonly<{
 		link: string;

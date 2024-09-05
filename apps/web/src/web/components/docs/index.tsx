@@ -1,5 +1,5 @@
-import type {DeepReadonly} from '@poolofdeath20/util';
-import type {PropsWithChildren} from 'react';
+import type { DeepReadonly } from '@poolofdeath20/util';
+import type { PropsWithChildren } from 'react';
 
 import {
 	Box,
@@ -11,8 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-
-
 
 import { changeWordToUrl } from '../../util/url';
 import InternalLink from '../common/link';

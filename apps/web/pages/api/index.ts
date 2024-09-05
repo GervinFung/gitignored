@@ -1,4 +1,4 @@
-import type {EndPointFunc} from '../../src/api/cors';
+import type { EndPointFunc } from '../../src/api/cors';
 
 import cors from '../../src/api/cors';
 

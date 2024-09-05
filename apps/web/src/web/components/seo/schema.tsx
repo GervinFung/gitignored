@@ -1,7 +1,6 @@
 import Script from 'next/script';
 import React from 'react';
 
-
 const Schema = () => {
 	const docs = ['commit-time', 'introduction', 'templates-name', 'templates']
 		.map((link) => {

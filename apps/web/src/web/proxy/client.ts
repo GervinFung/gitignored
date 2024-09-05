@@ -4,8 +4,6 @@ import { Defined, isBrowser } from '@poolofdeath20/util';
 import { createTRPCProxyClient, httpLink } from '@trpc/client';
 import superjson from 'superjson';
 
-
-
 const getBaseUrl = () => {
 	if (!isBrowser()) {
 		return '';

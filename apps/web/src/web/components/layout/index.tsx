@@ -1,10 +1,8 @@
-import type {PropsWithChildren} from 'react';
+import type { PropsWithChildren } from 'react';
 
 import styled from '@emotion/styled';
 import { DefaultSeo } from 'next-seo';
 import React from 'react';
-
-
 
 import theme from '../../theme';
 import Footer from '../footer';

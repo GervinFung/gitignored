@@ -12,13 +12,13 @@ const ErrorNote = () => {
 				style={nightOwl}
 			>
 				{JSON.stringify(
-						{
-							status: 'failed',
-							reason: '<insert error message here>',
-						},
-						undefined,
-						4
-					)}
+					{
+						status: 'failed',
+						reason: '<insert error message here>',
+					},
+					undefined,
+					4
+				)}
 			</SyntaxHighlighter>
 		</Box>
 	);

@@ -5,9 +5,7 @@ import { httpBatchLink } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
 import superjson from 'superjson';
 
-
 import { getBaseUrl } from '../proxy/client';
-
 
 const trpc = createTRPCNext<AppRouter>({
 	/**

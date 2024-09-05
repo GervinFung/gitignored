@@ -12,7 +12,6 @@ import React from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { nightOwl } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 
-
 import { ErrorNote } from '../../../src/web/components/doc/api';
 import Documentation from '../../../src/web/components/docs';
 import Seo from '../../../src/web/components/seo';

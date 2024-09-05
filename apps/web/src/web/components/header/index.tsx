@@ -15,7 +15,6 @@ import { SiGithub } from 'react-icons/si';
 import { constants, title } from '../../util/const';
 import InternalLink from '../common/link';
 
-
 const Header = () => {
 	return (
 		<Box as="section">

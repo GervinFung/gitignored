@@ -3,8 +3,6 @@ import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-
-
 import Layout from '../src/web/components/layout';
 
 const ErrorPage = () => {
