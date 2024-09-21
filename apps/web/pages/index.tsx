@@ -1,6 +1,3 @@
-import React from 'react';
-
-import Image from 'next/image';
 import {
 	Text,
 	Box,
@@ -10,41 +7,42 @@ import {
 	ButtonGroup,
 	Container,
 } from '@chakra-ui/react';
-
 import { Optional } from '@poolofdeath20/util';
+import Image from 'next/image';
+import React from 'react';
 
 import InternalLink from '../src/web/components/common/link';
 import Layout from '../src/web/components/layout';
-import { title } from '../src/web/util/const';
 import Seo from '../src/web/components/seo';
+import { title } from '../src/web/util/const';
 
 const Index = () => {
 	return (
 		<Layout title="Home">
 			<Seo
-				url={undefined}
-				title={Optional.none()}
 				description={Optional.none()}
 				keywords={['introduction']}
+				title={Optional.none()}
+				url={undefined}
 			/>
-			<Container maxWidth="100%" display="grid" placeItems="center">
+			<Container display="grid" maxWidth="100%" placeItems="center">
 				<Flex
-					py={16}
-					width="80%"
+					alignItems="center"
 					boxSizing="border-box"
 					flexDirection="column"
-					alignItems="center"
+					py={16}
+					width="80%"
 				>
 					<Box display="grid" placeItems="center">
 						<Image
-							width={150}
+							alt={`Logo of ${title}`}
 							height={88}
 							quality={100}
-							alt={`Logo of ${title}`}
 							src="/images/icons/logo.webp"
 							style={{
 								marginBottom: 24,
 							}}
+							width={150}
 						/>
 						<Heading as="h1" fontFamily="Bungee" size="2xl">
 							{title}
@@ -64,11 +62,11 @@ const Index = () => {
 					</Box>
 					<Box>
 						<ButtonGroup
+							display="grid"
+							gridGap={8}
+							gridTemplateColumns="1fr 1fr"
 							spacing={0}
 							variant="outline"
-							display="grid"
-							gridTemplateColumns="1fr 1fr"
-							gridGap={8}
 						>
 							{(['Documentation', 'Templates'] as const).map(
 								(link) => {
@@ -83,10 +81,10 @@ const Index = () => {
 											}}
 										>
 											<Button
-												py={6}
-												px={9}
-												width="100%"
 												key={link}
+												px={9}
+												py={6}
+												width="100%"
 											>
 												{link}
 											</Button>

@@ -1,11 +1,9 @@
-import React from 'react';
-
 import type { AppProps } from 'next/app';
 
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import React from 'react';
 
 import ErrorBoundary from '../src/web/components/error/boundary';
-
 import trpc from '../src/web/hooks/trpc';
 
 import '../src/web/css/jetbrains.css';

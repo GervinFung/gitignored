@@ -1,5 +1,6 @@
-import type { AsyncResult } from '@poolofdeath20/util';
 import type { EndPointFunc, Response } from '../../cors';
+import type { AsyncResult } from '@poolofdeath20/util';
+
 import cors from '../../cors';
 
 type Result<T> = Readonly<
@@ -48,5 +49,4 @@ const procedure = <T>(query: () => Promise<T>) => {
 	return handler;
 };
 
-export { procedure };
-export { result };
+export { result, procedure };

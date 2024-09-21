@@ -1,7 +1,8 @@
-import { AsyncOperation } from '@poolofdeath20/util';
-
 import type { PostgrestError } from '@supabase/supabase-js';
 
+import { AsyncOperation } from '@poolofdeath20/util';
+
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class DatabaseOperation {
 	static readonly succeed = AsyncOperation.succeed;
 

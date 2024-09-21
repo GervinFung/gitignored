@@ -1,14 +1,5 @@
-import React from 'react';
-
-import { useRouter } from 'next/router';
-
-import iwanthue from 'iwanthue';
-
-import JSZip from 'jszip';
-
-import { saveAs } from 'file-saver';
-
-import Select from 'react-select';
+import type { Templates } from '../../src/api/database/persistence/template';
+import type { DeepReadonly } from '@poolofdeath20/util';
 
 import {
 	Box,
@@ -21,59 +12,32 @@ import {
 	Skeleton,
 	Text,
 } from '@chakra-ui/react';
-
-import styled from '@emotion/styled';
-
-import { parse, object, array, string } from 'valibot';
-
-import Fuse from 'fuse.js';
-
 import {
-	type DeepReadonly,
 	Optional,
 	formQueryParamStringFromRecord,
 	Defined,
-	equalTo,
 	isFalsy,
 } from '@poolofdeath20/util';
-
+import { saveAs } from 'file-saver';
+import iwanthue from 'iwanthue';
+import JSZip from 'jszip';
+import { useRouter } from 'next/router';
+import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import { parse, string } from 'valibot';
 
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import Layout from '../../src/web/components/layout';
 import Seo from '../../src/web/components/seo';
-
+import QuerySection from '../../src/web/components/templates/query';
 import trpcClient from '../../src/web/proxy/client';
-import { type Templates } from '../../src/api/database/persistence/template';
 import {
 	combineTemplates,
 	generateContrastingColor,
 } from '../../src/web/util/generator';
 
 type Template = Templates[number];
-
-const schemas = {
-	names: string(),
-	selectedOrdinaryTemplatesId: array(
-		object({
-			value: string(),
-		})
-	),
-};
-
-const StyledSelect = styled(Select)`
-	width: 700px;
-	> div > div {
-		padding: 4px 8px;
-	}
-	@media (max-width: 808px) {
-		width: 600px;
-	}
-	@media (max-width: 672px) {
-		width: 500px;
-	}
-`;
 
 const useCopyToClipboard = (timeout?: number) => {
 	const [copied, setCopied] = React.useState(false);
@@ -94,13 +58,13 @@ const useCopyToClipboard = (timeout?: number) => {
 		return () => {
 			clearTimeout(timeOut);
 		};
-	}, [copied]);
+	}, [copied, timeout]);
 
 	return {
 		copied,
 		copy: (text: string) => {
 			if (navigator?.clipboard.writeText) {
-				navigator.clipboard.writeText(text);
+				void navigator.clipboard.writeText(text);
 			} else {
 				const element = document.createElement('textarea');
 
@@ -143,31 +107,31 @@ const TemplatePreview = (
 
 	return (
 		<Box
-			p={4}
-			width="100vw"
-			maxWidth="100%"
-			height="100%"
-			borderRadius={4}
 			backgroundColor="gray.100"
-			display="flex"
+			borderRadius={4}
 			boxSizing="border-box"
+			display="flex"
 			flexDirection="column"
 			gridGap={4}
+			height="100%"
+			maxWidth="100%"
+			p={4}
+			width="100vw"
 		>
 			<Box
+				alignItems="center"
 				display="flex"
 				justifyContent="space-between"
-				alignItems="center"
 			>
 				<Box
-					py={2}
-					px={4}
-					fontSize="small"
-					boxSizing="border-box"
-					borderRadius={4}
-					width="fit-content"
 					backgroundColor={props.backgroundColor}
+					borderRadius={4}
+					boxSizing="border-box"
 					color={generateContrastingColor(props.backgroundColor)}
+					fontSize="small"
+					px={4}
+					py={2}
+					width="fit-content"
 				>
 					<Text>
 						{props.type === 'loading'
@@ -176,17 +140,16 @@ const TemplatePreview = (
 					</Text>
 				</Box>
 				<Button
-					fontSize="small"
-					boxSizing="border-box"
-					borderRadius={4}
-					variant="solid"
-					isDisabled={props.type === 'loading'}
-					backgroundColor="#282A36"
-					color="#FFF"
 					_hover={{
 						color: '#FFF',
 						backgroundColor: '#282A36',
 					}}
+					backgroundColor="#282A36"
+					borderRadius={4}
+					boxSizing="border-box"
+					color="#FFF"
+					fontSize="small"
+					isDisabled={props.type === 'loading'}
 					onClick={() => {
 						if (props.type === 'loading') {
 							throw new Error(`Cannot click when it's loading`);
@@ -194,6 +157,7 @@ const TemplatePreview = (
 
 						clipboard.copy(props.template.content);
 					}}
+					variant="solid"
 				>
 					{!clipboard.copied ? 'Copy' : '🎉 Copied'}
 				</Button>
@@ -203,10 +167,10 @@ const TemplatePreview = (
 					<Skeleton height="450px" minWidth="100%" />
 				) : (
 					<Text
-						height="450px"
 						fontSize="x-small"
-						whiteSpace="pre-wrap"
+						height="450px"
 						overflow="auto"
+						whiteSpace="pre-wrap"
 					>
 						{props.template.content}
 					</Text>
@@ -224,7 +188,7 @@ const TemplatesPreview = (
 		  }
 		| {
 				type: 'loading';
-				templatesName: Templates[0]['name'][];
+				templatesName: Array<Templates[0]['name']>;
 		  }
 	>
 ) => {
@@ -245,19 +209,19 @@ const TemplatesPreview = (
 
 	return (
 		<Grid
-			gap={6}
-			width="100%"
 			autoRows="1fr"
+			gap={6}
 			templateColumns="repeat(3, minmax(0, 1fr))"
+			width="100%"
 		>
 			{props.type === 'loading'
 				? props.templatesName.map((name, index) => {
 						return (
 							<GridItem key={name} width="100%">
 								<TemplatePreview
-									type="loading"
-									name={name}
 									backgroundColor={paletteAt(index)}
+									name={name}
+									type="loading"
 								/>
 							</GridItem>
 						);
@@ -266,114 +230,15 @@ const TemplatesPreview = (
 						return (
 							<GridItem key={template.name} width="100%">
 								<TemplatePreview
-									type="ready"
-									template={template}
 									backgroundColor={paletteAt(index)}
+									template={template}
+									type="ready"
 								/>
 							</GridItem>
 						);
 					})}
 		</Grid>
 	);
-};
-
-const QuerySection = (
-	props: DeepReadonly<{
-		templates: {
-			all: Templates;
-			selected: Templates;
-			updateSelected: (templates: Templates) => void;
-		};
-	}>
-) => {
-	const updateDependency =
-		props.templates.selected
-			.map(({ name }) => {
-				return name;
-			})
-			.join() ||
-		props.templates.all
-			.map(({ name }) => {
-				return name;
-			})
-			.join();
-
-	return React.useMemo(() => {
-		return (
-			<StyledSelect
-				isDisabled={isFalsy(props.templates.all.length)}
-				isMulti={true}
-				maxMenuHeight={200}
-				placeholder="Search by Techs"
-				loadingMessage={() => {
-					return (
-						<Box>
-							<Text>Getting all the templates...</Text>
-						</Box>
-					);
-				}}
-				filterOption={({ label }, input) => {
-					if (!input) {
-						return true;
-					}
-
-					if (
-						props.templates.all
-							.map(({ name }) => {
-								return name.toLowerCase();
-							})
-							.find(equalTo(input.toLowerCase()))
-					) {
-						return label.toLowerCase() === input.toLowerCase();
-					}
-
-					return (
-						(new Fuse([label], {
-							includeScore: true,
-						})
-							.search(input)
-							.at(0)?.score ?? 1) <= 0.5
-					);
-				}}
-				options={props.templates.all
-					.toSorted((previous, current) => {
-						return previous.name.localeCompare(
-							current.name,
-							undefined,
-							{
-								ignorePunctuation: true,
-							}
-						);
-					})
-					.map(({ name }) => {
-						return {
-							value: name,
-							label: name,
-						};
-					})}
-				onChange={(selectedTemplatesId) => {
-					const names = parse(
-						schemas.selectedOrdinaryTemplatesId,
-						selectedTemplatesId
-					).map(({ value }) => {
-						return value;
-					});
-
-					props.templates.updateSelected(
-						props.templates.all.filter(({ name }) => {
-							return names.includes(name);
-						})
-					);
-				}}
-				value={props.templates.selected.map(({ name }) => {
-					return {
-						value: name,
-						label: name,
-					};
-				})}
-			/>
-		);
-	}, [updateDependency]);
 };
 
 const useTemplateNotification = () => {
@@ -449,7 +314,7 @@ const Templates = () => {
 	const router = useRouter();
 
 	const names = decodeURIComponent(
-		parse(schemas.names, router.query['names'] ?? '')
+		parse(string(), router.query['names'] ?? '')
 	)
 		.split(delimiter)
 		.filter(Boolean);
@@ -460,7 +325,7 @@ const Templates = () => {
 
 	const copyNotification = useCopyNotification();
 
-	const [templates, setTemplate] = React.useState([] as Templates);
+	const [templates, setTemplates] = React.useState([] as Templates);
 
 	const selected = templates.filter((props) => {
 		return names.includes(props.name);
@@ -469,7 +334,7 @@ const Templates = () => {
 	React.useEffect(() => {
 		templateNotification.loading();
 
-		trpcClient.template.findAllTemplates
+		void trpcClient.template.findAllTemplates
 			.query()
 			.then((result) => {
 				if (!result.hadSucceed) {
@@ -487,42 +352,43 @@ const Templates = () => {
 
 				throw templates.reason;
 			})
-			.then(setTemplate);
+			.then(setTemplates);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	React.useEffect(() => {
 		if (clipboard.copied) {
 			copyNotification.succeed();
 		}
-	}, [clipboard.copied]);
+	}, [clipboard.copied, copyNotification]);
 
 	return (
 		<Layout title="Templates">
 			<Seo
-				url="/templates"
-				title={Optional.some('Templates')}
 				description={Optional.some('List of .gitignore templates')}
 				keywords={['templates', '.gitignore', 'gitignore', 'git']}
+				title={Optional.some('Templates')}
+				url="/templates"
 			/>
-			<ToastContainer position="top-center" autoClose={2500} stacked />
-			<Container maxWidth="100%" display="grid" placeItems="center">
+			<ToastContainer autoClose={2500} position="top-center" stacked />
+			<Container display="grid" maxWidth="100%" placeItems="center">
 				<Box
-					pt={16}
+					boxSizing="border-box"
 					display="flex"
 					flexDirection="column"
 					gap={16}
+					minHeight="30vh"
+					pt={16}
 					width={{
 						xl: '80%',
 						base: '90%',
 					}}
-					minHeight="30vh"
-					boxSizing="border-box"
 				>
 					<Box
-						display="flex"
-						justifyContent="space-between"
 						alignItems="center"
+						display="flex"
 						gap={8}
+						justifyContent="space-between"
 					>
 						<QuerySection
 							templates={{
@@ -538,7 +404,7 @@ const Templates = () => {
 												.join(delimiter),
 										});
 
-									router.push(
+									void router.push(
 										{
 											pathname: '/templates',
 											query,
@@ -565,7 +431,6 @@ const Templates = () => {
 							<Divider orientation="vertical" />
 							<Button
 								colorScheme="messenger"
-								variant="outline"
 								isDisabled={isFalsy(selected.length)}
 								onClick={() => {
 									const zip = selected.reduce(
@@ -578,15 +443,18 @@ const Templates = () => {
 										new JSZip()
 									);
 
-									zip.generateAsync({
-										type: 'blob',
-									}).then((value) => {
-										saveAs(
-											value,
-											'gitignored-compressed.zip'
-										);
-									});
+									void zip
+										.generateAsync({
+											type: 'blob',
+										})
+										.then((value) => {
+											saveAs(
+												value,
+												'gitignored-compressed.zip'
+											);
+										});
 								}}
+								variant="outline"
 							>
 								Zip All
 							</Button>
@@ -594,9 +462,9 @@ const Templates = () => {
 					</Box>
 					<Box display="flex" justifyContent="space-between">
 						<TemplatesPreview
-							type={selected.length ? 'done' : 'loading'}
-							templatesName={names}
 							templates={selected}
+							templatesName={names}
+							type={selected.length ? 'done' : 'loading'}
 						/>
 					</Box>
 				</Box>

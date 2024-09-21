@@ -1,5 +1,8 @@
+import type { Supabase } from '../supabase';
+
 import { Scrapper } from '../../scrapper';
-import { supabase, type Supabase } from '../supabase';
+import { supabase } from '../supabase';
+
 import { TemplatePersistence } from './template';
 import { TemplateBatchPersistence } from './template-batch';
 

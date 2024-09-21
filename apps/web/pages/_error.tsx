@@ -1,10 +1,7 @@
-import React from 'react';
-
-import { useRouter } from 'next/router';
-
-import styled from '@emotion/styled';
-
 import { Box, Heading, useToast } from '@chakra-ui/react';
+import styled from '@emotion/styled';
+import { useRouter } from 'next/router';
+import React from 'react';
 
 import Layout from '../src/web/components/layout';
 
@@ -20,19 +17,19 @@ const ErrorPage = () => {
 	return (
 		<Layout title="404 Error">
 			<Box
-				minH="100%"
 				display="flex"
 				flexDirection="column"
+				minH="100%"
 				placeItems="center"
 				textAlign="center"
 			>
-				<Heading as="h1" size="4xl" m="50px">
+				<Heading as="h1" m="50px" size="4xl">
 					404
 				</Heading>
 				<p>
 					You did&apos;t break the internet, just that, you manage to
 					visit something that don&apos;t exist{' '}
-					<span role="img" aria-label="smug">
+					<span aria-label="smug" role="img">
 						😏
 					</span>
 				</p>
@@ -42,27 +39,25 @@ const ErrorPage = () => {
 					to Home page
 				</p>
 				<Box
-					display="flex"
 					alignItems="center"
 					border="1px solid #333"
 					borderRadius="4"
-					width="375px"
-					padding="8px 16px"
+					display="flex"
 					fontSize="0.85em"
 					margin="64px auto 0 auto"
+					padding="8px 16px"
+					width="375px"
 				>
-					<Box margin="0 8px 0 0" color="#3757EF">
+					<Box color="#3757EF" margin="0 8px 0 0">
 						<span>gitignored</span>
 						<span>@</span>
 						<span>developer</span>
 						<span>~&gt;</span>
 					</Box>
 					<GitCommandPrompt
-						type="text"
+						autoCapitalize="off"
 						autoComplete="off"
 						autoCorrect="off"
-						autoCapitalize="off"
-						spellCheck="false"
 						onChange={(event) => {
 							return setCommand(event.target.value);
 						}}
@@ -72,7 +67,7 @@ const ErrorPage = () => {
 
 							if (isEnterKeyClicked) {
 								if (command === 'git reset --soft HEAD~1') {
-									router.replace('/');
+									void router.replace('/');
 								} else {
 									toast.promise(
 										new Promise((resolve) => {
@@ -89,6 +84,8 @@ const ErrorPage = () => {
 								}
 							}
 						}}
+						spellCheck="false"
+						type="text"
 					/>
 				</Box>
 			</Box>

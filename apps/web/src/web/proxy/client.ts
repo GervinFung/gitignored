@@ -1,10 +1,8 @@
-import { createTRPCProxyClient, httpLink } from '@trpc/client';
-
-import superjson from 'superjson';
+import type { AppRouter } from '../../api/routes/internal/_app';
 
 import { Defined, isBrowser } from '@poolofdeath20/util';
-
-import type { AppRouter } from '../../api/routes/internal/_app';
+import { createTRPCProxyClient, httpLink } from '@trpc/client';
+import superjson from 'superjson';
 
 const getBaseUrl = () => {
 	if (!isBrowser()) {
@@ -30,7 +28,7 @@ const trpcClient = createTRPCProxyClient<AppRouter>({
 			url: `${getBaseUrl()}/api/trpc`,
 
 			// You can pass any HTTP headers you wish here
-			headers: async () => {
+			headers: () => {
 				return {
 					// authorization: getAuthCookie(),
 				};

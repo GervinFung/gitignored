@@ -1,12 +1,11 @@
-import { httpBatchLink } from '@trpc/client';
-import { createTRPCNext } from '@trpc/next';
-
-import superjson from 'superjson';
-
 import type { AppRouter } from '../../api/routes/internal/_app';
 
-import { getBaseUrl } from '../proxy/client';
 import { isBrowser } from '@poolofdeath20/util';
+import { httpBatchLink } from '@trpc/client';
+import { createTRPCNext } from '@trpc/next';
+import superjson from 'superjson';
+
+import { getBaseUrl } from '../proxy/client';
 
 const trpc = createTRPCNext<AppRouter>({
 	/**

@@ -1,5 +1,6 @@
-import hexRgb from 'hex-rgb';
 import type Templates from '../../../pages/templates';
+
+import hexRgb from 'hex-rgb';
 
 //ref: https://www.w3.org/TR/AERT/#color-contrast
 const generateContrastingColor = (hex: string) => {

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
 	Box,
 	Divider,
@@ -9,8 +7,8 @@ import {
 	Text,
 	UnorderedList,
 } from '@chakra-ui/react';
-
 import { Optional } from '@poolofdeath20/util';
+import React from 'react';
 
 import Documentation from '../../../src/web/components/docs';
 import Seo from '../../../src/web/components/seo';
@@ -19,12 +17,12 @@ const Introduction = () => {
 	return (
 		<Documentation title="Introduction">
 			<Seo
-				url="/docs/content/introduction"
-				title={Optional.some('Docs Introduction')}
 				description={Optional.some(
 					'This section briefly introduces Gitignored and its advantages and disadvantages'
 				)}
 				keywords={['documentation', 'introduction']}
+				title={Optional.some('Docs Introduction')}
+				url="/docs/content/introduction"
 			/>
 			<Flex flexDirection="column" gridGap={8}>
 				<Flex direction="column" gridGap={4}>
@@ -32,7 +30,7 @@ const Introduction = () => {
 						<Heading as="h1" size="4xl">
 							Gitignored
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Text>
 						A convenient tool for creating .gitignore templates
@@ -47,7 +45,7 @@ const Introduction = () => {
 						<Heading as="h2" size="lg">
 							Advantages
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<UnorderedList spacing={8}>
@@ -105,7 +103,7 @@ const Introduction = () => {
 						<Heading as="h2" size="lg">
 							Disadvantages
 						</Heading>
-						<Divider mt={2} mb={1} />
+						<Divider mb={1} mt={2} />
 					</Box>
 					<Box>
 						<UnorderedList spacing={8}>

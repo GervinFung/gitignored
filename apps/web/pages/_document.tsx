@@ -1,11 +1,7 @@
+import type { DocumentContext } from 'next/document';
+
+import Document, { Head, Main, NextScript, Html } from 'next/document';
 import React from 'react';
-import Document, {
-	type DocumentContext,
-	Head,
-	Main,
-	NextScript,
-	Html,
-} from 'next/document';
 
 export default class Doc extends Document {
 	static override getInitialProps = async (context: DocumentContext) => {
@@ -33,7 +29,7 @@ export default class Doc extends Document {
 		return (
 			<Html lang="en">
 				<Head>
-					<link rel="manifest" href="/manifest.json" />
+					<link href="/manifest.json" rel="manifest" />
 				</Head>
 				<body
 					style={{

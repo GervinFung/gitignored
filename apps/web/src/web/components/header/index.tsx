@@ -1,7 +1,3 @@
-import React from 'react';
-
-import Image from 'next/image';
-
 import {
 	Link,
 	Box,
@@ -12,34 +8,34 @@ import {
 	Flex,
 	HStack,
 } from '@chakra-ui/react';
-
+import Image from 'next/image';
+import React from 'react';
 import { SiGithub } from 'react-icons/si';
 
-import InternalLink from '../common/link';
-
 import { constants, title } from '../../util/const';
+import InternalLink from '../common/link';
 
 const Header = () => {
 	return (
 		<Box as="section">
 			<Box as="nav" bg="bg-surface" borderBottom="1px solid">
-				<Container py={4} maxWidth="80%">
-					<HStack spacing={10} display="flex" justify="space-between">
+				<Container maxWidth="80%" py={4}>
+					<HStack display="flex" justify="space-between" spacing={10}>
 						<InternalLink
 							param={{
 								href: '/',
 							}}
 						>
 							<Image
-								width={50}
+								alt={`Logo of ${title}`}
 								height={29}
 								quality={100}
-								alt={`Logo of ${title}`}
 								src="/images/icons/logo.webp"
+								width={50}
 							/>
 						</InternalLink>
 						<Flex gap={8}>
-							<ButtonGroup variant="ghost" spacing={4}>
+							<ButtonGroup spacing={4} variant="ghost">
 								{(
 									[
 										'Home',
@@ -66,10 +62,10 @@ const Header = () => {
 									);
 								})}
 								<Link
-									isExternal
 									href={constants.repo}
-									target="_blank"
+									isExternal
 									rel="external nofollow noopener noreferrer"
+									target="_blank"
 								>
 									<IconButton
 										aria-label="Github"

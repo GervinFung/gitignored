@@ -19,7 +19,9 @@ const templateTest_1 = () => {
 			hadSucceed: true,
 			data: narrowToSucceed(templatesResult).data.map(() => {
 				return {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					name: expect.any(String),
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 					content: expect.any(String),
 				};
 			}),
@@ -32,6 +34,7 @@ const templateTest_1 = () => {
 
 		expect(latestCommittedTime).toStrictEqual(
 			succeedResponse({
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				latestCommittedTime: expect.any(Date),
 			})
 		);

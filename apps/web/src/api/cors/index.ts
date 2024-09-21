@@ -1,8 +1,7 @@
+import type { DeepReadonly } from '@poolofdeath20/util';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import Cors from 'cors';
-
-import type { DeepReadonly } from '@poolofdeath20/util';
 
 type Response<T> = string | DeepReadonly<T>;
 
@@ -10,8 +9,6 @@ type EndPointFunc<T> = (
 	req: NextApiRequest,
 	res: NextApiResponse<Response<T>>
 ) => Promise<void>;
-
-export type { EndPointFunc, Response };
 
 const initMiddleware = <T>(
 	middleware: (
@@ -39,5 +36,7 @@ const cors = <T>() => {
 		})
 	);
 };
+
+export type { EndPointFunc, Response };
 
 export default cors;

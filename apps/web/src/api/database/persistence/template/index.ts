@@ -1,13 +1,15 @@
-import { isFalse, type DeepReadonly } from '@poolofdeath20/util';
-
 import type { Persistence } from '..';
+import type { DeepReadonly } from '@poolofdeath20/util';
+
+import { isFalse } from '@poolofdeath20/util';
+
 import DatabaseOperation from '../util';
 
 type Templates = DeepReadonly<
-	{
+	Array<{
 		content: string;
 		name: string;
-	}[]
+	}>
 >;
 
 class TemplatePersistence {
@@ -127,10 +129,10 @@ class TemplatePersistence {
 
 	readonly externalFindMany = async () => {
 		return this.findMany().then((result) => {
-			return result.map(async (templates) => {
-				return {
+			return result.map((templates) => {
+				return Promise.resolve({
 					templates,
-				};
+				});
 			});
 		});
 	};

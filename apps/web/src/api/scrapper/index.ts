@@ -1,35 +1,58 @@
 import { AsyncOperation, Defined } from '@poolofdeath20/util';
-
 import axios from 'axios';
-
 import { parse, object, array, string, transform, pipe } from 'valibot';
-import { singleFlowParser } from '../../common/parser';
+
+const singleFlowParser = <T extends Parameters<typeof parse>[0]>(parser: T) => {
+	return (
+		response: Readonly<{
+			data: unknown;
+		}>
+	) => {
+		return parse(parser, response.data);
+	};
+};
 
 const schemas = {
 	latestTimeCommitted: pipe(
-		string(),
-		transform((value) => {
-			return new Date(value);
+		object({
+			commit: object({
+				commit: object({
+					author: object({
+						date: string(),
+					}),
+				}),
+			}),
+		}),
+		transform(({ commit }) => {
+			return new Date(commit.commit.author.date);
 		})
 	),
 	template: {
 		properties: {
 			content: string(),
 		},
-		list: array(
-			pipe(
-				object({
-					path: string(),
-				}),
-				transform(({ path }) => {
-					return path;
-				})
-			)
+		list: pipe(
+			object({
+				tree: array(
+					pipe(
+						object({
+							path: string(),
+						}),
+						transform(({ path }) => {
+							return path;
+						})
+					)
+				),
+			}),
+			transform(({ tree }) => {
+				return tree;
+			})
 		),
 	},
 } as const;
 
 class Scrapper {
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	private constructor() {}
 
 	static readonly create = () => {
@@ -39,9 +62,6 @@ class Scrapper {
 	readonly latestTimeCommitted = async () => {
 		return axios
 			.get('https://api.github.com/repos/github/gitignore/branches/main')
-			.then(({ data }) => {
-				return data.commit.commit.author.date;
-			})
 			.then(singleFlowParser(schemas.latestTimeCommitted))
 			.then(AsyncOperation.succeed)
 			.catch(AsyncOperation.failed);
@@ -52,9 +72,6 @@ class Scrapper {
 			.get(
 				'https://api.github.com/repos/github/gitignore/git/trees/main?recursive=1'
 			)
-			.then(({ data }) => {
-				return data.tree;
-			})
 			.then(singleFlowParser(schemas.template.list))
 			.then((path) => {
 				return path.filter((path) => {
@@ -87,7 +104,7 @@ class Scrapper {
 			.then(AsyncOperation.succeed)
 			.catch(AsyncOperation.failed);
 
-		return result.map(async (list) => {
+		return result.map((list) => {
 			const duplicates = Array.from(
 				new Set(
 					list
@@ -167,11 +184,13 @@ class Scrapper {
 					};
 				});
 
-			return templates.toSorted((a, b) => {
-				return a.name.localeCompare(b.name, undefined, {
-					ignorePunctuation: true,
-				});
-			});
+			return Promise.resolve(
+				templates.toSorted((a, b) => {
+					return a.name.localeCompare(b.name, undefined, {
+						ignorePunctuation: true,
+					});
+				})
+			);
 		});
 	};
 }

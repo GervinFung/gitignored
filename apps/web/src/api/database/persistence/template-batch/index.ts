@@ -1,6 +1,7 @@
+import type { Persistence } from '..';
+
 import { Defined, Optional, isFalse } from '@poolofdeath20/util';
 
-import type { Persistence } from '..';
 import { isMoreThanOrEqualOneWeek, isTimeEqual } from '../../../logic/util';
 import DatabaseOperation from '../util';
 
@@ -69,7 +70,7 @@ class TemplateBatchPersistence {
 									(result) => {
 										return result.match({
 											failed,
-											succeed: async (latestTime) => {
+											succeed: (latestTime) => {
 												return !isTimeEqual(
 													latestTimeCommitted,
 													latestTime.latestCommittedTime

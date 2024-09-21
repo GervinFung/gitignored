@@ -1,13 +1,12 @@
-import React, { type PropsWithChildren } from 'react';
-
-import { DefaultSeo } from 'next-seo';
+import type { PropsWithChildren } from 'react';
 
 import styled from '@emotion/styled';
+import { DefaultSeo } from 'next-seo';
+import React from 'react';
 
 import theme from '../../theme';
-
-import Header from '../header';
 import Footer from '../footer';
+import Header from '../header';
 
 const Layout = (
 	props: Readonly<
@@ -30,29 +29,33 @@ const Layout = (
 	return (
 		<Container>
 			<DefaultSeo
-				canonical={url}
-				title={gitignoredTitle}
-				description={description}
-				defaultTitle={gitignoredTitle}
-				titleTemplate={gitignoredTitle}
-				twitter={{
-					handle: '@gitignored',
-					site: '@gitignored',
-					cardType: 'summary_large_image',
-				}}
-				openGraph={{
-					url,
-					description,
-					title: gitignoredTitle,
-					images: dimensions.map((dimension) => {
-						return {
-							alt: description,
-							width: dimension,
-							height: dimension,
-							url: `${iconPath}/icon-${dimension}x${dimension}.png`,
+				additionalLinkTags={[
+					{
+						rel: 'icon',
+						type: 'image/x-icon',
+						href: `${iconPath}/favicon.ico`,
+					},
+					{
+						rel: 'apple-touch-icon',
+						type: 'image/x-icon',
+						href: `${iconPath}/favicon.ico`,
+					},
+					...dimensions.flatMap((dimension) => {
+						const sizes = `${dimension}x${dimension}`;
+						const href = `${iconPath}/icon-${sizes}.png`;
+						const icon = {
+							href,
+							sizes,
+							rel: 'icon',
 						};
+						const appleTouchIcon = {
+							href,
+							sizes,
+							rel: 'apple-touch-icon',
+						};
+						return [icon, appleTouchIcon];
 					}),
-				}}
+				]}
 				additionalMetaTags={[
 					{
 						name: 'keyword',
@@ -100,33 +103,29 @@ const Layout = (
 						content: 'index.html',
 					},
 				]}
-				additionalLinkTags={[
-					{
-						rel: 'icon',
-						type: 'image/x-icon',
-						href: `${iconPath}/favicon.ico`,
-					},
-					{
-						rel: 'apple-touch-icon',
-						type: 'image/x-icon',
-						href: `${iconPath}/favicon.ico`,
-					},
-					...dimensions.flatMap((dimension) => {
-						const sizes = `${dimension}x${dimension}`;
-						const href = `${iconPath}/icon-${sizes}.png`;
-						const icon = {
-							href,
-							sizes,
-							rel: 'icon',
+				canonical={url}
+				defaultTitle={gitignoredTitle}
+				description={description}
+				openGraph={{
+					url,
+					description,
+					title: gitignoredTitle,
+					images: dimensions.map((dimension) => {
+						return {
+							alt: description,
+							width: dimension,
+							height: dimension,
+							url: `${iconPath}/icon-${dimension}x${dimension}.png`,
 						};
-						const appleTouchIcon = {
-							href,
-							sizes,
-							rel: 'apple-touch-icon',
-						};
-						return [icon, appleTouchIcon];
 					}),
-				]}
+				}}
+				title={gitignoredTitle}
+				titleTemplate={gitignoredTitle}
+				twitter={{
+					handle: '@gitignored',
+					site: '@gitignored',
+					cardType: 'summary_large_image',
+				}}
 			/>
 			<Header />
 			{props.children}

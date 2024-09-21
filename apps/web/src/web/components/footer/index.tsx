@@ -1,7 +1,3 @@
-import React from 'react';
-
-import Image from 'next/image';
-
 import {
 	Box,
 	Link,
@@ -14,7 +10,8 @@ import {
 	Text,
 	Flex,
 } from '@chakra-ui/react';
-
+import Image from 'next/image';
+import React from 'react';
 import {
 	SiChakraui,
 	SiTypescript,
@@ -23,7 +20,6 @@ import {
 } from 'react-icons/si';
 
 import { constants, title } from '../../util/const';
-
 import InternalLink from '../common/link';
 
 const Footer = () => {
@@ -34,30 +30,30 @@ const Footer = () => {
 
 	return (
 		<Flex
-			mt={24}
 			as="footer"
-			maxWidth="100%"
-			justifyContent="space-between"
 			borderTop="1px solid"
+			justifyContent="space-between"
+			maxWidth="100%"
+			mt={24}
 		>
 			<Container
-				role="contentinfo"
-				minWidth="80%"
 				display="grid"
+				minWidth="80%"
 				placeItems="center"
+				role="contentinfo"
 			>
 				<Stack
-					width="100%"
-					spacing={8}
 					direction="column"
 					justify="space-between"
 					py={8}
+					spacing={8}
+					width="100%"
 				>
 					<Stack
-						width="100%"
 						display="flex"
 						flexDirection="row"
 						justifyContent="space-between"
+						width="100%"
 					>
 						<Box>
 							<InternalLink
@@ -66,16 +62,16 @@ const Footer = () => {
 								}}
 							>
 								<Image
-									width={120}
+									alt={`Logo of ${title}`}
 									height={70}
 									quality={100}
-									alt={`Logo of ${title}`}
 									src="/images/icons/logo.webp"
+									width={120}
 								/>
 							</InternalLink>
 						</Box>
 						<Stack direction="row" spacing={8}>
-							<Stack spacing={4} minW={36} flex={1}>
+							<Stack flex={1} minW={36} spacing={4}>
 								<Stack shouldWrapChildren>
 									{[
 										{
@@ -97,15 +93,15 @@ const Footer = () => {
 									].map(({ section, link }) => {
 										return (
 											<Link
-												key={link}
-												isExternal
 												href={link}
-												target="_blank"
+												isExternal
+												key={link}
 												rel="external nofollow noopener noreferrer"
+												target="_blank"
 											>
 												<Button
-													variant="link"
 													color="inherit"
+													variant="link"
 												>
 													{section}
 												</Button>
@@ -119,13 +115,13 @@ const Footer = () => {
 				</Stack>
 				<Divider width="100%" />
 				<Stack
-					width="100%"
-					py={8}
-					justify="space-between"
-					flexDirection="row"
 					align="center"
+					flexDirection="row"
+					justify="space-between"
+					py={8}
+					width="100%"
 				>
-					<Text fontSize="1em" color="subtle">
+					<Text color="subtle" fontSize="1em">
 						Copyright &copy; {`${year.origin} - ${year.current}`}
 					</Text>
 					<ButtonGroup variant="ghost">
@@ -149,16 +145,16 @@ const Footer = () => {
 						].map((props) => {
 							return (
 								<IconButton
-									key={props.link}
-									as="a"
-									href={`https://${props.link}`}
-									target="_blank"
-									rel="external nofollow noopener noreferrer"
 									aria-label={props.link
 										.replace('www', '')
 										.replace('.com', '')
 										.replace('.', '')}
+									as="a"
+									href={`https://${props.link}`}
 									icon={<props.Component fontSize="1.5em" />}
+									key={props.link}
+									rel="external nofollow noopener noreferrer"
+									target="_blank"
 								/>
 							);
 						})}
