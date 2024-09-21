@@ -1,65 +1,40 @@
 import process from 'process';
-import eslint from '@eslint/js';
+
 import { includeIgnoreFile } from '@eslint/compat';
+import eslint from '@eslint/js';
+import { node, next } from '@poolofdeath20/eslint-config';
 import tseslint from 'typescript-eslint';
 
+const allowedFor = ['SyntaxHighlighter', 'Image'];
+
 export default tseslint.config(
+	// @ts-expect-error: type mismatch between eslint and eslint-compat
 	includeIgnoreFile(`${process.cwd()}/.gitignore`),
 	eslint.configs.recommended,
 	...tseslint.configs.recommendedTypeChecked,
 	...tseslint.configs.strict,
 	...tseslint.configs.stylistic,
+	node,
 	{
-		files: ['script/mongo-setup/document.js'],
+		...next,
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		rules: {
-			'no-undef': 'off',
-		},
-		extends: [tseslint.configs.disableTypeChecked],
-	},
-	{
-		settings: {
-			react: {
-				version: 'detect',
-			},
-		},
-		linterOptions: {
-			reportUnusedDisableDirectives: 'error',
-		},
-		languageOptions: {
-			parserOptions: {
-				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
-			},
-		},
-		rules: {
-			'@typescript-eslint/array-type': [
+			...next.rules,
+			'react/jsx-child-element-spacing': 'off',
+			'react/forbid-component-props': [
 				'error',
 				{
-					default: 'generic',
-				},
-			],
-			'@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-			'@typescript-eslint/no-unused-vars': [
-				'error',
-				{
-					args: 'all',
-					argsIgnorePattern: '^_',
-					caughtErrors: 'all',
-					caughtErrorsIgnorePattern: '^ignore',
-					destructuredArrayIgnorePattern: '^_',
-					ignoreRestSiblings: true,
-				},
-			],
-			'react/prop-types': 'off',
-			'react/jsx-uses-react': 'off',
-			'react/react-in-jsx-scope': 'off',
-			'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
-			'arrow-body-style': ['error', 'always'],
-			'no-restricted-syntax': [
-				'error',
-				{
-					selector: 'TSEnumDeclaration',
-					message: "Don't declare enums",
+					forbid: [
+						{
+							propName: 'style',
+							allowedFor,
+							message: `Props "style" is forbidden for all components except ${allowedFor
+								.map((component) => {
+									return `"${component}"`;
+								})
+								.join(', ')}`,
+						},
+					],
 				},
 			],
 		},
