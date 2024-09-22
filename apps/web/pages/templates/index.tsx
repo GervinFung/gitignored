@@ -16,7 +16,6 @@ import {
 	Optional,
 	formQueryParamStringFromRecord,
 	Defined,
-	isFalsy,
 } from '@poolofdeath20/util';
 import { saveAs } from 'file-saver';
 import iwanthue from 'iwanthue';
@@ -420,7 +419,7 @@ const Templates = () => {
 						<ButtonGroup gap={4}>
 							<Button
 								colorScheme="messenger"
-								isDisabled={isFalsy(selected.length)}
+								isDisabled={!selected.length}
 								onClick={() => {
 									copyNotification.unset();
 									clipboard.copy(combineTemplates(selected));
@@ -431,7 +430,7 @@ const Templates = () => {
 							<Divider orientation="vertical" />
 							<Button
 								colorScheme="messenger"
-								isDisabled={isFalsy(selected.length)}
+								isDisabled={!selected.length}
 								onClick={() => {
 									const zip = selected.reduce(
 										(zip, template) => {

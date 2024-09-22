@@ -16,6 +16,9 @@ const config: KnipConfig = {
 		'prettier',
 		'supabase',
 		'vite-node',
+		'@eslint/compat',
+		'@eslint/js',
+		'typescript-eslint',
 	],
 };
 
