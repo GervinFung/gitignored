@@ -3,7 +3,7 @@ import type { DeepReadonly } from '@poolofdeath20/util';
 
 import { Box, Text } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { equalTo, isFalsy } from '@poolofdeath20/util';
+import { equalTo } from '@poolofdeath20/util';
 import Fuse from 'fuse.js';
 import React from 'react';
 import Select from 'react-select';
@@ -69,7 +69,7 @@ const QuerySection = (
 							.at(0)?.score ?? 1) <= 0.5
 					);
 				}}
-				isDisabled={isFalsy(props.templates.all.length)}
+				isDisabled={!props.templates.all.length}
 				isMulti
 				loadingMessage={() => {
 					return (
