@@ -44,12 +44,9 @@
 	},
 	"devDependencies": {
 		"@ducanh2912/next-pwa": "^10.2.8",
-		"@eslint/compat": "^1.1.1",
-		"@eslint/js": "^9.8.0",
 		"@poolofdeath20/eslint-config": "^0.4.0",
 		"@poolofdeath20/tsconfig": "^0.1.1",
 		"@types/cors": "^2.8.17",
-		"@types/eslint__js": "^8.42.3",
 		"@types/file-saver": "^2.0.7",
 		"@types/jest-image-snapshot": "^6.4.0",
 		"@types/react": "^18.3.3",
@@ -59,8 +56,6 @@
 		"@typescript-eslint/parser": "^7.18.0",
 		"ci-info": "^4.0.0",
 		"eslint": "^9.9.1",
-		"eslint-plugin-jsx-a11y": "^6.9.0",
-		"eslint-plugin-react": "^7.35.0",
 		"gen-env-type-def": "^0.0.4",
 		"jest-image-snapshot": "^6.4.0",
 		"knip": "^5.27.0",
@@ -70,7 +65,6 @@
 		"sql-formatter": "15.3.2",
 		"supabase": "^1.187.10",
 		"typescript": "^5.5.4",
-		"typescript-eslint": "^8.0.1",
 		"vite-node": "^2.0.4",
 		"vitest": "^2.0.4"
 	}
