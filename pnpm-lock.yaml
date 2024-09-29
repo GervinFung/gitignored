@@ -145,7 +145,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       eslint:
-        specifier: ^9.9.1
+        specifier: ^9.11.1
         version: 9.11.1(jiti@1.21.6)
       gen-env-type-def:
         specifier: ^0.0.4
