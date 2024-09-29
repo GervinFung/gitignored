@@ -11,7 +11,7 @@ const result = <T>(operation: () => Promise<AsyncResult<T>>) => {
 				console.error(result.reason());
 			}
 
-			return result.toJson();
+			return await result.toJson();
 		} catch (error) {
 			return {
 				hadSucceed: false,

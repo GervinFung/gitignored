@@ -1,8 +1,6 @@
 import type { Persistence } from '..';
 import type { DeepReadonly } from '@poolofdeath20/util';
 
-import { isFalse } from '@poolofdeath20/util';
-
 import DatabaseOperation from '../util';
 
 type Templates = DeepReadonly<
@@ -118,7 +116,7 @@ class TemplatePersistence {
 			.shouldUpdate()
 			.then((result) => {
 				return result.flatMap(async (shouldUpdate) => {
-					if (isFalse(shouldUpdate)) {
+					if (!shouldUpdate) {
 						return this.findMany();
 					}
 

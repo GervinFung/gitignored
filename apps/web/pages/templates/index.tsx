@@ -62,29 +62,7 @@ const useCopyToClipboard = (timeout?: number) => {
 	return {
 		copied,
 		copy: (text: string) => {
-			if (navigator?.clipboard.writeText) {
-				void navigator.clipboard.writeText(text);
-			} else {
-				const element = document.createElement('textarea');
-
-				element.value = text;
-
-				element.setAttribute('readonly', '');
-
-				element.style.position = 'absolute';
-
-				element.style.left = '-9999px';
-
-				document.body.appendChild(element);
-
-				element.select();
-
-				document.execCommand('copy');
-
-				document.body.removeChild(element);
-			}
-
-			setCopied(true);
+			void navigator.clipboard.writeText(text);
 		},
 	};
 };

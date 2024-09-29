@@ -1,6 +1,6 @@
 import type { Persistence } from '..';
 
-import { Defined, Optional, isFalse } from '@poolofdeath20/util';
+import { Defined, Optional } from '@poolofdeath20/util';
 
 import { isMoreThanOrEqualOneWeek, isTimeEqual } from '../../../logic/util';
 import DatabaseOperation from '../util';
@@ -122,7 +122,7 @@ class TemplateBatchPersistence {
 	readonly findLatestCommittedTime = async () => {
 		return this.shouldUpdate().then((result) => {
 			return result.flatMap(async (shouldUpdate) => {
-				if (isFalse(shouldUpdate)) {
+				if (!shouldUpdate) {
 					return this.findLatestTimeCommitted();
 				}
 

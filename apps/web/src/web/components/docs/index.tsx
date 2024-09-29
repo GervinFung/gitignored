@@ -29,7 +29,6 @@ const docs = {
 
 const Item = (
 	props: DeepReadonly<{
-		mb?: false;
 		title: string;
 		items: Array<string>;
 		match: {
@@ -39,7 +38,7 @@ const Item = (
 	}>
 ) => {
 	return (
-		<Box mb={props.mb ? 0 : 8}>
+		<Box mb={8}>
 			<Text as="b" color="GrayText">
 				{props.title}
 			</Text>
@@ -86,19 +85,16 @@ const Item = (
 
 const Documentation = (
 	props: PropsWithChildren &
-		DeepReadonly<
-			| undefined
-			| {
-					title: string;
-			  }
-		>
+		DeepReadonly<{
+			title: string;
+		}>
 ) => {
 	const router = useRouter();
 
 	const [_, __, title, item] = router.asPath.split('/');
 
 	return (
-		<Layout title={!props ? 'Docs' : `Docs - ${props.title}`}>
+		<Layout title={`Docs - ${props.title}`}>
 			<Container display="grid" maxWidth="100%" placeItems="center">
 				<Box
 					boxSizing="border-box"
@@ -130,7 +126,7 @@ const Documentation = (
 						/>
 					</Box>
 					<Divider orientation="vertical" />
-					<Box textAlign="justify">{props?.children}</Box>
+					<Box textAlign="justify">{props.children}</Box>
 				</Box>
 			</Container>
 		</Layout>

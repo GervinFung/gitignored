@@ -10,12 +10,10 @@ import tseslint from 'typescript-eslint';
 const allowedFor = ['SyntaxHighlighter', 'Image'];
 
 export default tseslint.config(
-	// @ts-expect-error: type mismatch between eslint and eslint-compat
 	includeIgnoreFile(`${process.cwd()}/.gitignore`),
 	eslint.configs.recommended,
-	...tseslint.configs.recommendedTypeChecked,
-	...tseslint.configs.strict,
-	...tseslint.configs.stylistic,
+	...tseslint.configs.strictTypeChecked,
+	...tseslint.configs.stylisticTypeChecked,
 	node,
 	{
 		...next,
