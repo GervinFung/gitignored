@@ -71,7 +71,7 @@ impl Update {
     pub fn parse(&self, option_pairs: OptionPairs) -> UpdateTemplateResult {
         let option_pair = option_pairs
             .into_iter()
-            .find(|pair| return self.keyword_same_as_argument(pair.key()))
+            .find(|pair| self.keyword_same_as_argument(pair.key()))
             .map(|pair| pair.to_option_values());
 
         match option_pair {
