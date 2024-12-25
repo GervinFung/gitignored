@@ -25,8 +25,7 @@ import React from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { parse, string } from 'valibot';
 
-// eslint-disable-next-line import/extensions
-import 'react-toastify/dist/ReactToastify.min.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Layout from '../../src/web/components/layout';
 import Seo from '../../src/web/components/seo';
