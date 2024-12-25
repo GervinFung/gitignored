@@ -1,6 +1,5 @@
 import fs from 'fs';
 
-// eslint-disable-next-line import/no-relative-packages
 import pkg from '../../../../package.json';
 
 const main = () => {
