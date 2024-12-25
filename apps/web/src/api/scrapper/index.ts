@@ -60,16 +60,11 @@ class Scrapper {
 	};
 
 	readonly latestTimeCommitted = async () => {
-		return (
-			axios
-				.get(
-					'https://api.github.com/repos/github/gitignore/branches/main'
-				)
-				.then(singleFlowParser(schemas.latestTimeCommitted))
-				.then(AsyncOperation.succeed)
-				// eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
-				.catch(AsyncOperation.failed)
-		);
+		return axios
+			.get('https://api.github.com/repos/github/gitignore/branches/main')
+			.then(singleFlowParser(schemas.latestTimeCommitted))
+			.then(AsyncOperation.succeed)
+			.catch(AsyncOperation.failed);
 	};
 
 	readonly templates = async () => {
@@ -107,7 +102,6 @@ class Scrapper {
 				);
 			})
 			.then(AsyncOperation.succeed)
-			// eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
 			.catch(AsyncOperation.failed);
 
 		return result.map((list) => {
